@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bar {
+  height: 30px;
+  background: #329ea3;
+  user-select: none;
+}
