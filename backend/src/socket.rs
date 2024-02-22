@@ -30,6 +30,7 @@ impl Actor for Server {
     type Context = Context<Self>;
 }
 
+/// This handler is responsible for processing the `Connect` message and generating a response.
 impl Handler<Connect> for Server {
     type Result = String;
 
@@ -41,6 +42,7 @@ impl Handler<Connect> for Server {
     }
 }
 
+/// This allows the `Server` actor to react to disconnection events and perform any necessary cleanup or logging.
 impl Handler<Disconnect> for Server {
     type Result = ();
 
@@ -49,6 +51,7 @@ impl Handler<Disconnect> for Server {
     }
 }
 
+/// This implementation defines how the `Server` actor should handle incoming messages of type `Message`.
 impl Handler<Message> for Server {
     type Result = ();
 
@@ -60,6 +63,14 @@ impl Handler<Message> for Server {
 impl Actor for Session {
     type Context = ws::WebsocketContext<Self>;
 
+    /// The function `started` in Rust sends a message to connect and sets the id based on the response
+    /// or stops the context if there is an error.
+    ///
+    /// Arguments:
+    ///
+    /// * `ctx`: The `ctx` parameter in the `started` function is a mutable reference to the context of
+    /// the actor. It is typically used to interact with the actor system, send messages, access the
+    /// actor's address, and manage the actor's lifecycle.
     fn started(&mut self, ctx: &mut Self::Context) {
         let addr = ctx.address();
 
@@ -78,6 +89,7 @@ impl Actor for Session {
             .wait(ctx);
     }
 
+    /// The function `stopping` sends a `Disconnect` message to an address and returns `Running::Stop`.
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
         self.addr.do_send(Disconnect {
             id: self.id.clone(),
@@ -94,6 +106,7 @@ impl Handler<Message> for Session {
     }
 }
 
+/// This implementation is defining how the `Session` actor handles incoming WebSocket messages.
 impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Session {
     fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
         let msg = match msg {
