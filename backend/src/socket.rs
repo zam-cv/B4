@@ -5,12 +5,18 @@ use uuid::Uuid;
 
 #[derive(Message)]
 #[rtype(result = "()")]
-pub struct Message(pub String);
+pub struct Message(pub String, pub String);
 
 #[derive(Message)]
 #[rtype(String)]
 pub struct Connect {
     pub addr: Recipient<Message>,
+}
+
+#[derive(Message)]
+#[rtype(result = "()")]
+pub struct Disconnect {
+    pub id: String,
 }
 
 struct Server;
@@ -28,8 +34,18 @@ impl Handler<Connect> for Server {
     type Result = String;
 
     fn handle(&mut self, _: Connect, _: &mut Self::Context) -> Self::Result {
-        println!("Connected");
-        Uuid::new_v4().to_string()
+        let id = Uuid::new_v4().to_string();
+        println!("Connected: {}", id);
+
+        id
+    }
+}
+
+impl Handler<Disconnect> for Server {
+    type Result = ();
+
+    fn handle(&mut self, msg: Disconnect, _: &mut Self::Context) {
+        println!("Disconnected: {}", msg.id);
     }
 }
 
@@ -37,7 +53,7 @@ impl Handler<Message> for Server {
     type Result = ();
 
     fn handle(&mut self, msg: Message, _: &mut Self::Context) {
-        println!("Message: {}", msg.0);
+        println!("Message from {}: {}", msg.0, msg.1);
     }
 }
 
@@ -60,6 +76,13 @@ impl Actor for Session {
                 fut::ready(())
             })
             .wait(ctx);
+    }
+
+    fn stopping(&mut self, _: &mut Self::Context) -> Running {
+        self.addr.do_send(Disconnect {
+            id: self.id.clone(),
+        });
+        Running::Stop
     }
 }
 
@@ -109,7 +132,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Session {
         };
 
         if let Some(message) = message {
-            self.addr.do_send(Message(message));
+            self.addr.do_send(Message(self.id.clone(), message));
         }
     }
 }
