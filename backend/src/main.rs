@@ -7,6 +7,7 @@ pub const PORT: &str = "8080";
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     println!("Server running at {}:{}", HOST, PORT);
+    
     HttpServer::new(|| {
         App::new().service(
             fs::Files::new("/", "../page/")
