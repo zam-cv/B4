@@ -21,6 +21,7 @@ pub fn create_token(id: usize) -> anyhow::Result<String> {
     )?)
 }
 
+#[allow(dead_code)]
 pub fn decode_token(token: &str) -> anyhow::Result<Claims> {
     let token_data = decode::<Claims>(
         token,

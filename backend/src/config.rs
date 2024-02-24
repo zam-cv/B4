@@ -5,6 +5,7 @@ use std::env;
 pub struct Config {
   pub address: String,
   pub secret_key: String,
+  pub database_url: String,
 }
 
 lazy_static! {
@@ -18,8 +19,9 @@ lazy_static! {
               env::var("PORT").expect("PORT must be set")
           ),
           secret_key: env::var("SECRET_KEY").expect("SECRET_KEY must be set"),
+          database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
       }
   };
 }
 
-pub const TOKEN_EXPIRATION_TIME: usize = 60 * 60 * 24 * 15; // 16 days
+pub const TOKEN_EXPIRATION_TIME: usize = 60 * 60 * 24 * 15; // 15 days
