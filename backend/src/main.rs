@@ -6,8 +6,8 @@ use database::Database;
 mod config;
 mod database;
 mod models;
-mod schema;
 mod routes;
+mod schema;
 mod socket;
 mod utils;
 
@@ -21,11 +21,17 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(database.clone()))
             .route("/ws/", web::get().to(socket::index))
             .service(
-                web::scope("/api").service(
-                    web::scope("/admin")
-                        .service(routes::login_admin)
-                        .service(routes::register_admin),
-                ),
+                web::scope("/api")
+                    .service(
+                        web::scope("/admin")
+                            .service(routes::login_admin)
+                            .service(routes::register_admin),
+                    )
+                    .service(
+                        web::scope("/user")
+                            .service(routes::login_user)
+                            .service(routes::register_user),
+                    ),
             )
             .service(
                 fs::Files::new("/", "../page/")
