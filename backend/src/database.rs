@@ -2,6 +2,7 @@ use crate::{config::CONFIG, models, schema};
 use actix_web::{error, web};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
+use serde::Serialize;
 
 const MAX_POOL_SIZE: u32 = 5;
 pub type DBPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
@@ -9,6 +10,12 @@ pub type DBPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 #[derive(Clone)]
 pub struct Database {
     pub pool: DBPool,
+}
+
+#[derive(Serialize)]
+pub struct UserWithoutPassword {
+    pub id: i32,
+    pub username: String,
 }
 
 impl Database {
@@ -86,5 +93,21 @@ impl Database {
         .map_err(error::ErrorInternalServerError)?;
 
         Ok(user)
+    }
+
+    pub async fn get_users(&self) -> Result<Vec<UserWithoutPassword>, error::Error> {
+        let mut conn = self.get_connection()?;
+        let users = web::block(move || {
+            schema::users::table
+                .select((schema::users::id, schema::users::username))
+                .load::<(i32, String)>(&mut conn)
+        })
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+        Ok(users
+            .into_iter()
+            .map(|(id, username)| UserWithoutPassword { id, username })
+            .collect())
     }
 }

@@ -1,5 +1,5 @@
 use crate::{database::Database, models::*, utils::create_token};
-use actix_web::{post, web, Responder, Result};
+use actix_web::{get, post, web, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -7,9 +7,15 @@ use argon2::{
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
-struct Response<'a, T> {
-    message: &'a str,
-    payload: Option<T>,
+pub enum Status<'a> {
+    Success,
+    Incorrect(&'a str),
+}
+
+#[derive(Serialize)]
+pub struct Response<'a, T> {
+    pub message: Status<'a>,
+    pub payload: Option<T>,
 }
 
 #[derive(Deserialize)]
@@ -40,7 +46,7 @@ macro_rules! login {
                     {
                         if let Ok(token) = create_token(user.id as usize) {
                             return web::Json(Response {
-                                message: "Success",
+                                message: Status::Success,
                                 payload: Some(Credentials { token }),
                             });
                         }
@@ -49,7 +55,7 @@ macro_rules! login {
             }
 
             web::Json(Response {
-                message: "Username or password is incorrect",
+                message: Status::Incorrect("Username or password is incorrect"),
                 payload: None,
             })
         }
@@ -77,14 +83,14 @@ macro_rules! register {
 
                     if let Ok(token) = create_token(id) {
                         return Ok(web::Json(Response {
-                            message: "Success",
+                            message: Status::Success,
                             payload: Some(Credentials { token }),
                         }));
                     }
                 }
 
                 return Ok(web::Json(Response {
-                    message: "Username already exists",
+                    message: Status::Incorrect("Username already exists"),
                     payload: None,
                 }));
             }
@@ -106,3 +112,12 @@ register!(
     create_admin,
     NewAdmin
 );
+
+#[get("/users")]
+pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
+    let users = database.get_users().await?;
+    Ok(web::Json(Response {
+        message: Status::Success,
+        payload: Some(users),
+    }))
+}
