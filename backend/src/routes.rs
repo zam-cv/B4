@@ -1,4 +1,4 @@
-use crate::{database::Database, models::*, utils::create_token};
+use crate::{database::Database, models::*, utils::create_token, CONFIG};
 use actix_web::{get, post, web, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
@@ -30,7 +30,7 @@ struct Credentials {
 }
 
 macro_rules! login {
-    ($name:ident, $table:ident) => {
+    ($name:ident, $table:ident, $secret_key:expr) => {
         #[post("/login")]
         pub async fn $name(
             database: web::Data<Database>,
@@ -44,7 +44,7 @@ macro_rules! login {
                         .verify_password(info.password.as_bytes(), &password)
                         .is_ok()
                     {
-                        if let Ok(token) = create_token(user.id as usize) {
+                        if let Ok(token) = create_token(&$secret_key, user.id) {
                             return web::Json(Response {
                                 message: Status::Success,
                                 payload: Some(Credentials { token }),
@@ -63,7 +63,7 @@ macro_rules! login {
 }
 
 macro_rules! register {
-    ($name:ident, $table:ident, $create:ident, $model:ident) => {
+    ($name:ident, $table:ident, $create:ident, $model:ident, $secret_key:expr) => {
         #[post("/register")]
         pub async fn $name(
             database: web::Data<Database>,
@@ -81,7 +81,7 @@ macro_rules! register {
                         })
                         .await?;
 
-                    if let Ok(token) = create_token(id) {
+                    if let Ok(token) = create_token(&$secret_key, id) {
                         return Ok(web::Json(Response {
                             message: Status::Success,
                             payload: Some(Credentials { token }),
@@ -101,21 +101,29 @@ macro_rules! register {
 }
 
 // login and register for user
-login!(login_user, get_user_by_username);
-register!(register_user, get_user_by_username, create_user, NewUser);
+login!(login_user, get_user_by_username, CONFIG.user_secret_key);
+register!(
+    register_user,
+    get_user_by_username,
+    create_user,
+    NewUser,
+    CONFIG.user_secret_key
+);
 
 // login and register for admin
-login!(login_admin, get_admin_by_username);
+login!(login_admin, get_admin_by_username, CONFIG.admin_secret_key);
 register!(
     register_admin,
     get_admin_by_username,
     create_admin,
-    NewAdmin
+    NewAdmin,
+    CONFIG.admin_secret_key
 );
 
 #[get("/users")]
 pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
     let users = database.get_users().await?;
+
     Ok(web::Json(Response {
         message: Status::Success,
         payload: Some(users),

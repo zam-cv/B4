@@ -21,7 +21,13 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(database.clone()))
-            .route("/ws/", web::get().to(socket::index))
+            .route(
+                "/ws/",
+                web::get()
+                    .to(socket::index)
+                    // Wrap the websocket route with the user_auth middleware
+                    .wrap(from_fn(middlewares::user_auth)),
+            )
             .service(
                 web::scope("/api")
                     .service(
@@ -39,7 +45,7 @@ async fn main() -> std::io::Result<()> {
                     )
                     .service(
                         web::scope("/private")
-                            .wrap(from_fn(middlewares::auth))
+                            .wrap(from_fn(middlewares::admin_auth))
                             .service(web::scope("/admin").service(routes::get_users)),
                     ),
             )

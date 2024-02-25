@@ -52,17 +52,24 @@ impl Database {
         Ok(admin)
     }
 
-    pub async fn create_admin(&self, new_admin: models::NewAdmin) -> Result<usize, error::Error> {
+    pub async fn create_admin(&self, new_admin: models::NewAdmin) -> Result<i32, error::Error> {
         let mut conn = self.get_connection()?;
-        let admin = web::block(move || {
-            diesel::insert_into(schema::admins::table)
-                .values(&new_admin)
-                .execute(&mut conn)
+        let id = web::block(move || {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::admins::table)
+                    .values(&new_admin)
+                    .execute(pooled)?;
+
+                schema::admins::table
+                    .select(schema::admins::id)
+                    .order(schema::admins::id.desc())
+                    .first::<i32>(pooled)
+            })
         })
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
-        Ok(admin)
+        Ok(id)
     }
 
     pub async fn get_user_by_username(
@@ -82,17 +89,24 @@ impl Database {
         Ok(user)
     }
 
-    pub async fn create_user(&self, new_user: models::NewUser) -> Result<usize, error::Error> {
+    pub async fn create_user(&self, new_user: models::NewUser) -> Result<i32, error::Error> {
         let mut conn = self.get_connection()?;
-        let user = web::block(move || {
-            diesel::insert_into(schema::users::table)
-                .values(&new_user)
-                .execute(&mut conn)
+        let id = web::block(move || {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::users::table)
+                    .values(&new_user)
+                    .execute(pooled)?;
+
+                schema::users::table
+                    .select(schema::users::id)
+                    .order(schema::users::id.desc())
+                    .first::<i32>(pooled)
+            })
         })
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
-        Ok(user)
+        Ok(id)
     }
 
     pub async fn get_users(&self) -> Result<Vec<UserWithoutPassword>, error::Error> {

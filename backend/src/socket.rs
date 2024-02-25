@@ -1,28 +1,28 @@
 use actix::prelude::*;
-use actix_web::{web, Error, HttpRequest, HttpResponse};
+use actix_web::{web, Error, HttpMessage, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
-use uuid::Uuid;
 
 #[derive(Message)]
 #[rtype(result = "()")]
-pub struct Message(pub String, pub String);
+pub struct Message(pub i32, pub String);
 
 #[derive(Message)]
-#[rtype(String)]
+#[rtype(result = "()")]
 pub struct Connect {
+    pub id: i32,
     pub addr: Recipient<Message>,
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Disconnect {
-    pub id: String,
+    pub id: i32,
 }
 
 struct Server;
 
 struct Session {
-    pub id: String,
+    pub id: i32,
     pub addr: Addr<Server>,
 }
 
@@ -32,13 +32,10 @@ impl Actor for Server {
 
 /// This handler is responsible for processing the `Connect` message and generating a response.
 impl Handler<Connect> for Server {
-    type Result = String;
+    type Result = ();
 
-    fn handle(&mut self, _: Connect, _: &mut Self::Context) -> Self::Result {
-        let id = Uuid::new_v4().to_string();
-        println!("Connected: {}", id);
-
-        id
+    fn handle(&mut self, conn: Connect, _: &mut Self::Context) -> Self::Result {
+        println!("Connected: {}", conn.id);
     }
 }
 
@@ -76,14 +73,16 @@ impl Actor for Session {
 
         self.addr
             .send(Connect {
+                id: self.id,
                 addr: addr.recipient(),
             })
             .into_actor(self)
-            .then(|res, act, ctx| {
+            .then(|res, _, ctx| {
                 match res {
-                    Ok(res) => act.id = res,
+                    Ok(_) => (),
                     _ => ctx.stop(),
                 }
+
                 fut::ready(())
             })
             .wait(ctx);
@@ -91,9 +90,7 @@ impl Actor for Session {
 
     /// The function `stopping` sends a `Disconnect` message to an address and returns `Running::Stop`.
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
-        self.addr.do_send(Disconnect {
-            id: self.id.clone(),
-        });
+        self.addr.do_send(Disconnect { id: self.id });
         Running::Stop
     }
 }
@@ -102,7 +99,7 @@ impl Handler<Message> for Session {
     type Result = ();
 
     fn handle(&mut self, msg: Message, ctx: &mut Self::Context) {
-        ctx.text(msg.0);
+        ctx.text(msg.1);
     }
 }
 
@@ -151,12 +148,16 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Session {
 }
 
 pub async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
-    ws::start(
-        Session {
-            id: "".to_string(),
-            addr: Server.start(),
-        },
-        &req,
-        stream,
-    )
+    if let Some(id) = req.extensions().get::<i32>() {
+        return ws::start(
+            Session {
+                id: *id,
+                addr: Server.start(),
+            },
+            &req,
+            stream,
+        );
+    }
+
+    Ok(HttpResponse::Unauthorized().finish())
 }
