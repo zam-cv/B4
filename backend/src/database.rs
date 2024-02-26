@@ -52,7 +52,7 @@ impl Database {
         Ok(admin)
     }
 
-    pub async fn create_admin(&self, new_admin: models::NewAdmin) -> Result<i32, error::Error> {
+    pub async fn create_admin(&self, new_admin: models::Admin) -> Result<i32, error::Error> {
         let mut conn = self.get_connection()?;
         let id = web::block(move || {
             conn.transaction(|pooled| {
@@ -89,7 +89,7 @@ impl Database {
         Ok(user)
     }
 
-    pub async fn create_user(&self, new_user: models::NewUser) -> Result<i32, error::Error> {
+    pub async fn create_user(&self, new_user: models::User) -> Result<i32, error::Error> {
         let mut conn = self.get_connection()?;
         let id = web::block(move || {
             conn.transaction(|pooled| {
