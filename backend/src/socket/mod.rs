@@ -8,7 +8,7 @@ pub mod session;
 pub async fn index(
     req: HttpRequest,
     stream: web::Payload,
-    srv: web::Data<Addr<server::Server>>,
+    srv: web::Data<Addr<server::Server>>
 ) -> Result<HttpResponse, Error> {
     // The id was obtained from the token when authenticating
     if let Some(id) = req.extensions().get::<i32>() {

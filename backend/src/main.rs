@@ -5,6 +5,7 @@ use actix_web_lab::middleware::from_fn;
 use config::CONFIG;
 use database::Database;
 
+mod bank;
 mod config;
 mod database;
 mod middlewares;
@@ -18,10 +19,13 @@ mod utils;
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
+    let bank = bank::Bank::new();
+    log::info!("Bank created");
+
     let database = Database::new();
     log::info!("Database connected");
 
-    let socket_server = socket::server::Server::new().start();
+    let socket_server = socket::server::Server::new(bank).start();
     log::info!("Socket server started");
 
     let server = HttpServer::new(move || {

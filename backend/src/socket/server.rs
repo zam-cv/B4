@@ -1,4 +1,7 @@
-use crate::socket::session::{Message, Response, Session};
+use crate::{
+    bank::{Bank, SentenceBuilder},
+    socket::session::{Message, Response, Session},
+};
 use actix::prelude::*;
 use std::collections::HashMap;
 
@@ -17,12 +20,14 @@ pub struct Disconnect {
 
 pub struct Server {
     sessions: HashMap<i32, Addr<Session>>,
+    bank: Bank,
 }
 
 impl Server {
-    pub fn new() -> Self {
+    pub fn new(bank: Bank) -> Self {
         Server {
             sessions: HashMap::new(),
+            bank,
         }
     }
 }
@@ -59,7 +64,9 @@ impl Handler<Message> for Server {
         println!("Message from {}: {}", msg.0, msg.1);
 
         if let Some(addr) = self.sessions.get(&msg.0) {
-            addr.do_send(Response("Response".to_string()));
+            let sentence_builder = SentenceBuilder::new();
+            let sentence = self.bank.create_sentence(&sentence_builder);
+            addr.do_send(Response(sentence));
         }
     }
 }
