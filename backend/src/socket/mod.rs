@@ -5,13 +5,17 @@ use actix_web_actors::ws;
 pub mod server;
 pub mod session;
 
-pub async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
+pub async fn index(
+    req: HttpRequest,
+    stream: web::Payload,
+    srv: web::Data<Addr<server::Server>>,
+) -> Result<HttpResponse, Error> {
     // The id was obtained from the token when authenticating
     if let Some(id) = req.extensions().get::<i32>() {
         return ws::start(
             session::Session {
                 id: *id,
-                addr: server::Server::new().start(),
+                addr: srv.get_ref().clone(),
             },
             &req,
             stream,
