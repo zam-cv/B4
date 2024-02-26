@@ -7,3 +7,11 @@ Evento bueno
 - Encuentras un método natural para controlar la plaga, evitas pérdidas significativas.
 - Las lluvias benefician tus cultivos, obtienes una bonificación de ${}.
 - Encuentras un comprador interesado en una cantidad significativa de tu cosecha, ganas ${} extra.
+Evento malo
+- ¡Temporada de lluvia! Hubo inundaciones, perdiste ${}.
+- Plaga de insectos ataca tus cultivos, perdiste ${}.
+- El mercado está saturado, tus precios bajan, perdiste ${}.
+- Vecinos solidarios te ayudan, no pierdes tanto dinero como esperabas.
+- Hubo una sequía, perdiste ${}.
+- No implementaste medidas de control, una plaga de insectos dañó tus cultivos, perdiste ${}.
+- Lluvias intensas causan inundaciones, pierdes ${}.
