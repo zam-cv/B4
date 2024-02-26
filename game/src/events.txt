@@ -1,2 +1,9 @@
-¿Ha pasado un ciclo?
-
+Evento bueno
+- Excelente cosecha, tu mercancía sube de precio, ganaste ${}.
+- Buena temporada de pesca, obtuviste ingresos adicionales de ${}.
+- Los lugareños celebran una feria, ganas ${} en actividades.
+- Encontraste un tesoro enterrado en tu granja, obtienes una sorpresa inesperada, ganas ${}.
+- Descubriste un antiguo pozo de agua en tu tierra, enfrentaste la sequía de manera más efectiva.
+- Encuentras un método natural para controlar la plaga, evitas pérdidas significativas.
+- Las lluvias benefician tus cultivos, obtienes una bonificación de ${}.
+- Encuentras un comprador interesado en una cantidad significativa de tu cosecha, ganas ${} extra.
