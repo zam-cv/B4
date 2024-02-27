@@ -8,7 +8,10 @@ pub struct Message(pub i32, pub String);
 
 #[derive(Message)]
 #[rtype(result = "()")]
-pub struct Response(pub String);
+pub enum Response {
+    Text(String),
+    Stop
+}
 
 pub struct Session {
     pub id: i32,
@@ -19,7 +22,10 @@ impl Handler<Response> for Session {
     type Result = ();
 
     fn handle(&mut self, msg: Response, ctx: &mut Self::Context) {
-        ctx.text(msg.0);
+        match msg {
+            Response::Text(text) => ctx.text(text),
+            Response::Stop => ctx.stop()
+        }
     }
 }
 

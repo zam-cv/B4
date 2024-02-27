@@ -41,7 +41,16 @@ impl Handler<Connect> for Server {
     type Result = ();
 
     fn handle(&mut self, conn: Connect, _: &mut Self::Context) -> Self::Result {
-        println!("Connected: {}", conn.id);
+        log::info!("Connected: {}", conn.id);
+
+        // if a connection already exists, it is rejected
+        if self.sessions.contains_key(&conn.id) {
+            log::info!("Connection already exists: {}", conn.id);
+            conn.addr.do_send(Response::Stop);
+
+            return;
+        }
+
         self.sessions.insert(conn.id, conn.addr);
     }
 }
@@ -51,7 +60,7 @@ impl Handler<Disconnect> for Server {
     type Result = ();
 
     fn handle(&mut self, disc: Disconnect, _: &mut Self::Context) {
-        println!("Disconnected: {}", disc.id);
+        log::info!("Disconnected: {}", disc.id);
         self.sessions.remove(&disc.id);
     }
 }
@@ -61,12 +70,12 @@ impl Handler<Message> for Server {
     type Result = ();
 
     fn handle(&mut self, msg: Message, _: &mut Self::Context) {
-        println!("Message from {}: {}", msg.0, msg.1);
+        log::info!("Message from {}: {}", msg.0, msg.1);
 
         if let Some(addr) = self.sessions.get(&msg.0) {
             let sentence_builder = SentenceBuilder::new();
             let sentence = self.bank.create_sentence(&sentence_builder);
-            addr.do_send(Response(sentence));
+            addr.do_send(Response::Text(sentence));
         }
     }
 }
