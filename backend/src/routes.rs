@@ -44,11 +44,13 @@ macro_rules! login {
                         .verify_password(info.password.as_bytes(), &password)
                         .is_ok()
                     {
-                        if let Ok(token) = create_token(&$secret_key, user.id) {
-                            return web::Json(Response {
-                                message: Status::Success,
-                                payload: Some(Credentials { token }),
-                            });
+                        if let Some(id) = user.id {
+                            if let Ok(token) = create_token(&$secret_key, id) {
+                                return web::Json(Response {
+                                    message: Status::Success,
+                                    payload: Some(Credentials { token }),
+                                });
+                            }
                         }
                     }
                 }
@@ -76,6 +78,7 @@ macro_rules! register {
                 if let Ok(None) = database.$table(info.username.clone()).await {
                     let id = database
                         .$create($model {
+                            id: None,
                             username: info.username.clone(),
                             password: hash.to_string(),
                         })
@@ -106,7 +109,7 @@ register!(
     register_user,
     get_user_by_username,
     create_user,
-    NewUser,
+    User,
     CONFIG.user_secret_key
 );
 
@@ -116,7 +119,7 @@ register!(
     register_admin,
     get_admin_by_username,
     create_admin,
-    NewAdmin,
+    Admin,
     CONFIG.admin_secret_key
 );
 

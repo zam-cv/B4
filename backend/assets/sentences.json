@@ -1,0 +1,15 @@
+{
+  "positive": [
+    {
+      "getters": {
+        "product": "getProductRandom()",
+        "percentage": "getValueRandom(1, 100)"
+      },
+      "value": "Tu mercancia de ${product.name} incremento en un ${percentage}%",
+      "handlers": [
+        "incrementMoneyWithPriceAndPercentage(product.price, percentage)"
+      ]
+    }
+  ],
+  "negative": []
+}
