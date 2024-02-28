@@ -1,4 +1,7 @@
-use crate::socket::server::{Connect, Disconnect, Server};
+use crate::{
+    database::Database,
+    socket::server::{Connect, Disconnect, Server},
+};
 use actix::prelude::*;
 use actix_web_actors::ws;
 
@@ -10,12 +13,13 @@ pub struct Message(pub i32, pub String);
 #[rtype(result = "()")]
 pub enum Response {
     Text(String),
-    Stop
+    Stop,
 }
 
 pub struct Session {
     pub id: i32,
     pub addr: Addr<Server>,
+    pub database: Database,
 }
 
 impl Handler<Response> for Session {
@@ -24,7 +28,7 @@ impl Handler<Response> for Session {
     fn handle(&mut self, msg: Response, ctx: &mut Self::Context) {
         match msg {
             Response::Text(text) => ctx.text(text),
-            Response::Stop => ctx.stop()
+            Response::Stop => ctx.stop(),
         }
     }
 }

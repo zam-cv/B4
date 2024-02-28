@@ -1,6 +1,7 @@
 use crate::{
-    bank::{Bank, SentenceBuilder},
+    bank::Bank,
     socket::session::{Message, Response, Session},
+    database::Database,
 };
 use actix::prelude::*;
 use std::collections::HashMap;
@@ -20,14 +21,18 @@ pub struct Disconnect {
 
 pub struct Server {
     sessions: HashMap<i32, Addr<Session>>,
+    #[allow(dead_code)]
+    database: Database,
+    #[allow(dead_code)]
     bank: Bank,
 }
 
 impl Server {
-    pub fn new(bank: Bank) -> Self {
+    pub fn new(bank: Bank, database: Database) -> Self {
         Server {
             sessions: HashMap::new(),
             bank,
+            database,
         }
     }
 }
@@ -40,18 +45,18 @@ impl Actor for Server {
 impl Handler<Connect> for Server {
     type Result = ();
 
-    fn handle(&mut self, conn: Connect, _: &mut Self::Context) -> Self::Result {
-        log::info!("Connected: {}", conn.id);
+    fn handle(&mut self, connect: Connect, _: &mut Self::Context) -> Self::Result {
+        log::info!("Connected: {}", connect.id);
 
         // if a connection already exists, it is rejected
-        if self.sessions.contains_key(&conn.id) {
-            log::info!("Connection already exists: {}", conn.id);
-            conn.addr.do_send(Response::Stop);
+        if self.sessions.contains_key(&connect.id) {
+            log::info!("Connection already exists: {}", connect.id);
+            connect.addr.do_send(Response::Stop);
 
             return;
         }
 
-        self.sessions.insert(conn.id, conn.addr);
+        self.sessions.insert(connect.id, connect.addr);
     }
 }
 
@@ -59,9 +64,9 @@ impl Handler<Connect> for Server {
 impl Handler<Disconnect> for Server {
     type Result = ();
 
-    fn handle(&mut self, disc: Disconnect, _: &mut Self::Context) {
-        log::info!("Disconnected: {}", disc.id);
-        self.sessions.remove(&disc.id);
+    fn handle(&mut self, disconnect: Disconnect, _: &mut Self::Context) {
+        log::info!("Disconnected: {}", disconnect.id);
+        self.sessions.remove(&disconnect.id);
     }
 }
 
@@ -73,9 +78,7 @@ impl Handler<Message> for Server {
         log::info!("Message from {}: {}", msg.0, msg.1);
 
         if let Some(addr) = self.sessions.get(&msg.0) {
-            let sentence_builder = SentenceBuilder::new();
-            let sentence = self.bank.create_sentence(&sentence_builder);
-            addr.do_send(Response::Text(sentence));
+            addr.do_send(Response::Text(msg.1));
         }
     }
 }
