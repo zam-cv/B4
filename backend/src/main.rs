@@ -46,19 +46,26 @@ async fn main() -> std::io::Result<()> {
                         web::scope("/public")
                             .service(
                                 web::scope("/admin")
-                                    .service(routes::login_admin)
-                                    .service(routes::register_admin),
+                                    .service(routes::admin::login)
+                                    .service(routes::admin::register),
                             )
                             .service(
                                 web::scope("/user")
-                                    .service(routes::login_user)
-                                    .service(routes::register_user),
+                                    .service(routes::user::login)
+                                    .service(routes::user::register),
                             ),
                     )
                     .service(
                         web::scope("/private")
-                            .wrap(from_fn(middlewares::admin_auth))
-                            .service(web::scope("/admin").service(routes::get_users)),
+                            .service(
+                                web::scope("/admin")
+                                    .wrap(from_fn(middlewares::admin_auth))
+                                    .service(routes::admin::get_users)
+                                    .service(routes::admin::get_statistics),
+                            ).service(
+                                web::scope("/user")
+                                    .wrap(from_fn(middlewares::user_auth))
+                            )
                     ),
             )
             .service(

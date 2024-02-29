@@ -2,7 +2,6 @@ use crate::{config::CONFIG, models, schema};
 use actix_web::{error, web};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
-use serde::Serialize;
 
 const MAX_POOL_SIZE: u32 = 5;
 pub type DBPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
@@ -10,12 +9,6 @@ pub type DBPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 #[derive(Clone)]
 pub struct Database {
     pub pool: DBPool,
-}
-
-#[derive(Serialize)]
-pub struct UserWithoutPassword {
-    pub id: i32,
-    pub username: String,
 }
 
 impl Database {
@@ -109,19 +102,45 @@ impl Database {
         Ok(id)
     }
 
-    pub async fn get_users(&self) -> Result<Vec<UserWithoutPassword>, error::Error> {
+    pub async fn get_users(&self) -> Result<Vec<models::User>, error::Error> {
         let mut conn = self.get_connection()?;
-        let users = web::block(move || {
-            schema::users::table
-                .select((schema::users::id, schema::users::username))
-                .load::<(i32, String)>(&mut conn)
+        let users = web::block(move || schema::users::table.load::<models::User>(&mut conn))
+            .await?
+            .map_err(error::ErrorInternalServerError)?;
+
+        Ok(users)
+    }
+
+    pub async fn get_statistics(
+        &self,
+        user_id: i32,
+    ) -> Result<Vec<models::StatisticsSample>, error::Error> {
+        let mut conn = self.get_connection()?;
+        let statistics = web::block(move || {
+            schema::statistics::table
+                .filter(schema::statistics::user_id.eq(user_id))
+                .load::<models::StatisticsSample>(&mut conn)
         })
         .await?
         .map_err(error::ErrorInternalServerError)?;
 
-        Ok(users
-            .into_iter()
-            .map(|(id, username)| UserWithoutPassword { id, username })
-            .collect())
+        Ok(statistics)
+    }
+
+    #[allow(dead_code)]
+    pub async fn create_statistics(
+        &self,
+        new_statistics: models::StatisticsSample,
+    ) -> Result<(), error::Error> {
+        let mut conn = self.get_connection()?;
+        web::block(move || {
+            diesel::insert_into(schema::statistics::table)
+                .values(&new_statistics)
+                .execute(&mut conn)
+        })
+        .await?
+        .map_err(error::ErrorInternalServerError)?;
+
+        Ok(())
     }
 }

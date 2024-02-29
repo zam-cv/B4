@@ -8,6 +8,14 @@ pub struct Claims {
     pub exp: usize,
 }
 
+macro_rules! get_hash {
+    ($password:expr) => {
+        Argon2::default().hash_password($password.as_bytes(), &SaltString::generate(&mut OsRng))
+    };
+}
+
+pub(crate) use get_hash;
+
 pub fn create_token(secret_key: &String, id: i32) -> anyhow::Result<String> {
     let my_claims = Claims {
         id,

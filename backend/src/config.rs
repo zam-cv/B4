@@ -27,3 +27,6 @@ lazy_static! {
 }
 
 pub const TOKEN_EXPIRATION_TIME: usize = 60 * 60 * 24 * 15; // 15 days
+pub const INITIAL_BALANCE_CASH: i32 = 1000;
+pub const INITIAL_BALANCE_VERQOR: i32 = 1000;
+pub const INITIAL_BALANCE_COYOTE: i32 = 1000;

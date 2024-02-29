@@ -10,7 +10,7 @@ lazy_static! {
 }
 
 const NUMBER_OF_RANDOM_EVENTS: usize = 4;
-const PATH: &str = "/assets/sentences.json";
+const PATH: &str = "./assets/sentences.json";
 
 pub struct Context;
 
@@ -30,7 +30,7 @@ pub struct SentenceBuilder;
 pub struct Sentence {
     pub getters: HashMap<String, String>,
     pub value: String,
-    pub handler: Vec<String>,
+    pub handlers: Vec<String>,
 }
 
 #[derive(Deserialize)]
