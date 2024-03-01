@@ -1,6 +1,6 @@
 use crate::{
     database::Database,
-    socket::server::{Connect, Disconnect, Server},
+    socket::server::{Command, ServerHandle},
 };
 use actix::prelude::*;
 use actix_web_actors::ws;
@@ -18,7 +18,7 @@ pub enum Response {
 
 pub struct Session {
     pub id: i32,
-    pub addr: Addr<Server>,
+    pub srv: ServerHandle,
     pub database: Database,
 }
 
@@ -45,27 +45,14 @@ impl Actor for Session {
     /// the actor. It is typically used to interact with the actor system, send messages, access the
     /// actor's address, and manage the actor's lifecycle.
     fn started(&mut self, ctx: &mut Self::Context) {
-        self.addr
-            .send(Connect {
-                id: self.id,
-                // Share the address of the session with the server
-                addr: ctx.address(),
-            })
-            .into_actor(self)
-            .then(|res, _, ctx| {
-                match res {
-                    Ok(_) => (),
-                    _ => ctx.stop(),
-                }
-
-                fut::ready(())
-            })
-            .wait(ctx);
+        if let Err(_) = self.srv.tx.send(Command::Connect(self.id, ctx.address())) {
+            ctx.stop();
+        }
     }
 
     /// The function `stopping` sends a `Disconnect` message to an address and returns `Running::Stop`.
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
-        self.addr.do_send(Disconnect { id: self.id });
+        let _ = self.srv.tx.send(Command::Disconnect(self.id));
         Running::Stop
     }
 }
@@ -96,8 +83,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Session {
         };
 
         if let Some(message) = message {
-            // Send the message to the server
-            self.addr.do_send(Message(self.id, message));
+            let _ = self.srv.tx.send(Command::Message(self.id, message));
         }
     }
 }

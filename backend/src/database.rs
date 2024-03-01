@@ -28,103 +28,118 @@ impl Database {
         self.pool.get().map_err(error::ErrorInternalServerError)
     }
 
+    pub async fn query_wrapper<F, T>(&self, f: F) -> Result<T, error::Error>
+    where
+        F: FnOnce(&mut MysqlConnection) -> Result<T, diesel::result::Error> + Send + 'static,
+        T: Send + 'static,
+    {
+        let mut conn = self.get_connection()?;
+        let result = web::block(move || f(&mut conn))
+            .await?
+            .map_err(error::ErrorInternalServerError)?;
+        Ok(result)
+    }
+
     pub async fn get_admin_by_username(
         &self,
         username: String,
     ) -> Result<Option<models::Admin>, error::Error> {
-        let mut conn = self.get_connection()?;
-        let admin = web::block(move || {
+        self.query_wrapper(move |conn| {
             schema::admins::table
                 .filter(schema::admins::username.eq(username))
-                .first::<models::Admin>(&mut conn)
+                .first::<models::Admin>(conn)
                 .optional()
         })
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-        Ok(admin)
+        .await
     }
 
     pub async fn create_admin(&self, new_admin: models::Admin) -> Result<i32, error::Error> {
-        let mut conn = self.get_connection()?;
-        let id = web::block(move || {
+        self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::admins::table)
                     .values(&new_admin)
                     .execute(pooled)?;
 
+                // Get the last inserted id
                 schema::admins::table
                     .select(schema::admins::id)
                     .order(schema::admins::id.desc())
                     .first::<i32>(pooled)
             })
         })
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-        Ok(id)
+        .await
     }
 
     pub async fn get_user_by_username(
         &self,
         username: String,
     ) -> Result<Option<models::User>, error::Error> {
-        let mut conn = self.get_connection()?;
-        let user = web::block(move || {
+        self.query_wrapper(move |conn| {
             schema::users::table
                 .filter(schema::users::username.eq(username))
-                .first::<models::User>(&mut conn)
+                .first::<models::User>(conn)
                 .optional()
         })
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+        .await
+    }
 
-        Ok(user)
+    pub async fn get_user_by_id(&self, id: i32) -> Result<Option<models::User>, error::Error> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .find(id)
+                .first::<models::User>(conn)
+                .optional()
+        })
+        .await
+    }
+
+    pub async fn update_user(&self, user: models::User) -> Result<(), error::Error> {
+        self.query_wrapper(move |conn| {
+            if let Some(id) = &user.id {
+                diesel::update(schema::users::table.find(id))
+                    .set(&user)
+                    .execute(conn)
+            } else {
+                Ok(0)
+            }
+        })
+        .await?;
+
+        Ok(())
     }
 
     pub async fn create_user(&self, new_user: models::User) -> Result<i32, error::Error> {
-        let mut conn = self.get_connection()?;
-        let id = web::block(move || {
+        self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::users::table)
                     .values(&new_user)
                     .execute(pooled)?;
 
+                // Get the last inserted id
                 schema::users::table
                     .select(schema::users::id)
                     .order(schema::users::id.desc())
                     .first::<i32>(pooled)
             })
         })
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-        Ok(id)
+        .await
     }
 
     pub async fn get_users(&self) -> Result<Vec<models::User>, error::Error> {
-        let mut conn = self.get_connection()?;
-        let users = web::block(move || schema::users::table.load::<models::User>(&mut conn))
-            .await?
-            .map_err(error::ErrorInternalServerError)?;
-
-        Ok(users)
+        self.query_wrapper(move |conn| schema::users::table.load::<models::User>(conn))
+            .await
     }
 
     pub async fn get_statistics(
         &self,
         user_id: i32,
     ) -> Result<Vec<models::StatisticsSample>, error::Error> {
-        let mut conn = self.get_connection()?;
-        let statistics = web::block(move || {
+        self.query_wrapper(move |conn| {
             schema::statistics::table
                 .filter(schema::statistics::user_id.eq(user_id))
-                .load::<models::StatisticsSample>(&mut conn)
+                .load::<models::StatisticsSample>(conn)
         })
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
-
-        Ok(statistics)
+        .await
     }
 
     #[allow(dead_code)]
@@ -132,14 +147,12 @@ impl Database {
         &self,
         new_statistics: models::StatisticsSample,
     ) -> Result<(), error::Error> {
-        let mut conn = self.get_connection()?;
-        web::block(move || {
+        self.query_wrapper(move |conn| {
             diesel::insert_into(schema::statistics::table)
                 .values(&new_statistics)
-                .execute(&mut conn)
+                .execute(conn)
         })
-        .await?
-        .map_err(error::ErrorInternalServerError)?;
+        .await?;
 
         Ok(())
     }

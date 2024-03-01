@@ -1,6 +1,6 @@
 use crate::schema::{admins, statistics, users};
 use diesel::prelude::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Queryable, Selectable, Identifiable, Insertable)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -14,7 +14,8 @@ pub struct Admin {
     pub password: String,
 }
 
-#[derive(Deserialize, Serialize, Queryable, Selectable, Identifiable, Insertable)]
+#[derive(Clone, Deserialize, Serialize)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
 #[diesel(table_name = users)]

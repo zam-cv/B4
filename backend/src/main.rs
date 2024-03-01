@@ -1,9 +1,8 @@
-use actix::prelude::*;
+use crate::{database::Database, socket::server::Server};
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
 use config::CONFIG;
-use database::Database;
 
 #[allow(dead_code, unused_imports, private_interfaces)]
 mod bank;
@@ -26,13 +25,14 @@ async fn main() -> std::io::Result<()> {
     let database = Database::new();
     log::info!("Database connected");
 
-    let socket_server = socket::server::Server::new(bank, database.clone()).start();
+    let (mut socket_server, server_tx) = Server::new(bank, database.clone());
+    tokio::spawn(async move { socket_server.run().await });
     log::info!("Socket server started");
 
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(database.clone()))
-            .app_data(web::Data::new(socket_server.clone()))
+            .app_data(web::Data::new(server_tx.clone()))
             .route(
                 "/ws/",
                 web::get()
@@ -56,16 +56,12 @@ async fn main() -> std::io::Result<()> {
                             ),
                     )
                     .service(
-                        web::scope("/private")
-                            .service(
-                                web::scope("/admin")
-                                    .wrap(from_fn(middlewares::admin_auth))
-                                    .service(routes::admin::get_users)
-                                    .service(routes::admin::get_statistics),
-                            ).service(
-                                web::scope("/user")
-                                    .wrap(from_fn(middlewares::user_auth))
-                            )
+                        web::scope("/private").service(
+                            web::scope("/admin")
+                                .wrap(from_fn(middlewares::admin_auth))
+                                .service(routes::admin::get_users)
+                                .service(routes::admin::get_statistics),
+                        ),
                     ),
             )
             .service(
