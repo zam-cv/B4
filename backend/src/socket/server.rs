@@ -89,7 +89,7 @@ impl Server {
         log::info!("Message from {}: {}", id, text);
 
         if let Some(state) = self.sessions.get(&id) {
-            state.session.do_send(Response::Text(text));
+            state.handle_message(text);
         }
     }
 

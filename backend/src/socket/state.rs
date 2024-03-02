@@ -1,11 +1,26 @@
-use crate::{database::Database, models, socket::session::Session};
+use crate::{
+    database::Database,
+    models,
+    socket::session::{Response, Session},
+};
 use actix::prelude::*;
 use actix_web::error;
+use serde::Deserialize;
 
 pub struct State {
     pub id: i32,
     pub session: Addr<Session>,
     pub user: models::User,
+}
+
+#[derive(Deserialize)]
+pub struct CycleData {
+    pub time: i32,
+}
+
+#[derive(Deserialize)]
+pub enum Request {
+    Cycle(CycleData),
 }
 
 impl State {
@@ -19,6 +34,22 @@ impl State {
             Ok(State { id, user, session })
         } else {
             Err(anyhow::anyhow!("Failed to get user"))
+        }
+    }
+
+    // resolve the user's cycle request
+    pub fn resolve_cycle(&self, _: CycleData) {
+        self.session.do_send(Response::Str("Cycle resolved"));
+    }
+
+    // Handles the message sent by the user
+    pub fn handle_message(&self, message: String) {
+        if let Ok(request) = serde_json::from_str::<Request>(&message) {
+            match request {
+                Request::Cycle(data) => {
+                    self.resolve_cycle(data);
+                }
+            }
         }
     }
 

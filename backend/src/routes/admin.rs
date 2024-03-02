@@ -68,3 +68,16 @@ pub async fn get_statistics(
         payload: Some(statistics),
     }))
 }
+
+#[post("/crops")]
+pub async fn create_crop_type(
+    database: web::Data<Database>,
+    info: web::Json<models::CropType>,
+) -> Result<impl Responder> {
+    let id = database.create_crop_type(info.into_inner()).await?;
+
+    Ok(web::Json(Response {
+        message: Status::Success,
+        payload: Some(id),
+    }))
+}

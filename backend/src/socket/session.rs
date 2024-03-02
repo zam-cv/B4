@@ -12,7 +12,9 @@ pub struct Message(pub i32, pub String);
 #[derive(Message)]
 #[rtype(result = "()")]
 pub enum Response {
-    Text(String),
+    Str(&'static str),
+    #[allow(dead_code)]
+    String(String),
     Stop,
 }
 
@@ -27,7 +29,8 @@ impl Handler<Response> for Session {
 
     fn handle(&mut self, msg: Response, ctx: &mut Self::Context) {
         match msg {
-            Response::Text(text) => ctx.text(text),
+            Response::Str(text) => ctx.text(text),
+            Response::String(text) => ctx.text(text),
             Response::Stop => ctx.stop(),
         }
     }

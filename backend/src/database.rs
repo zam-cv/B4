@@ -142,7 +142,6 @@ impl Database {
         .await
     }
 
-    #[allow(dead_code)]
     pub async fn create_statistics(
         &self,
         new_statistics: models::StatisticsSample,
@@ -150,6 +149,34 @@ impl Database {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::statistics::table)
                 .values(&new_statistics)
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn create_crop_type(
+        &self,
+        new_crop_type: models::CropType,
+    ) -> Result<(), error::Error> {
+        self.query_wrapper(move |conn| {
+            diesel::insert_into(schema::crop_types::table)
+                .values(&new_crop_type)
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn create_crop_section(
+        &self,
+        new_crop_section: models::CropSection,
+    ) -> Result<(), error::Error> {
+        self.query_wrapper(move |conn| {
+            diesel::insert_into(schema::crop_sections::table)
+                .values(&new_crop_section)
                 .execute(conn)
         })
         .await?;

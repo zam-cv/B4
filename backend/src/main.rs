@@ -60,7 +60,8 @@ async fn main() -> std::io::Result<()> {
                             web::scope("/admin")
                                 .wrap(from_fn(middlewares::admin_auth))
                                 .service(routes::admin::get_users)
-                                .service(routes::admin::get_statistics),
+                                .service(routes::admin::get_statistics)
+                                .service(routes::admin::create_crop_type)
                         ),
                     ),
             )
