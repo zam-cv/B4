@@ -11,5 +11,63 @@
       ]
     }
   ],
-  "negative": []
+  "negative": [
+    {
+      "getters": {
+        "product": "getProductRandom()",
+        "percentage": "getValueRandom(1, 100)"
+      },
+      "value": "Tu mercancia de ${product.name} decremento en un ${percentage}%",
+      "handlers": [
+        "decrementMoneyWithPriceAndPercentage(product.price, percentage)"
+      ]
+    },
+    {
+      "getters": {
+        "product": "",
+        "percentage": ""
+      },
+      "value": "Tu mercancia se pudrio, perdiste el 100% de tu mercancia",
+      "handlers": [
+        "decrementMoneyWithPriceAndPercentage(product.price, 100)"
+      ]
+    },
+    {
+      "getters": {
+        "product": "",
+        "percentage": "getValueRandom(1, 100)"
+      },
+      "value": "Te han robado, perdiste el ${percentage}% de tu mercancia",
+      "handlers": [
+        "decrementMoneyWithPriceAndPercentage(product.price, percentage)"
+      ]
+    }
+  ],
+  "default": [
+    {
+      "getters": {
+        "money": "getMoney()"
+      },
+      "value": "Haz tenido una ganancia de ${money} en el dia de hoy!",
+      "handlers": [
+        "incrementMoney(money)"
+      ]
+    },
+    {
+      "getters": {
+        "debt": "getDebt()"
+      },
+      "value": "Ha llegado el dia de pagar la deuda, pagas ${debt}",
+      "handlers": [
+        "decrementMoney(debt)"
+      ]
+    }
+  ],
+  "tips": [
+    "Seguridad alimentaria se refiere a la capacidad de todas las personas en todo momento de tener acceso a suficientes alimentos inocuos y nutritivos para satisfacer sus necesidades dietéticas y preferencias alimentarias que les permita llevar una vida activa y saludable.",
+    "Rendimiento es la cantidad de masa (toneladas) producidas por área (hectárea) generadas para un cultivo dado.",
+    "Parcela es la superficie de tierra donde se siembra, crece y cosecha el cultivo",
+    "Ciclo productivo es el tiempo que tarda un cultivo desde que inicia la preparación de la tierra donde se generará la producción, hasta que se cosecha.",
+    "Agroinsumos son todos los consumibles a utilizar en el proceso productivo, desde fertilizantes, agroquímicos o equipo como lonas o plásticos, cintillas, etc."
+  ]
 }
