@@ -37,6 +37,8 @@ pub struct Sentence {
 pub struct Sentences {
     pub positive: Vec<Sentence>,
     pub negative: Vec<Sentence>,
+    pub default: Vec<Sentence>,
+    pub tips: Vec<String>
 }
 
 impl Bank {
