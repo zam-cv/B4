@@ -43,8 +43,8 @@ impl State {
     }
 
     // Handles the message sent by the user
-    pub fn handle_message(&self, message: String) {
-        if let Ok(request) = serde_json::from_str::<Request>(&message) {
+    pub fn handle_message(&self, message: &String) {
+        if let Ok(request) = serde_json::from_str::<Request>(message) {
             match request {
                 Request::Cycle(data) => {
                     self.resolve_cycle(data);

@@ -8,7 +8,7 @@ use crate::{
 };
 use actix::prelude::*;
 use std::collections::HashMap;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, broadcast::Sender};
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -23,6 +23,7 @@ pub struct Disconnect {
     pub id: i32,
 }
 
+#[derive(Clone)]
 pub enum Command {
     Connect(i32, Addr<Session>),
     Disconnect(i32),
@@ -34,7 +35,7 @@ pub struct Server {
     database: Database,
     #[allow(dead_code)]
     bank: Bank,
-    rx: mpsc::UnboundedReceiver<Command>,
+    rx: mpsc::UnboundedReceiver<Command>
 }
 
 #[derive(Clone)]
@@ -51,13 +52,13 @@ impl Server {
                 sessions: HashMap::new(),
                 bank,
                 database,
-                rx,
+                rx
             },
             ServerHandle { tx },
         )
     }
 
-    async fn connect(&mut self, id: i32, addr: Addr<Session>) {
+    async fn connect(&mut self, id: &i32, addr: &Addr<Session>) {
         log::info!("Connected: {}", id);
 
         // if a connection already exists, it is rejected
@@ -68,15 +69,15 @@ impl Server {
             return;
         }
 
-        if let Ok(state) = State::new(id, addr.clone(), &self.database).await {
-            self.sessions.insert(id, state);
+        if let Ok(state) = State::new(*id, addr.clone(), &self.database).await {
+            self.sessions.insert(*id, state);
         } else {
             log::info!("Failed to get user: {}", id);
             addr.do_send(Response::Stop);
         }
     }
 
-    async fn disconnect(&mut self, id: i32) {
+    async fn disconnect(&mut self, id: &i32) {
         log::info!("Disconnected: {}", id);
 
         if let Some(state) = self.sessions.remove(&id) {
@@ -85,7 +86,7 @@ impl Server {
         }
     }
 
-    async fn message(&mut self, id: i32, text: String) {
+    async fn message(&mut self, id: &i32, text: &String) {
         log::info!("Message from {}: {}", id, text);
 
         if let Some(state) = self.sessions.get(&id) {
@@ -93,9 +94,9 @@ impl Server {
         }
     }
 
-    pub async fn run(&mut self) {
+    pub async fn run(&mut self, viewer_tx: Sender<Command>) {
         while let Some(cmd) = self.rx.recv().await {
-            match cmd {
+            match &cmd {
                 Command::Connect(id, addr) => {
                     self.connect(id, addr).await;
                 }
@@ -106,6 +107,8 @@ impl Server {
                     self.message(id, text).await;
                 }
             }
+
+            let _ = viewer_tx.send(cmd);
         }
     }
 }
