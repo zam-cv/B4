@@ -5,7 +5,7 @@ use crate::{
     routes::{login, Credentials, Response, Status},
     utils,
 };
-use actix_web::{get, post, web, Responder, Result};
+use actix_web::{error, get, post, web, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -26,7 +26,8 @@ pub async fn register(
                     username: info.username.clone(),
                     password: hash.to_string(),
                 })
-                .await?;
+                .await
+                .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
             if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
                 return Ok(web::Json(Response {
@@ -42,12 +43,15 @@ pub async fn register(
         }));
     }
 
-    Err(actix_web::error::ErrorBadRequest("Failed"))
+    Err(error::ErrorBadRequest("Failed"))
 }
 
 #[get("/users")]
 pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
-    let users = database.get_users().await?;
+    let users = database
+        .get_users()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(web::Json(Response {
         message: Status::Success,
@@ -61,7 +65,10 @@ pub async fn get_statistics(
     path: web::Path<i32>,
 ) -> Result<impl Responder> {
     let id = path.into_inner();
-    let statistics = database.get_statistics(id).await?;
+    let statistics = database
+        .get_statistics(id)
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(web::Json(Response {
         message: Status::Success,
@@ -74,7 +81,10 @@ pub async fn create_crop_type(
     database: web::Data<Database>,
     info: web::Json<models::CropType>,
 ) -> Result<impl Responder> {
-    let id = database.create_crop_type(info.into_inner()).await?;
+    let id = database
+        .create_crop_type(info.into_inner())
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(web::Json(Response {
         message: Status::Success,

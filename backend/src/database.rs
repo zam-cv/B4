@@ -1,5 +1,5 @@
 use crate::{config::CONFIG, models, schema};
-use actix_web::{error, web};
+use actix_web::web;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
 
@@ -24,26 +24,32 @@ impl Database {
 
     pub fn get_connection(
         &self,
-    ) -> Result<PooledConnection<ConnectionManager<MysqlConnection>>, error::Error> {
-        self.pool.get().map_err(error::ErrorInternalServerError)
+    ) -> anyhow::Result<PooledConnection<ConnectionManager<MysqlConnection>>> {
+        self.pool.get().map_err(|e| anyhow::anyhow!(e))
     }
 
-    pub async fn query_wrapper<F, T>(&self, f: F) -> Result<T, error::Error>
+    pub async fn query_wrapper<F, T>(&self, f: F) -> anyhow::Result<T>
     where
         F: FnOnce(&mut MysqlConnection) -> Result<T, diesel::result::Error> + Send + 'static,
         T: Send + 'static,
     {
         let mut conn = self.get_connection()?;
         let result = web::block(move || f(&mut conn))
-            .await?
-            .map_err(error::ErrorInternalServerError)?;
+            .await
+            .map_err(|e| {
+                log::error!("Database error: {:?}", e);
+                anyhow::anyhow!(e)
+            })?.map_err(|e| {
+                log::error!("Database error: {:?}", e);
+                anyhow::anyhow!(e)
+            })?;
         Ok(result)
     }
 
     pub async fn get_admin_by_username(
         &self,
         username: String,
-    ) -> Result<Option<models::Admin>, error::Error> {
+    ) -> anyhow::Result<Option<models::Admin>> {
         self.query_wrapper(move |conn| {
             schema::admins::table
                 .filter(schema::admins::username.eq(username))
@@ -53,7 +59,7 @@ impl Database {
         .await
     }
 
-    pub async fn create_admin(&self, new_admin: models::Admin) -> Result<i32, error::Error> {
+    pub async fn create_admin(&self, new_admin: models::Admin) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::admins::table)
@@ -73,7 +79,7 @@ impl Database {
     pub async fn get_user_by_username(
         &self,
         username: String,
-    ) -> Result<Option<models::User>, error::Error> {
+    ) -> anyhow::Result<Option<models::User>> {
         self.query_wrapper(move |conn| {
             schema::users::table
                 .filter(schema::users::username.eq(username))
@@ -83,7 +89,7 @@ impl Database {
         .await
     }
 
-    pub async fn get_user_by_id(&self, id: i32) -> Result<Option<models::User>, error::Error> {
+    pub async fn get_user_by_id(&self, id: i32) -> anyhow::Result<Option<models::User>> {
         self.query_wrapper(move |conn| {
             schema::users::table
                 .find(id)
@@ -93,7 +99,7 @@ impl Database {
         .await
     }
 
-    pub async fn update_user(&self, user: models::User) -> Result<(), error::Error> {
+    pub async fn update_user(&self, user: models::User) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             if let Some(id) = &user.id {
                 diesel::update(schema::users::table.find(id))
@@ -108,7 +114,7 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_user(&self, new_user: models::User) -> Result<i32, error::Error> {
+    pub async fn create_user(&self, new_user: models::User) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::users::table)
@@ -125,7 +131,7 @@ impl Database {
         .await
     }
 
-    pub async fn get_users(&self) -> Result<Vec<models::User>, error::Error> {
+    pub async fn get_users(&self) -> anyhow::Result<Vec<models::User>> {
         self.query_wrapper(move |conn| schema::users::table.load::<models::User>(conn))
             .await
     }
@@ -133,7 +139,7 @@ impl Database {
     pub async fn get_statistics(
         &self,
         user_id: i32,
-    ) -> Result<Vec<models::StatisticsSample>, error::Error> {
+    ) -> anyhow::Result<Vec<models::StatisticsSample>> {
         self.query_wrapper(move |conn| {
             schema::statistics::table
                 .filter(schema::statistics::user_id.eq(user_id))
@@ -145,7 +151,7 @@ impl Database {
     pub async fn create_statistics(
         &self,
         new_statistics: models::StatisticsSample,
-    ) -> Result<(), error::Error> {
+    ) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::statistics::table)
                 .values(&new_statistics)
@@ -156,10 +162,7 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_crop_type(
-        &self,
-        new_crop_type: models::CropType,
-    ) -> Result<(), error::Error> {
+    pub async fn create_crop_type(&self, new_crop_type: models::CropType) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::crop_types::table)
                 .values(&new_crop_type)
@@ -170,17 +173,38 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_crop_section(
+    pub async fn upsert_crop_sections(
         &self,
-        new_crop_section: models::CropSection,
-    ) -> Result<(), error::Error> {
+        new_crop_sections: Vec<models::CropSection>,
+    ) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
-            diesel::insert_into(schema::crop_sections::table)
-                .values(&new_crop_section)
-                .execute(conn)
+            conn.transaction(|pooled| {
+                for crop_section in new_crop_sections {
+                    diesel::insert_into(schema::crop_sections::table)
+                        .values(&crop_section)
+                        .on_conflict(diesel::dsl::DuplicatedKeys)
+                        .do_update()
+                        .set(&crop_section)
+                        .execute(pooled)?;
+                }
+
+                Ok(())
+            })
         })
         .await?;
 
         Ok(())
+    }
+
+    pub async fn get_crop_sections_by_user_id(
+        &self,
+        user_id: i32,
+    ) -> anyhow::Result<Vec<models::CropSection>> {
+        self.query_wrapper(move |conn| {
+            schema::crop_sections::table
+                .filter(schema::crop_sections::user_id.eq(user_id))
+                .load::<models::CropSection>(conn)
+        })
+        .await
     }
 }

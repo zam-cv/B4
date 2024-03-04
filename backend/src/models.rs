@@ -35,6 +35,8 @@ pub struct User {
     pub balance_coyote: i32,
     #[serde(skip_deserializing)]
     pub current_day: chrono::NaiveDateTime,
+    #[serde(skip_deserializing)]
+    pub max_sections: i32,
 }
 
 #[derive(Serialize)]
@@ -66,7 +68,8 @@ pub struct CropType {
     pub price: i32,
 }
 
-#[derive(Queryable, Selectable, Identifiable, Insertable, Associations)]
+#[derive(Clone, Serialize)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, Associations, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
 #[diesel(belongs_to(User))]
@@ -75,7 +78,8 @@ pub struct CropType {
 pub struct CropSection {
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    #[serde(skip_deserializing)]
     pub user_id: i32,
-    pub crop_type_id: i32,
+    pub crop_type_id: Option<i32>,
     pub units: i32,
 }

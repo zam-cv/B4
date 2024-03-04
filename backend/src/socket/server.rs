@@ -8,7 +8,7 @@ use crate::{
 };
 use actix::prelude::*;
 use std::collections::HashMap;
-use tokio::sync::{mpsc, broadcast::Sender};
+use tokio::sync::{broadcast::Sender, mpsc};
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -35,7 +35,7 @@ pub struct Server {
     database: Database,
     #[allow(dead_code)]
     bank: Bank,
-    rx: mpsc::UnboundedReceiver<Command>
+    rx: mpsc::UnboundedReceiver<Command>,
 }
 
 #[derive(Clone)]
@@ -52,7 +52,7 @@ impl Server {
                 sessions: HashMap::new(),
                 bank,
                 database,
-                rx
+                rx,
             },
             ServerHandle { tx },
         )
@@ -69,10 +69,11 @@ impl Server {
             return;
         }
 
-        if let Ok(state) = State::new(*id, addr.clone(), &self.database).await {
+        let database = self.database.clone();
+        if let Ok(state) = State::new(*id, addr.clone(), &database).await {
             self.sessions.insert(*id, state);
         } else {
-            log::info!("Failed to get user: {}", id);
+            log::error!("Failed to get user: {}", id);
             addr.do_send(Response::Stop);
         }
     }
@@ -89,8 +90,8 @@ impl Server {
     async fn message(&mut self, id: &i32, text: &String) {
         log::info!("Message from {}: {}", id, text);
 
-        if let Some(state) = self.sessions.get(&id) {
-            state.handle_message(text);
+        if let Some(state) = self.sessions.get_mut(&id) {
+            let _ = state.handle_message(text, &self.database).await;
         }
     }
 

@@ -5,7 +5,7 @@ use crate::{
     routes::{login, Credentials, Response, Status},
     utils,
 };
-use actix_web::{post, web, Responder, Result};
+use actix_web::{error, post, web, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -29,8 +29,10 @@ pub async fn register(
                     balance_verqor: config::INITIAL_BALANCE_VERQOR,
                     balance_coyote: config::INITIAL_BALANCE_COYOTE,
                     current_day: chrono::Local::now().naive_local(),
+                    max_sections: config::INITIAL_MAX_SECTIONS,
                 })
-                .await?;
+                .await
+                .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
             if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
                 return Ok(web::Json(Response {
