@@ -43,7 +43,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - .:/usr/src/app
+      - .:/usr/src/app/B4
       - cargo-cache:/usr/local/cargo
     profiles:
       - dev

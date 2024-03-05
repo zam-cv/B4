@@ -1,6 +1,6 @@
 FROM rust:1.76.0 AS builder
 
-WORKDIR /usr/src/app/backend
+WORKDIR /usr/src/app/B4
 
 ENV DOCKERIZE_VERSION v0.6.1
 
