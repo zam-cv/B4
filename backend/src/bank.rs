@@ -1,11 +1,11 @@
-use rand::Rng;
-use serde::Deserialize;
-use regex::Regex;
-use std::{collections::HashMap, fs::File, str::FromStr};
 use lazy_static::lazy_static;
+use rand::Rng;
+use regex::Regex;
+use serde::Deserialize;
+use std::{collections::HashMap, fs::File, str::FromStr};
 
 lazy_static! {
-    static ref GETTER_REGEX: Regex = Regex::new(r"^([A-Za-x].)\((.)\)$").unwrap();
+    static ref GETTER_REGEX: Regex = Regex::new(r"^([A-Za-x].*)\((.*)\)$").unwrap();
     static ref GET_PARAMETER_REGEX: Regex = Regex::new(r"^.\$\{(.)\}.*$").unwrap();
 }
 
@@ -38,7 +38,7 @@ pub struct Sentences {
     pub positive: Vec<Sentence>,
     pub negative: Vec<Sentence>,
     pub default: Vec<Sentence>,
-    pub tips: Vec<String>
+    pub tips: Vec<String>,
 }
 
 impl Bank {
@@ -50,8 +50,8 @@ impl Bank {
         getters.insert(
             "getValueRandom".to_string(),
             Getter::Basic(|values| {
-                let first = values[0].parse::<i32>().unwrap();
-                let second = values[1].parse::<i32>().unwrap();
+                let first = values[0].trim().parse::<i32>().unwrap();
+                let second = values[1].trim().parse::<i32>().unwrap();
 
                 rand::thread_rng().gen_range(first..second).to_string()
             }),
@@ -60,11 +60,7 @@ impl Bank {
         Bank { getters, sentences }
     }
 
-    pub fn create_sentence(&self, sentence_builder: &SentenceBuilder) -> String {
-        sentence_builder.build()
-    }
-
-    pub fn create_sentence2(&self) -> String {
+    pub fn create_sentence(&self) -> String {
         let mut sentences = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
         let events = [&self.sentences.positive, &self.sentences.negative];
 
@@ -76,14 +72,17 @@ impl Bank {
 
             for (key, value) in &sentence.getters {
                 let captures = GETTER_REGEX.captures(value).unwrap();
-                let name = captures.get(1).unwrap().as_str();
-                let args: Vec<String> = captures.get(2).unwrap().as_str().split(',').map(|s| s.to_string()).collect();
+                let name = captures.get(1).map_or("", |m| m.as_str());
+                let args: Vec<String> = captures
+                    .get(2)
+                    .map_or("", |m| m.as_str())
+                    .split(',')
+                    .map(|s| s.to_string())
+                    .collect();
 
                 if let Some(handler) = self.getters.get(name) {
                     let result = match handler {
-                        Getter::Basic(handler) => {
-                            handler(args)
-                        }
+                        Getter::Basic(handler) => handler(args),
                         Getter::Advanced(handler) => {
                             let mut context = Context;
                             handler(&mut context, args)
@@ -105,12 +104,14 @@ impl Bank {
     }
 }
 
-impl SentenceBuilder {
-    pub fn new() -> Self {
-        SentenceBuilder
-    }
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    pub fn build(&self) -> String {
-        "This is a sentence".to_string()
+    #[test]
+    fn test_create_sentence() {
+        let bank = Bank::new();
+        let sentence = bank.create_sentence();
+        println!("{}", sentence);
     }
 }
