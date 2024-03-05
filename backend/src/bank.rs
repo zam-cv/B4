@@ -71,8 +71,8 @@ impl Bank {
             let mut values = HashMap::new();
 
             for (key, value) in &sentence.getters {
-                let captures = GETTER_REGEX.captures(value).unwrap();
-                let name = captures.get(1).map_or("", |m| m.as_str());
+                if let Some(captures) = GETTER_REGEX.captures(value) {
+                    let name = captures.get(1).map_or("", |m| m.as_str());
                 let args: Vec<String> = captures
                     .get(2)
                     .map_or("", |m| m.as_str())
@@ -90,6 +90,7 @@ impl Bank {
                     };
 
                     values.insert(key, result);
+                }
                 }
             }
 
