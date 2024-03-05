@@ -1,10 +1,14 @@
 use crate::{
     bank::Bank,
-    socket::session::{Message, Response, Session},
     database::Database,
+    socket::{
+        session::{Response, Session},
+        state::State,
+    },
 };
 use actix::prelude::*;
 use std::collections::HashMap;
+use tokio::sync::{broadcast::Sender, mpsc};
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -19,66 +23,93 @@ pub struct Disconnect {
     pub id: i32,
 }
 
+#[derive(Clone)]
+pub enum Command {
+    Connect(i32, Addr<Session>),
+    Disconnect(i32),
+    Message(i32, String),
+}
+
 pub struct Server {
-    sessions: HashMap<i32, Addr<Session>>,
-    #[allow(dead_code)]
+    sessions: HashMap<i32, State>,
     database: Database,
     #[allow(dead_code)]
     bank: Bank,
+    rx: mpsc::UnboundedReceiver<Command>,
+}
+
+#[derive(Clone)]
+pub struct ServerHandle {
+    pub tx: mpsc::UnboundedSender<Command>,
 }
 
 impl Server {
-    pub fn new(bank: Bank, database: Database) -> Self {
-        Server {
-            sessions: HashMap::new(),
-            bank,
-            database,
-        }
+    pub fn new(bank: Bank, database: Database) -> (Self, ServerHandle) {
+        let (tx, rx) = mpsc::unbounded_channel();
+
+        (
+            Server {
+                sessions: HashMap::new(),
+                bank,
+                database,
+                rx,
+            },
+            ServerHandle { tx },
+        )
     }
-}
 
-impl Actor for Server {
-    type Context = Context<Self>;
-}
-
-/// This handler is responsible for processing the `Connect` message and generating a response.
-impl Handler<Connect> for Server {
-    type Result = ();
-
-    fn handle(&mut self, connect: Connect, _: &mut Self::Context) -> Self::Result {
-        log::info!("Connected: {}", connect.id);
+    async fn connect(&mut self, id: &i32, addr: &Addr<Session>) {
+        log::info!("Connected: {}", id);
 
         // if a connection already exists, it is rejected
-        if self.sessions.contains_key(&connect.id) {
-            log::info!("Connection already exists: {}", connect.id);
-            connect.addr.do_send(Response::Stop);
+        if self.sessions.contains_key(&id) {
+            log::info!("Connection already exists: {}", id);
+            addr.do_send(Response::Stop);
 
             return;
         }
 
-        self.sessions.insert(connect.id, connect.addr);
+        let database = self.database.clone();
+        if let Ok(state) = State::new(*id, addr.clone(), &database).await {
+            self.sessions.insert(*id, state);
+        } else {
+            log::error!("Failed to get user: {}", id);
+            addr.do_send(Response::Stop);
+        }
     }
-}
 
-/// This allows the `Server` actor to react to disconnection events and perform any necessary cleanup or logging.
-impl Handler<Disconnect> for Server {
-    type Result = ();
+    async fn disconnect(&mut self, id: &i32) {
+        log::info!("Disconnected: {}", id);
 
-    fn handle(&mut self, disconnect: Disconnect, _: &mut Self::Context) {
-        log::info!("Disconnected: {}", disconnect.id);
-        self.sessions.remove(&disconnect.id);
+        if let Some(state) = self.sessions.remove(&id) {
+            // Save the state in the database at the end of the session
+            let _ = state.save(&self.database).await;
+        }
     }
-}
 
-/// This implementation defines how the `Server` actor should handle incoming messages of type `Message`.
-impl Handler<Message> for Server {
-    type Result = ();
+    async fn message(&mut self, id: &i32, text: &String) {
+        log::info!("Message from {}: {}", id, text);
 
-    fn handle(&mut self, msg: Message, _: &mut Self::Context) {
-        log::info!("Message from {}: {}", msg.0, msg.1);
+        if let Some(state) = self.sessions.get_mut(&id) {
+            let _ = state.handle_message(text, &self.database).await;
+        }
+    }
 
-        if let Some(addr) = self.sessions.get(&msg.0) {
-            addr.do_send(Response::Text(msg.1));
+    pub async fn run(&mut self, viewer_tx: Sender<Command>) {
+        while let Some(cmd) = self.rx.recv().await {
+            match &cmd {
+                Command::Connect(id, addr) => {
+                    self.connect(id, addr).await;
+                }
+                Command::Disconnect(id) => {
+                    self.disconnect(id).await;
+                }
+                Command::Message(id, text) => {
+                    self.message(id, text).await;
+                }
+            }
+
+            let _ = viewer_tx.send(cmd);
         }
     }
 }
