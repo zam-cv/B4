@@ -2,7 +2,7 @@ use crate::{
     config::CONFIG,
     database::Database,
     models,
-    routes::{login, Credentials, Response, Status},
+    routes::{signin, Credentials, Response, Status},
     utils,
 };
 use actix_web::{error, get, post, web, Responder, Result};
@@ -11,7 +11,7 @@ use argon2::{
     Argon2, PasswordHash, PasswordVerifier,
 };
 
-login!(get_admin_by_username, CONFIG.admin_secret_key);
+signin!(get_admin_by_username, CONFIG.admin_secret_key);
 
 #[post("/register")]
 pub async fn register(
@@ -46,8 +46,8 @@ pub async fn register(
     Err(error::ErrorBadRequest("Failed"))
 }
 
-#[get("/users")]
-pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
+#[get("/info")]
+pub async fn user_info(database: web::Data<Database>) -> Result<impl Responder> {
     let users = database
         .get_users()
         .await
@@ -60,7 +60,7 @@ pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> 
 }
 
 #[get("/statistics/{id}")]
-pub async fn get_statistics(
+pub async fn get_user_statistics(
     database: web::Data<Database>,
     path: web::Path<i32>,
 ) -> Result<impl Responder> {
@@ -81,13 +81,13 @@ pub async fn create_crop_type(
     database: web::Data<Database>,
     info: web::Json<models::CropType>,
 ) -> Result<impl Responder> {
-    let id = database
-        .create_crop_type(info.into_inner())
+    database
+        .unsert_crop_types(info.into_inner())
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(web::Json(Response {
         message: Status::Success,
-        payload: Some(id),
+        payload: None::<()>,
     }))
 }

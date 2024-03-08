@@ -56,26 +56,30 @@ async fn main() -> std::io::Result<()> {
             .service(
                 web::scope("/api")
                     .service(
-                        web::scope("/public")
+                        web::scope("/auth")
+                            .service(routes::user::signin)
+                            .service(routes::user::register),
+                    )
+                    .service(
+                        web::scope("/admin")
                             .service(
-                                web::scope("/admin")
-                                    .service(routes::admin::login)
+                                web::scope("/auth")
+                                    .service(routes::admin::signin)
                                     .service(routes::admin::register),
                             )
                             .service(
-                                web::scope("/user")
-                                    .service(routes::user::login)
-                                    .service(routes::user::register),
+                                web::scope("")
+                                    .wrap(from_fn(middlewares::admin_auth))
+                                    .service(
+                                        web::scope("/users")
+                                            .service(routes::admin::user_info)
+                                            .service(routes::admin::get_user_statistics),
+                                    )
+                                    .service(
+                                        web::scope("/data")
+                                            .service(routes::admin::create_crop_type),
+                                    ),
                             ),
-                    )
-                    .service(
-                        web::scope("/private").service(
-                            web::scope("/admin")
-                                .wrap(from_fn(middlewares::admin_auth))
-                                .service(routes::admin::get_users)
-                                .service(routes::admin::get_statistics)
-                                .service(routes::admin::create_crop_type),
-                        ),
                     ),
             )
             .service(

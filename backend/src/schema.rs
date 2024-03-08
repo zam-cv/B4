@@ -11,6 +11,33 @@ diesel::table! {
 }
 
 diesel::table! {
+    crop_sections (id) {
+        id -> Integer,
+        user_id -> Integer,
+        #[max_length = 50]
+        crop_type_id -> Nullable<Varchar>,
+        units -> Integer,
+    }
+}
+
+diesel::table! {
+    crop_types (name) {
+        #[max_length = 50]
+        name -> Varchar,
+        price -> Integer,
+    }
+}
+
+diesel::table! {
+    statistics (id) {
+        user_id -> Integer,
+        id -> Integer,
+        date -> Timestamp,
+        punctuation -> Integer,
+    }
+}
+
+diesel::table! {
     users (id) {
         id -> Integer,
         #[max_length = 50]
@@ -25,35 +52,8 @@ diesel::table! {
     }
 }
 
-diesel::table! {
-    statistics (id) {
-        user_id -> Integer,
-        id -> Integer,
-        date -> Timestamp,
-        punctuation -> Integer,
-    }
-}
-
-diesel::table! {
-    crop_types (id) {
-        id -> Integer,
-        #[max_length = 50]
-        name -> Varchar,
-        price -> Integer,
-    }
-}
-
-diesel::table! {
-    crop_sections (id) {
-        id -> Integer,
-        user_id -> Integer,
-        crop_type_id -> Nullable<Integer>,
-        units -> Integer,
-    }
-}
-
-diesel::joinable!(crop_sections -> users (user_id));
 diesel::joinable!(crop_sections -> crop_types (crop_type_id));
+diesel::joinable!(crop_sections -> users (user_id));
 diesel::joinable!(statistics -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(

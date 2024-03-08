@@ -162,10 +162,16 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_crop_type(&self, new_crop_type: models::CropType) -> anyhow::Result<()> {
+    pub async fn unsert_crop_types(
+        &self,
+        crop_type: models::CropType,
+    ) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::crop_types::table)
-                .values(&new_crop_type)
+                .values(&crop_type)
+                .on_conflict(diesel::dsl::DuplicatedKeys)
+                .do_update()
+                .set(&crop_type)
                 .execute(conn)
         })
         .await?;

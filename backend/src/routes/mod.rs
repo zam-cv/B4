@@ -20,10 +20,10 @@ struct Credentials {
     token: String,
 }
 
-macro_rules! login {
+macro_rules! signin {
   ($table:ident, $secret_key:expr) => {
-      #[post("/login")]
-      pub async fn login(
+      #[post("/signin")]
+      pub async fn signin(
           database: web::Data<Database>,
           info: web::Json<models::Admin>
       ) -> impl Responder {
@@ -53,4 +53,4 @@ macro_rules! login {
   };
 }
 
-pub(crate) use login;
+pub(crate) use signin;

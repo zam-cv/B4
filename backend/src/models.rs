@@ -56,14 +56,11 @@ pub struct StatisticsSample {
 }
 
 #[derive(Deserialize)]
-#[derive(Queryable, Selectable, Identifiable, Insertable)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
-#[diesel(primary_key(id))]
+#[diesel(primary_key(name))]
 #[diesel(table_name = schema::crop_types)]
 pub struct CropType {
-    #[serde(skip_deserializing)]
-    #[diesel(deserialize_as = i32)]
-    pub id: Option<i32>,
     pub name: String,
     pub price: i32,
 }
@@ -80,6 +77,6 @@ pub struct CropSection {
     pub id: Option<i32>,
     #[serde(skip_deserializing)]
     pub user_id: i32,
-    pub crop_type_id: Option<i32>,
+    pub crop_type_id: Option<String>,
     pub units: i32,
 }

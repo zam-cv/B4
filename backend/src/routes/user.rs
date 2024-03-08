@@ -2,7 +2,7 @@ use crate::{
     config::{self, CONFIG},
     database::Database,
     models,
-    routes::{login, Credentials, Response, Status},
+    routes::{signin, Credentials, Response, Status},
     utils,
 };
 use actix_web::{error, post, web, Responder, Result};
@@ -11,7 +11,7 @@ use argon2::{
     Argon2, PasswordHash, PasswordVerifier,
 };
 
-login!(get_user_by_username, CONFIG.user_secret_key);
+signin!(get_user_by_username, CONFIG.user_secret_key);
 
 #[post("/register")]
 pub async fn register(
