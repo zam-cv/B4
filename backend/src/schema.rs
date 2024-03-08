@@ -49,6 +49,10 @@ diesel::table! {
         balance_coyote -> Integer,
         current_day -> Timestamp,
         max_sections -> Integer,
+        #[max_length = 30]
+        ip -> Nullable<Varchar>,
+        #[max_length = 50]
+        os -> Nullable<Varchar>,
     }
 }
 

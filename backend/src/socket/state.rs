@@ -1,20 +1,27 @@
 use crate::{
     database::Database,
     models,
-    socket::session::{Response, Session},
+    socket::session::{self, Session},
 };
 use actix::prelude::*;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_json;
 
 #[derive(Deserialize)]
 pub struct CycleData {
-    pub time: i32,
+    pub duration: i32,
 }
 
 #[derive(Deserialize)]
 pub enum Request {
     Cycle(CycleData),
     CreateCropSection
+}
+
+#[derive(Serialize)]
+pub enum Response {
+    Init(models::User),
+    CycleResolved
 }
 
 pub struct State {
@@ -39,20 +46,28 @@ impl State {
                 crop_sections: database.get_crop_sections_by_user_id(id).await?,
             };
 
-            state.init();
+            state.init()?;
             return Ok(state);
         }
 
         anyhow::bail!("User not found");
     }
 
-    pub fn init(&self) {
-        self.session.do_send(Response::Str("Welcome"));
+    // Send a message to the user
+    pub fn send(&self, response: Response) -> anyhow::Result<()> {
+        self.session.do_send(session::Response::String(serde_json::to_string(&response)?));
+        Ok(())
+    }
+
+    // Send user data at startup
+    pub fn init(&self) -> anyhow::Result<()> {
+        self.send(Response::Init(self.user.clone()))
     }
 
     // resolve the user's cycle request
     pub async fn resolve_cycle<'a>(&self, _: CycleData, database: &'a Database) -> anyhow::Result<()> {
-        self.session.do_send(Response::Str("Cycle resolved"));
+        self.send(Response::CycleResolved)?;
+
         database.create_statistics(models::StatisticsSample {
             id: None,
             user_id: self.id,
@@ -71,7 +86,7 @@ impl State {
                     self.resolve_cycle(data, database).await?;
                 }
                 Request::CreateCropSection => {
-                    log::info!("Create crop section");
+                    log::debug!("Create crop section");
 
                     // TODO: Validate
                     self.crop_sections.push(models::CropSection {

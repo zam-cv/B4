@@ -7,7 +7,9 @@ CREATE TABLE `users`(
 	`balance_verqor` INTEGER NOT NULL,
 	`balance_coyote` INTEGER NOT NULL,
 	`current_day` TIMESTAMP NOT NULL,
-	`max_sections` INTEGER NOT NULL
+	`max_sections` INTEGER NOT NULL,
+	`ip` VARCHAR(30),
+	`os` VARCHAR(50)
 );
 
 CREATE TABLE `crop_types`(

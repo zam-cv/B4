@@ -12,8 +12,8 @@ pub struct Message(pub i32, pub String);
 #[derive(Message)]
 #[rtype(result = "()")]
 pub enum Response {
-    Str(&'static str),
     #[allow(dead_code)]
+    Str(&'static str),
     String(String),
     Stop,
 }

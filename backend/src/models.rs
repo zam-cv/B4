@@ -37,6 +37,10 @@ pub struct User {
     pub current_day: chrono::NaiveDateTime,
     #[serde(skip_deserializing)]
     pub max_sections: i32,
+    #[serde(skip_serializing, skip_deserializing)]
+    pub ip: Option<String>,
+    #[serde(skip_serializing, skip_deserializing)]
+    pub os: Option<String>,
 }
 
 #[derive(Serialize)]

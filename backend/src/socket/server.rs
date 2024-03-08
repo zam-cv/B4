@@ -59,11 +59,11 @@ impl Server {
     }
 
     async fn connect(&mut self, id: &i32, addr: &Addr<Session>) {
-        log::info!("Connected: {}", id);
+        log::debug!("Connected: {}", id);
 
         // if a connection already exists, it is rejected
         if self.sessions.contains_key(&id) {
-            log::info!("Connection already exists: {}", id);
+            log::debug!("Connection already exists: {}", id);
             addr.do_send(Response::Stop);
 
             return;
@@ -79,7 +79,7 @@ impl Server {
     }
 
     async fn disconnect(&mut self, id: &i32) {
-        log::info!("Disconnected: {}", id);
+        log::debug!("Disconnected: {}", id);
 
         if let Some(state) = self.sessions.remove(&id) {
             // Save the state in the database at the end of the session
@@ -88,7 +88,7 @@ impl Server {
     }
 
     async fn message(&mut self, id: &i32, text: &String) {
-        log::info!("Message from {}: {}", id, text);
+        log::debug!("Message from {}: {}", id, text);
 
         if let Some(state) = self.sessions.get_mut(&id) {
             let _ = state.handle_message(text, &self.database).await;
