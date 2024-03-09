@@ -21,7 +21,7 @@ mod utils;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
     let (viewer_tx, _) = broadcast::channel::<Command>(10);
     let viewer_tx_clone = viewer_tx.clone();
 
