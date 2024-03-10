@@ -28,3 +28,4 @@ regex = "1.10.3"
 tokio = "1.36.0"
 woothee = "0.13.0"
 validator = { version = "0.17", features = ["derive"] }
+actix-cors = "0.7.0"

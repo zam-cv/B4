@@ -2,10 +2,10 @@ use crate::{
     config::CONFIG,
     database::Database,
     models,
-    routes::{signin, Credentials, Response, Status},
+    routes::{signin, Response, Status},
     utils,
 };
-use actix_web::{error, post, web, Responder, Result};
+use actix_web::{cookie::Cookie, error, post, web, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -20,10 +20,7 @@ pub async fn register(
     admin: web::Json<models::Admin>,
 ) -> Result<impl Responder> {
     if let Err(_) = admin.validate() {
-        return Ok(web::Json(Response {
-            message: Status::Incorrect("Invalid email"),
-            payload: None,
-        }));
+        return Ok(HttpResponse::Unauthorized().body("Invalid"));
     }
 
     if let Ok(hash) = utils::get_hash!(admin.password) {
@@ -38,17 +35,18 @@ pub async fn register(
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
             if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
-                return Ok(web::Json(Response {
-                    message: Status::Success,
-                    payload: Some(Credentials { token }),
-                }));
+                let cookie = Cookie::build("token", &token)
+                    .http_only(true)
+                    .secure(true)
+                    .same_site(actix_web::cookie::SameSite::Strict)
+                    .path("/")
+                    .finish();
+
+                return Ok(HttpResponse::Ok().cookie(cookie).finish());
             }
         }
 
-        return Ok(web::Json(Response {
-            message: Status::Incorrect("Email already exists"),
-            payload: None,
-        }));
+        return Ok(HttpResponse::Unauthorized().body("Email already exists"));
     }
 
     Err(error::ErrorBadRequest("Failed"))

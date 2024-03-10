@@ -1,16 +1,16 @@
-use validator::Validate;
 use crate::{
     config::{self, CONFIG},
     database::Database,
     models,
-    routes::{signin, Credentials, Response, Status},
+    routes::signin,
     utils,
 };
-use actix_web::{error, post, web, HttpRequest, Responder, Result};
+use actix_web::{cookie::Cookie, error, post, web, HttpRequest, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
 };
+use validator::Validate;
 use woothee::parser::Parser;
 
 signin!(get_user_by_email, CONFIG.user_secret_key);
@@ -22,14 +22,11 @@ pub async fn register(
     mut user: web::Json<models::User>,
 ) -> Result<impl Responder> {
     if let Err(_) = user.validate() {
-        return Ok(web::Json(Response {
-            message: Status::Incorrect("Invalid email"),
-            payload: None,
-        }));
+        return Ok(HttpResponse::Unauthorized().body("Invalid"));
     }
 
     if let Ok(hash) = utils::get_hash!(user.password) {
-        if let Ok(None) = database.get_user_by_email(user.username.clone()).await {
+        if let Ok(None) = database.get_user_by_email(user.email.clone()).await {
             let parser = Parser::new();
 
             let ip = req.peer_addr().map(|addr| addr.ip().to_string());
@@ -67,17 +64,18 @@ pub async fn register(
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
             if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, user_id) {
-                return Ok(web::Json(Response {
-                    message: Status::Success,
-                    payload: Some(Credentials { token }),
-                }));
+                let cookie = Cookie::build("token", &token)
+                    .http_only(true)
+                    .secure(true)
+                    .same_site(actix_web::cookie::SameSite::Strict)
+                    .path("/")
+                    .finish();
+
+                return Ok(HttpResponse::Ok().cookie(cookie).finish());
             }
         }
 
-        return Ok(web::Json(Response {
-            message: Status::Incorrect("Email already exists"),
-            payload: None,
-        }));
+        return Ok(HttpResponse::Unauthorized().body("Email already exists"));
     }
 
     Err(actix_web::error::ErrorBadRequest("Failed"))

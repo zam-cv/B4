@@ -11,4 +11,4 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/2010010
 }
 HTTP 200
 [Asserts]
-jsonpath "$.message" == "Success"
+cookie "token[HttpOnly]" exists

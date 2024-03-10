@@ -2,6 +2,7 @@ use crate::{
     database::Database,
     socket::server::{Command, Server},
 };
+use actix_cors::Cors;
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
@@ -36,7 +37,10 @@ async fn main() -> std::io::Result<()> {
     log::info!("Socket server started");
 
     let server = HttpServer::new(move || {
+        let cors = Cors::permissive().supports_credentials();
+
         App::new()
+            .wrap(cors)
             .app_data(web::Data::new(database.clone()))
             .app_data(web::Data::new(server_tx.clone()))
             .app_data(web::Data::new(viewer_tx_clone.clone()))
@@ -73,15 +77,13 @@ async fn main() -> std::io::Result<()> {
                                     .service(
                                         web::scope("/user")
                                             .service(routes::user::info::get_user_statistics)
-                                            .service(routes::user::info::get_user)
+                                            .service(routes::user::info::get_user),
                                     )
                                     .service(
-                                        web::scope("/users")
-                                            .service(routes::user::info::get_users),
+                                        web::scope("/users").service(routes::user::info::get_users),
                                     )
                                     .service(
-                                        web::scope("/player")
-                                            .service(routes::player::get_player),
+                                        web::scope("/player").service(routes::player::get_player),
                                     )
                                     .service(
                                         web::scope("/data")

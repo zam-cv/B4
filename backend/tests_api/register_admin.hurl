@@ -6,4 +6,4 @@ Content-Type: application/json
 }
 HTTP 200
 [Asserts]
-jsonpath "$.message" == "Success"
+cookie "token[HttpOnly]" exists

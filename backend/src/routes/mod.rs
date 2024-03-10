@@ -36,20 +36,21 @@ macro_rules! signin {
                     {
                         if let Some(id) = user.id {
                             if let Ok(token) = utils::create_token(&$secret_key, id) {
-                                return web::Json(Response {
-                                    message: Status::Success,
-                                    payload: Some(Credentials { token }),
-                                });
+                                let cookie = Cookie::build("token", &token)
+                                    .http_only(true)
+                                    .secure(true)
+                                    .same_site(actix_web::cookie::SameSite::Strict)
+                                    .path("/")
+                                    .finish();
+                                
+                                return HttpResponse::Ok().cookie(cookie).finish();
                             }
                         }
                     }
                 }
             }
 
-            web::Json(Response {
-                message: Status::Incorrect("Username or password is incorrect"),
-                payload: None,
-            })
+            HttpResponse::Unauthorized().body("Username or password is incorrect")
         }
     };
 }
