@@ -15,13 +15,13 @@ pub struct CycleData {
 #[derive(Deserialize)]
 pub enum Request {
     Cycle(CycleData),
-    CreateCropSection
+    CreateCropSection,
 }
 
 #[derive(Serialize)]
 pub enum Response {
     Init(models::User),
-    CycleResolved
+    CycleResolved,
 }
 
 pub struct State {
@@ -33,10 +33,10 @@ pub struct State {
 
 impl State {
     // Takes the person's state from the database
-    pub async fn new<'a>(
+    pub async fn new(
         id: i32,
         session: Addr<Session>,
-        database: &'a Database,
+        database: &Database,
     ) -> anyhow::Result<State> {
         if let Some(user) = database.get_user_by_id(id).await? {
             let state = State {
@@ -55,7 +55,8 @@ impl State {
 
     // Send a message to the user
     pub fn send(&self, response: Response) -> anyhow::Result<()> {
-        self.session.do_send(session::Response::String(serde_json::to_string(&response)?));
+        self.session
+            .do_send(session::Response::String(serde_json::to_string(&response)?));
         Ok(())
     }
 
@@ -65,21 +66,31 @@ impl State {
     }
 
     // resolve the user's cycle request
-    pub async fn resolve_cycle<'a>(&self, _: CycleData, database: &'a Database) -> anyhow::Result<()> {
+    pub async fn resolve_cycle<'a>(
+        &self,
+        _: CycleData,
+        database: &'a Database,
+    ) -> anyhow::Result<()> {
         self.send(Response::CycleResolved)?;
 
-        database.create_statistics(models::StatisticsSample {
-            id: None,
-            user_id: self.id,
-            date: chrono::Utc::now().naive_utc(),
-            punctuation: 5,
-        }).await?;
+        database
+            .create_statistics(models::StatisticsSample {
+                id: None,
+                user_id: self.id,
+                date: chrono::Utc::now().naive_utc(),
+                punctuation: 5,
+            })
+            .await?;
 
         Ok(())
     }
 
     // Handles the message sent by the user
-    pub async fn handle_message<'a>(&mut self, message: &String, database: &'a Database) -> anyhow::Result<()> {
+    pub async fn handle_message<'a>(
+        &mut self,
+        message: &str,
+        database: &'a Database,
+    ) -> anyhow::Result<()> {
         if let Ok(request) = serde_json::from_str::<Request>(message) {
             match request {
                 Request::Cycle(data) => {
@@ -93,7 +104,7 @@ impl State {
                         id: None,
                         user_id: self.id,
                         crop_type_id: None,
-                        units: 0
+                        units: 0,
                     });
                 }
             }
@@ -105,7 +116,9 @@ impl State {
     // At the end of the session, the state is saved in the database
     pub async fn save(&self, database: &Database) -> anyhow::Result<()> {
         database.update_user(self.user.clone()).await?;
-        database.upsert_crop_sections(self.crop_sections.clone()).await?;
+        database
+            .upsert_crop_sections(self.crop_sections.clone())
+            .await?;
         Ok(())
     }
 }

@@ -48,7 +48,7 @@ impl Actor for Session {
     /// the actor. It is typically used to interact with the actor system, send messages, access the
     /// actor's address, and manage the actor's lifecycle.
     fn started(&mut self, ctx: &mut Self::Context) {
-        if let Err(_) = self.srv.tx.send(Command::Connect(self.id, ctx.address())) {
+        if self.srv.tx.send(Command::Connect(self.id, ctx.address())).is_err() {
             ctx.stop();
         }
     }

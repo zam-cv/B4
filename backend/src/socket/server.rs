@@ -62,7 +62,7 @@ impl Server {
         log::debug!("Connected: {}", id);
 
         // if a connection already exists, it is rejected
-        if self.sessions.contains_key(&id) {
+        if self.sessions.contains_key(id) {
             log::debug!("Connection already exists: {}", id);
             addr.do_send(Response::Stop);
 
@@ -81,7 +81,7 @@ impl Server {
     async fn disconnect(&mut self, id: &i32) {
         log::debug!("Disconnected: {}", id);
 
-        if let Some(state) = self.sessions.remove(&id) {
+        if let Some(state) = self.sessions.remove(id) {
             // Save the state in the database at the end of the session
             let _ = state.save(&self.database).await;
         }
@@ -90,7 +90,7 @@ impl Server {
     async fn message(&mut self, id: &i32, text: &String) {
         log::debug!("Message from {}: {}", id, text);
 
-        if let Some(state) = self.sessions.get_mut(&id) {
+        if let Some(state) = self.sessions.get_mut(id) {
             let _ = state.handle_message(text, &self.database).await;
         }
     }
