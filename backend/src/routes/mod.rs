@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod admin;
 pub mod user;
+pub mod player;
 
 #[derive(Serialize)]
 pub enum Status<'a> {
@@ -25,12 +26,12 @@ macro_rules! signin {
       #[post("/signin")]
       pub async fn signin(
           database: web::Data<Database>,
-          info: web::Json<models::Admin>
+          user: web::Json<models::Admin>
       ) -> impl Responder {
-          if let Ok(Some(user)) = database.$table(info.username.clone()).await {
+          if let Ok(Some(user)) = database.$table(user.email.clone()).await {
               if let Ok(password) = PasswordHash::new(&user.password) {
                   if Argon2::default()
-                      .verify_password(info.password.as_bytes(), &password)
+                      .verify_password(user.password.as_bytes(), &password)
                       .is_ok()
                   {
                       if let Some(id) = user.id {

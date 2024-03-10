@@ -57,8 +57,8 @@ async fn main() -> std::io::Result<()> {
                 web::scope("/api")
                     .service(
                         web::scope("/auth")
-                            .service(routes::user::signin)
-                            .service(routes::user::register),
+                            .service(routes::user::auth::signin)
+                            .service(routes::user::auth::register),
                     )
                     .service(
                         web::scope("/admin")
@@ -71,9 +71,17 @@ async fn main() -> std::io::Result<()> {
                                 web::scope("")
                                     .wrap(from_fn(middlewares::admin_auth))
                                     .service(
+                                        web::scope("/user")
+                                            .service(routes::user::info::get_user_statistics)
+                                            .service(routes::user::info::get_user)
+                                    )
+                                    .service(
                                         web::scope("/users")
-                                            .service(routes::admin::user_info)
-                                            .service(routes::admin::get_user_statistics),
+                                            .service(routes::user::info::get_users),
+                                    )
+                                    .service(
+                                        web::scope("/player")
+                                            .service(routes::player::get_player),
                                     )
                                     .service(
                                         web::scope("/data")

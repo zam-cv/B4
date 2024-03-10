@@ -39,20 +39,18 @@ impl Database {
             .map_err(|e| {
                 log::error!("Database error: {:?}", e);
                 anyhow::anyhow!(e)
-            })?.map_err(|e| {
+            })?
+            .map_err(|e| {
                 log::error!("Database error: {:?}", e);
                 anyhow::anyhow!(e)
             })?;
         Ok(result)
     }
 
-    pub async fn get_admin_by_username(
-        &self,
-        username: String,
-    ) -> anyhow::Result<Option<models::Admin>> {
+    pub async fn get_admin_by_email(&self, email: String) -> anyhow::Result<Option<models::Admin>> {
         self.query_wrapper(move |conn| {
             schema::admins::table
-                .filter(schema::admins::username.eq(username))
+                .filter(schema::admins::email.eq(email))
                 .first::<models::Admin>(conn)
                 .optional()
         })
@@ -76,13 +74,10 @@ impl Database {
         .await
     }
 
-    pub async fn get_user_by_username(
-        &self,
-        username: String,
-    ) -> anyhow::Result<Option<models::User>> {
+    pub async fn get_user_by_email(&self, email: String) -> anyhow::Result<Option<models::User>> {
         self.query_wrapper(move |conn| {
             schema::users::table
-                .filter(schema::users::username.eq(username))
+                .filter(schema::users::email.eq(email))
                 .first::<models::User>(conn)
                 .optional()
         })
@@ -99,6 +94,7 @@ impl Database {
         .await
     }
 
+    #[allow(dead_code)]
     pub async fn update_user(&self, user: models::User) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             if let Some(id) = &user.id {
@@ -112,6 +108,60 @@ impl Database {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn get_player_by_id(&self, id: i32) -> anyhow::Result<Option<models::Player>> {
+        self.query_wrapper(move |conn| {
+            schema::players::table
+                .find(id)
+                .first::<models::Player>(conn)
+                .optional()
+        })
+        .await
+    }
+
+    pub async fn get_player_by_user_id(&self, user_id: i32) -> anyhow::Result<Option<models::Player>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .find(user_id)
+                .inner_join(schema::players::table)
+                .select(schema::players::all_columns)
+                .first::<models::Player>(conn)
+                .optional()
+        })
+        .await
+    }
+
+    pub async fn update_player(&self, player: models::Player) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            if let Some(id) = &player.id {
+                diesel::update(schema::players::table.find(id))
+                    .set(&player)
+                    .execute(conn)
+            } else {
+                Ok(0)
+            }
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn create_player(&self, new_player: models::Player) -> anyhow::Result<i32> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::players::table)
+                    .values(&new_player)
+                    .execute(pooled)?;
+
+                // Get the last inserted id
+                schema::players::table
+                    .select(schema::players::id)
+                    .order(schema::players::id.desc())
+                    .first::<i32>(pooled)
+            })
+        })
+        .await
     }
 
     pub async fn create_user(&self, new_user: models::User) -> anyhow::Result<i32> {
@@ -138,11 +188,11 @@ impl Database {
 
     pub async fn get_statistics(
         &self,
-        user_id: i32,
+        player_id: i32,
     ) -> anyhow::Result<Vec<models::StatisticsSample>> {
         self.query_wrapper(move |conn| {
             schema::statistics::table
-                .filter(schema::statistics::user_id.eq(user_id))
+                .filter(schema::statistics::player_id.eq(player_id))
                 .load::<models::StatisticsSample>(conn)
         })
         .await
@@ -162,10 +212,7 @@ impl Database {
         Ok(())
     }
 
-    pub async fn unsert_crop_types(
-        &self,
-        crop_type: models::CropType,
-    ) -> anyhow::Result<()> {
+    pub async fn unsert_crop_types(&self, crop_type: models::CropType) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::crop_types::table)
                 .values(&crop_type)
@@ -179,18 +226,15 @@ impl Database {
         Ok(())
     }
 
-    pub async fn upsert_crop_sections(
-        &self,
-        new_crop_sections: Vec<models::CropSection>,
-    ) -> anyhow::Result<()> {
+    pub async fn upsert_plots(&self, new_plots: Vec<models::Plot>) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
-                for crop_section in new_crop_sections {
-                    diesel::insert_into(schema::crop_sections::table)
-                        .values(&crop_section)
+                for plot in new_plots {
+                    diesel::insert_into(schema::plots::table)
+                        .values(&plot)
                         .on_conflict(diesel::dsl::DuplicatedKeys)
                         .do_update()
-                        .set(&crop_section)
+                        .set(&plot)
                         .execute(pooled)?;
                 }
 
@@ -202,14 +246,14 @@ impl Database {
         Ok(())
     }
 
-    pub async fn get_crop_sections_by_user_id(
+    pub async fn get_plots_by_player_id(
         &self,
-        user_id: i32,
-    ) -> anyhow::Result<Vec<models::CropSection>> {
+        player_id: i32,
+    ) -> anyhow::Result<Vec<models::Plot>> {
         self.query_wrapper(move |conn| {
-            schema::crop_sections::table
-                .filter(schema::crop_sections::user_id.eq(user_id))
-                .load::<models::CropSection>(conn)
+            schema::plots::table
+                .filter(schema::plots::player_id.eq(player_id))
+                .load::<models::Plot>(conn)
         })
         .await
     }

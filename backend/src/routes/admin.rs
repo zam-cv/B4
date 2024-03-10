@@ -5,25 +5,25 @@ use crate::{
     routes::{signin, Credentials, Response, Status},
     utils,
 };
-use actix_web::{error, get, post, web, Responder, Result};
+use actix_web::{error, post, web, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
 };
 
-signin!(get_admin_by_username, CONFIG.admin_secret_key);
+signin!(get_admin_by_email, CONFIG.admin_secret_key);
 
 #[post("/register")]
 pub async fn register(
     database: web::Data<Database>,
-    info: web::Json<models::Admin>,
+    admin: web::Json<models::Admin>,
 ) -> Result<impl Responder> {
-    if let Ok(hash) = utils::get_hash!(info.password) {
-        if let Ok(None) = database.get_admin_by_username(info.username.clone()).await {
+    if let Ok(hash) = utils::get_hash!(admin.password) {
+        if let Ok(None) = database.get_admin_by_email(admin.email.clone()).await {
             let id = database
                 .create_admin(models::Admin {
                     id: None,
-                    username: info.username.clone(),
+                    email: admin.email.clone(),
                     password: hash.to_string(),
                 })
                 .await
@@ -38,7 +38,7 @@ pub async fn register(
         }
 
         return Ok(web::Json(Response {
-            message: Status::Incorrect("Username already exists"),
+            message: Status::Incorrect("Email already exists"),
             payload: None,
         }));
     }
@@ -46,43 +46,13 @@ pub async fn register(
     Err(error::ErrorBadRequest("Failed"))
 }
 
-#[get("/info")]
-pub async fn user_info(database: web::Data<Database>) -> Result<impl Responder> {
-    let users = database
-        .get_users()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: Some(users),
-    }))
-}
-
-#[get("/statistics/{id}")]
-pub async fn get_user_statistics(
-    database: web::Data<Database>,
-    path: web::Path<i32>,
-) -> Result<impl Responder> {
-    let id = path.into_inner();
-    let statistics = database
-        .get_statistics(id)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: Some(statistics),
-    }))
-}
-
 #[post("/crops")]
 pub async fn create_crop_type(
     database: web::Data<Database>,
-    info: web::Json<models::CropType>,
+    crop_type: web::Json<models::CropType>,
 ) -> Result<impl Responder> {
     database
-        .unsert_crop_types(info.into_inner())
+        .unsert_crop_types(crop_type.into_inner())
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 

@@ -20,15 +20,15 @@ pub enum Request {
 
 #[derive(Serialize)]
 pub enum Response {
-    Init(models::User),
+    Init(models::Player),
     CycleResolved,
 }
 
 pub struct State {
     pub id: i32,
     pub session: Addr<Session>,
-    pub user: models::User,
-    pub crop_sections: Vec<models::CropSection>,
+    pub player: models::Player,
+    pub plots: Vec<models::Plot>,
 }
 
 impl State {
@@ -38,12 +38,12 @@ impl State {
         session: Addr<Session>,
         database: &Database,
     ) -> anyhow::Result<State> {
-        if let Some(user) = database.get_user_by_id(id).await? {
+        if let Some(player) = database.get_player_by_user_id(id).await? {
             let state = State {
                 id,
-                user,
+                player,
                 session,
-                crop_sections: database.get_crop_sections_by_user_id(id).await?,
+                plots: database.get_plots_by_player_id(id).await?,
             };
 
             state.init()?;
@@ -62,23 +62,24 @@ impl State {
 
     // Send user data at startup
     pub fn init(&self) -> anyhow::Result<()> {
-        self.send(Response::Init(self.user.clone()))
+        self.send(Response::Init(self.player.clone()))
     }
 
     // resolve the user's cycle request
     pub async fn resolve_cycle<'a>(
-        &self,
+        &mut self,
         _: CycleData,
         database: &'a Database,
     ) -> anyhow::Result<()> {
+        self.player.current_cycle += 1;
         self.send(Response::CycleResolved)?;
 
         database
             .create_statistics(models::StatisticsSample {
                 id: None,
-                user_id: self.id,
-                date: chrono::Utc::now().naive_utc(),
-                punctuation: 5,
+                cycle: self.player.current_cycle,
+                score: 5,
+                player_id: self.player.id.unwrap_or_default(),
             })
             .await?;
 
@@ -100,11 +101,10 @@ impl State {
                     log::debug!("Create crop section");
 
                     // TODO: Validate
-                    self.crop_sections.push(models::CropSection {
+                    self.plots.push(models::Plot {
                         id: None,
-                        user_id: self.id,
                         crop_type_id: None,
-                        units: 0,
+                        player_id: self.player.id.unwrap_or_default(),
                     });
                 }
             }
@@ -115,10 +115,8 @@ impl State {
 
     // At the end of the session, the state is saved in the database
     pub async fn save(&self, database: &Database) -> anyhow::Result<()> {
-        database.update_user(self.user.clone()).await?;
-        database
-            .upsert_crop_sections(self.crop_sections.clone())
-            .await?;
+        database.update_player(self.player.clone()).await?;
+        database.upsert_plots(self.plots.clone()).await?;
         Ok(())
     }
 }

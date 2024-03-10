@@ -12,16 +12,16 @@ use argon2::{
 };
 use woothee::parser::Parser;
 
-signin!(get_user_by_username, CONFIG.user_secret_key);
+signin!(get_user_by_email, CONFIG.user_secret_key);
 
 #[post("/register")]
 pub async fn register(
     req: HttpRequest,
     database: web::Data<Database>,
-    info: web::Json<models::User>,
+    mut user: web::Json<models::User>,
 ) -> Result<impl Responder> {
-    if let Ok(hash) = utils::get_hash!(info.password) {
-        if let Ok(None) = database.get_user_by_username(info.username.clone()).await {
+    if let Ok(hash) = utils::get_hash!(user.password) {
+        if let Ok(None) = database.get_user_by_email(user.username.clone()).await {
             let parser = Parser::new();
 
             let ip = req.peer_addr().map(|addr| addr.ip().to_string());
@@ -36,23 +36,29 @@ pub async fn register(
                 None
             };
 
-            let id = database
-                .create_user(models::User {
+            let player_id = database
+                .create_player(models::Player {
                     id: None,
-                    username: info.username.clone(),
-                    password: hash.to_string(),
-                    balance_cash: config::INITIAL_BALANCE_CASH,
-                    balance_verqor: config::INITIAL_BALANCE_VERQOR,
-                    balance_coyote: config::INITIAL_BALANCE_COYOTE,
-                    current_day: chrono::Local::now().naive_local(),
-                    max_sections: config::INITIAL_MAX_SECTIONS,
-                    ip,
-                    os,
+                    current_cycle: 0,
+                    current_score: config::INITIAL_SCORE,
+                    current_balance: config::INITIAL_BALANCE,
+                    max_plots: config::INITIAL_MAX_PLOTS,
                 })
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-            if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
+            user.id = None;
+            user.ip = ip;
+            user.password = hash.to_string();
+            user.os = os;
+            user.player_id = player_id;
+
+            let user_id = database
+                .create_user(user.into_inner())
+                .await
+                .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+            if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, user_id) {
                 return Ok(web::Json(Response {
                     message: Status::Success,
                     payload: Some(Credentials { token }),
@@ -61,7 +67,7 @@ pub async fn register(
         }
 
         return Ok(web::Json(Response {
-            message: Status::Incorrect("Username already exists"),
+            message: Status::Incorrect("Email already exists"),
             payload: None,
         }));
     }
