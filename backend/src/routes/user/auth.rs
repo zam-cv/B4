@@ -1,3 +1,4 @@
+use validator::Validate;
 use crate::{
     config::{self, CONFIG},
     database::Database,
@@ -20,6 +21,13 @@ pub async fn register(
     database: web::Data<Database>,
     mut user: web::Json<models::User>,
 ) -> Result<impl Responder> {
+    if let Err(_) = user.validate() {
+        return Ok(web::Json(Response {
+            message: Status::Incorrect("Invalid email"),
+            payload: None,
+        }));
+    }
+
     if let Ok(hash) = utils::get_hash!(user.password) {
         if let Ok(None) = database.get_user_by_email(user.username.clone()).await {
             let parser = Parser::new();

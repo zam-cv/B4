@@ -1,8 +1,9 @@
 use crate::schema;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -11,12 +12,13 @@ pub struct Admin {
     #[serde(skip_deserializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    #[validate(email)]
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -26,10 +28,13 @@ pub struct User {
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
     pub user_type: String,
+    #[validate(length(min = 1))]
     pub username: String,
+    #[validate(email)]
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
+    #[validate(range(min = 1))]
     pub age: i32,
     pub gender: String,
     #[serde(skip_deserializing)]
@@ -106,13 +111,15 @@ pub struct StatisticsSample {
     pub player_id: i32
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(name))]
 #[diesel(table_name = schema::crop_types)]
 pub struct CropType {
+    #[validate(length(min = 1))]
     pub name: String,
+    #[validate(range(min = 1))]
     pub price: i32,
 }
 

@@ -1,7 +1,7 @@
 POST http://localhost:8080/api/admin/auth/register
 Content-Type: application/json
 {
-  "username": "{{username}}",
+  "email": "{{email}}",
   "password": "{{password}}"
 }
 HTTP 200

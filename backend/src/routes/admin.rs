@@ -10,6 +10,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
 };
+use validator::Validate;
 
 signin!(get_admin_by_email, CONFIG.admin_secret_key);
 
@@ -18,6 +19,13 @@ pub async fn register(
     database: web::Data<Database>,
     admin: web::Json<models::Admin>,
 ) -> Result<impl Responder> {
+    if let Err(_) = admin.validate() {
+        return Ok(web::Json(Response {
+            message: Status::Incorrect("Invalid email"),
+            payload: None,
+        }));
+    }
+
     if let Ok(hash) = utils::get_hash!(admin.password) {
         if let Ok(None) = database.get_admin_by_email(admin.email.clone()).await {
             let id = database

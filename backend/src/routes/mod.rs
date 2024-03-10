@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 pub mod admin;
-pub mod user;
 pub mod player;
+pub mod user;
 
 #[derive(Serialize)]
 pub enum Status<'a> {
@@ -22,36 +22,36 @@ struct Credentials {
 }
 
 macro_rules! signin {
-  ($table:ident, $secret_key:expr) => {
-      #[post("/signin")]
-      pub async fn signin(
-          database: web::Data<Database>,
-          user: web::Json<models::Admin>
-      ) -> impl Responder {
-          if let Ok(Some(user)) = database.$table(user.email.clone()).await {
-              if let Ok(password) = PasswordHash::new(&user.password) {
-                  if Argon2::default()
-                      .verify_password(user.password.as_bytes(), &password)
-                      .is_ok()
-                  {
-                      if let Some(id) = user.id {
-                          if let Ok(token) = utils::create_token(&$secret_key, id) {
-                              return web::Json(Response {
-                                  message: Status::Success,
-                                  payload: Some(Credentials { token }),
-                              });
-                          }
-                      }
-                  }
-              }
-          }
+    ($table:ident, $secret_key:expr) => {
+        #[post("/signin")]
+        pub async fn signin(
+            database: web::Data<Database>,
+            profile: web::Json<models::Admin>,
+        ) -> impl Responder {
+            if let Ok(Some(user)) = database.$table(profile.email.clone()).await {
+                if let Ok(password) = PasswordHash::new(&user.password) {
+                    if Argon2::default()
+                        .verify_password(profile.password.as_bytes(), &password)
+                        .is_ok()
+                    {
+                        if let Some(id) = user.id {
+                            if let Ok(token) = utils::create_token(&$secret_key, id) {
+                                return web::Json(Response {
+                                    message: Status::Success,
+                                    payload: Some(Credentials { token }),
+                                });
+                            }
+                        }
+                    }
+                }
+            }
 
-          web::Json(Response {
-              message: Status::Incorrect("Username or password is incorrect"),
-              payload: None,
-          })
-      }
-  };
+            web::Json(Response {
+                message: Status::Incorrect("Username or password is incorrect"),
+                payload: None,
+            })
+        }
+    };
 }
 
 pub(crate) use signin;

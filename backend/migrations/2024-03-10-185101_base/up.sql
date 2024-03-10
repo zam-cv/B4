@@ -5,6 +5,14 @@ CREATE TABLE `admins`(
 	`password` VARCHAR(150) NOT NULL
 );
 
+CREATE TABLE `players`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`current_cycle` INTEGER NOT NULL,
+	`current_score` INTEGER NOT NULL,
+	`current_balance` INTEGER NOT NULL,
+	`max_plots` INTEGER NOT NULL
+);
+
 CREATE TABLE `users`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`user_type` VARCHAR(20) NOT NULL,
@@ -14,23 +22,15 @@ CREATE TABLE `users`(
 	`age` INTEGER NOT NULL,
 	`gender` VARCHAR(15) NOT NULL,
 	`ip` VARCHAR(30),
-	`os` VARCHAR(50)
-);
-
-CREATE TABLE `players`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`current_cycle` INTEGER NOT NULL,
-	`current_score` INTEGER NOT NULL,
-	`current_balance` INTEGER NOT NULL,
-	`max_lots` INTEGER NOT NULL,
-	`user_id` INTEGER NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+	`os` VARCHAR(50),
+	`player_id` INTEGER NOT NULL,
+	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
 
 CREATE TABLE `loans`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`status` VARCHAR(10) NOT NULL,
-	`cycle` INTEGER(10) NOT NULL,
+	`cycle` INTEGER NOT NULL,
 	`amount` INTEGER NOT NULL,
 	`creditor` VARCHAR(10) NOT NULL,
 	`player_id` INTEGER NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE `crop_types`(
 	`price` INTEGER NOT NULL
 );
 
-CREATE TABLE `lots`(
+CREATE TABLE `plots`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`crop_type_id` VARCHAR(50),
 	`player_id` INTEGER NOT NULL,
