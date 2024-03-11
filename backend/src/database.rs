@@ -47,6 +47,16 @@ impl Database {
         Ok(result)
     }
 
+    pub async fn get_admin_by_id(&self, id: i32) -> anyhow::Result<Option<models::Admin>> {
+        self.query_wrapper(move |conn| {
+            schema::admins::table
+                .find(id)
+                .first::<models::Admin>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn get_admin_by_email(&self, email: String) -> anyhow::Result<Option<models::Admin>> {
         self.query_wrapper(move |conn| {
             schema::admins::table
@@ -120,7 +130,10 @@ impl Database {
         .await
     }
 
-    pub async fn get_player_by_user_id(&self, user_id: i32) -> anyhow::Result<Option<models::Player>> {
+    pub async fn get_player_by_user_id(
+        &self,
+        user_id: i32,
+    ) -> anyhow::Result<Option<models::Player>> {
         self.query_wrapper(move |conn| {
             schema::users::table
                 .find(user_id)

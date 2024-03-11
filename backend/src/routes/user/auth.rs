@@ -5,7 +5,7 @@ use crate::{
     routes::signin,
     utils,
 };
-use actix_web::{cookie::Cookie, error, post, web, HttpRequest, HttpResponse, Responder, Result};
+use actix_web::{error, post, web, HttpRequest, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -64,13 +64,7 @@ pub async fn register(
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
             if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, user_id) {
-                let cookie = Cookie::build("token", &token)
-                    .http_only(true)
-                    .secure(true)
-                    .same_site(actix_web::cookie::SameSite::Strict)
-                    .path("/")
-                    .finish();
-
+                let cookie = utils::get_cookie_with_token(&token);
                 return Ok(HttpResponse::Ok().cookie(cookie).finish());
             }
         }

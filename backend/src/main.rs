@@ -62,14 +62,21 @@ async fn main() -> std::io::Result<()> {
                     .service(
                         web::scope("/auth")
                             .service(routes::user::auth::signin)
-                            .service(routes::user::auth::register),
+                            .service(routes::user::auth::register)
+                            .service(routes::signout),
                     )
                     .service(
                         web::scope("/admin")
                             .service(
                                 web::scope("/auth")
                                     .service(routes::admin::signin)
-                                    .service(routes::admin::register),
+                                    .service(routes::admin::register)
+                                    .service(routes::signout)
+                                    .service(
+                                        web::scope("")
+                                            .wrap(from_fn(middlewares::admin_auth))
+                                            .service(routes::admin::auth),
+                                    ),
                             )
                             .service(
                                 web::scope("")
@@ -80,10 +87,12 @@ async fn main() -> std::io::Result<()> {
                                             .service(routes::user::info::get_user),
                                     )
                                     .service(
-                                        web::scope("/users").service(routes::user::info::get_users),
+                                        web::scope("/users").
+                                            service(routes::user::info::get_users),
                                     )
                                     .service(
-                                        web::scope("/player").service(routes::player::get_player),
+                                        web::scope("/player")
+                                            .service(routes::player::get_player),
                                     )
                                     .service(
                                         web::scope("/data")

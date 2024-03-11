@@ -1,8 +1,4 @@
-use crate::{
-    routes::{Response, Status},
-    utils::decode_token,
-    CONFIG,
-};
+use crate::{utils, CONFIG};
 use actix_web::{
     body::MessageBody,
     dev::{ServiceRequest, ServiceResponse},
@@ -10,7 +6,7 @@ use actix_web::{
 };
 use actix_web_lab::middleware::Next;
 
-const AUTHORIZATION_HEADER: &str = "Authorization";
+const AUTH_COOKIE: &str = "token";
 
 macro_rules! auth {
     ($name:ident, $secret_key:expr) => {
@@ -18,29 +14,20 @@ macro_rules! auth {
             req: ServiceRequest,
             next: Next<impl MessageBody + 'static>,
         ) -> Result<ServiceResponse<impl MessageBody>, Error> {
-            if let Some(token) = req.headers().get(AUTHORIZATION_HEADER) {
-                if let Ok(token) = token.to_str() {
-                    if let Ok(claims) = decode_token(&$secret_key, token) {
-                        if claims.exp < chrono::Utc::now().timestamp() as usize {
-                            let response = HttpResponse::Unauthorized().json(Response {
-                                message: Status::Incorrect("Token has expired"),
-                                payload: None::<()>,
-                            });
-
-                            return Ok(req.into_response(response).map_into_right_body());
-                        }
-
-                        req.extensions_mut().insert(claims.id);
-                        return Ok(next.call(req).await?.map_into_left_body());
+            if let Some(token) = req.cookie(AUTH_COOKIE) {
+                if let Ok(claims) = utils::decode_token(&$secret_key, token.value()) {
+                    if claims.exp < chrono::Utc::now().timestamp() as usize {
+                        let cookie = utils::get_cookie_with_expired_token();
+                        let response = HttpResponse::Unauthorized().cookie(cookie).finish();
+                        return Ok(req.into_response(response).map_into_right_body());
                     }
+
+                    req.extensions_mut().insert(claims.id);
+                    return Ok(next.call(req).await?.map_into_left_body());
                 }
             }
 
-            let response = HttpResponse::Unauthorized().json(Response {
-                message: Status::Incorrect("Unauthorized"),
-                payload: None::<()>,
-            });
-
+            let response = HttpResponse::Unauthorized().finish();
             Ok(req.into_response(response).map_into_right_body())
         }
     };

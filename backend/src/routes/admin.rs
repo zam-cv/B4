@@ -1,11 +1,5 @@
-use crate::{
-    config::CONFIG,
-    database::Database,
-    models,
-    routes::{signin, Response, Status},
-    utils,
-};
-use actix_web::{cookie::Cookie, error, post, web, HttpResponse, Responder, Result};
+use crate::{config::CONFIG, database::Database, models, routes::signin, utils};
+use actix_web::{error, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -35,13 +29,7 @@ pub async fn register(
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
             if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
-                let cookie = Cookie::build("token", &token)
-                    .http_only(true)
-                    .secure(true)
-                    .same_site(actix_web::cookie::SameSite::Strict)
-                    .path("/")
-                    .finish();
-
+                let cookie = utils::get_cookie_with_token(&token);
                 return Ok(HttpResponse::Ok().cookie(cookie).finish());
             }
         }
@@ -50,6 +38,23 @@ pub async fn register(
     }
 
     Err(error::ErrorBadRequest("Failed"))
+}
+
+#[get("")]
+pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<impl Responder> {
+    if let Some(id) = req.extensions().get::<i32>() {
+        let admin = database
+            .get_admin_by_id(*id)
+            .await
+            .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+        return match admin {
+            Some(admin) => Ok(HttpResponse::Ok().json(admin)),
+            None => Ok(HttpResponse::NotFound().finish()),
+        };
+    }
+
+    Ok(HttpResponse::Unauthorized().finish())
 }
 
 #[post("/crops")]
@@ -62,8 +67,5 @@ pub async fn create_crop_type(
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: None::<()>,
-    }))
+    Ok(HttpResponse::Ok().finish())
 }

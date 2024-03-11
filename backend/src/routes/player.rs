@@ -1,7 +1,4 @@
-use crate::{
-    database::Database,
-    routes::{Response, Status},
-};
+use crate::database::Database;
 use actix_web::{error, get, web, Responder, Result};
 
 #[get("/{id}")]
@@ -15,8 +12,5 @@ pub async fn get_player(
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: Some(player),
-    }))
+    Ok(web::Json(player))
 }

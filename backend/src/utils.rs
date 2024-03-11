@@ -1,4 +1,5 @@
 use crate::config;
+use actix_web::cookie::{self, Cookie};
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
@@ -37,6 +38,28 @@ pub fn decode_token(secret_key: &String, token: &str) -> anyhow::Result<Claims> 
     )?;
 
     Ok(token_data.claims)
+}
+
+/// The function `get_cookie_with_expired_token` creates a cookie with an expired token.
+pub fn get_cookie_with_expired_token() -> Cookie<'static> {
+    Cookie::build("token", "")
+        .http_only(true)
+        .secure(true)
+        .same_site(cookie::SameSite::Strict)
+        .path("/")
+        .expires(cookie::time::OffsetDateTime::now_utc() - cookie::time::Duration::days(1))
+        .finish()
+}
+
+/// The function `get_cookie_with_token` in Rust creates a cookie with a specified token value and
+/// additional security settings.
+pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
+    Cookie::build("token", token)
+        .http_only(true)
+        .secure(true)
+        .same_site(cookie::SameSite::Strict)
+        .path("/")
+        .finish()
 }
 
 #[cfg(test)]

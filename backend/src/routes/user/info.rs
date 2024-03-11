@@ -1,8 +1,5 @@
-use crate::{
-    database::Database,
-    routes::{Response, Status},
-};
-use actix_web::{error, get, web, Responder, Result};
+use crate::database::Database;
+use actix_web::{error, get, web, HttpResponse, Responder, Result};
 
 #[get("")]
 pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
@@ -11,10 +8,7 @@ pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> 
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: Some(users),
-    }))
+    Ok(HttpResponse::Ok().json(users))
 }
 
 #[get("/{id}")]
@@ -28,10 +22,10 @@ pub async fn get_user(
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: Some(user),
-    }))
+    match user {
+        Some(user) => Ok(HttpResponse::Ok().json(user)),
+        None => Ok(HttpResponse::NotFound().finish()),
+    }
 }
 
 #[get("/statistics/{id}")]
@@ -45,8 +39,5 @@ pub async fn get_user_statistics(
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-    Ok(web::Json(Response {
-        message: Status::Success,
-        payload: Some(statistics),
-    }))
+    Ok(HttpResponse::Ok().json(statistics))
 }

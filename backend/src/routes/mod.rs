@@ -1,25 +1,9 @@
-use serde::{Deserialize, Serialize};
+use crate::utils;
+use actix_web::{delete, HttpResponse};
 
 pub mod admin;
 pub mod player;
 pub mod user;
-
-#[derive(Serialize)]
-pub enum Status<'a> {
-    Success,
-    Incorrect(&'a str),
-}
-
-#[derive(Serialize)]
-pub struct Response<'a, T> {
-    pub message: Status<'a>,
-    pub payload: Option<T>,
-}
-
-#[derive(Serialize, Deserialize)]
-struct Credentials {
-    token: String,
-}
 
 macro_rules! signin {
     ($table:ident, $secret_key:expr) => {
@@ -36,13 +20,7 @@ macro_rules! signin {
                     {
                         if let Some(id) = user.id {
                             if let Ok(token) = utils::create_token(&$secret_key, id) {
-                                let cookie = Cookie::build("token", &token)
-                                    .http_only(true)
-                                    .secure(true)
-                                    .same_site(actix_web::cookie::SameSite::Strict)
-                                    .path("/")
-                                    .finish();
-                                
+                                let cookie = utils::get_cookie_with_token(&token);
                                 return HttpResponse::Ok().cookie(cookie).finish();
                             }
                         }
@@ -56,3 +34,9 @@ macro_rules! signin {
 }
 
 pub(crate) use signin;
+
+#[delete("/signout")]
+pub async fn signout() -> HttpResponse {
+    let cookie = utils::get_cookie_with_expired_token();
+    HttpResponse::Ok().cookie(cookie).finish()
+}

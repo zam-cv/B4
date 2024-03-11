@@ -3,13 +3,13 @@ use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-#[derive(Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
 #[diesel(table_name = schema::admins)]
 pub struct Admin {
-    #[serde(skip_deserializing)]
+    #[serde(skip_deserializing, skip_serializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
     #[validate(email)]
