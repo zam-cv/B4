@@ -1,4 +1,3 @@
-use crate::socket::server::Command;
 use actix::prelude::*;
 use actix_web_actors::ws;
 use serde::Serialize;
@@ -19,7 +18,7 @@ pub struct Captacion {
 
 pub struct Viewer {
     pub visitor_count: Arc<AtomicUsize>,
-    pub tx: Arc<Sender<Command>>,
+    pub tx: Arc<Sender<()>>,
 }
 
 impl Handler<Message> for Viewer {
@@ -49,21 +48,9 @@ impl Actor for Viewer {
         let visitor_count = self.visitor_count.clone();
 
         task::spawn(async move {
-            while let Ok(cmd) = rx.recv().await {
-                match cmd {
-                    Command::Connect(_, _) => {
-                        visitor_count.fetch_add(1, Ordering::SeqCst);
-                    }
-                    Command::Disconnect(_) => {
-                        visitor_count.fetch_sub(1, Ordering::SeqCst);
-                    }
-                    _ => {
-                        continue;
-                    }
-                }
-
+            while let Ok(_) = rx.recv().await {
                 let captacion = Captacion {
-                    visitor_count: visitor_count.clone().load(Ordering::SeqCst)
+                    visitor_count: visitor_count.load(Ordering::SeqCst)
                 };
 
                 if let Ok(text) = serde_json::to_string(&captacion) {

@@ -8,7 +8,9 @@ export default function Socket(
 ) {
   if (plataform === "browser") {
     const socket = new WebSocket(url);
-    socket.onmessage = event as any;
+    socket.onmessage = (message) => {
+      event(message.data);
+    };
   } else if (token) {
     WebSocketTauri.default
       .connect(url, {

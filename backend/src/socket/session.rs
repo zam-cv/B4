@@ -2,8 +2,13 @@ use crate::{
     database::Database,
     socket::server::{Command, ServerHandle},
 };
+use tokio::sync::broadcast::Sender;
 use actix::prelude::*;
 use actix_web_actors::ws;
+use std::sync::{
+    atomic::{AtomicUsize, Ordering},
+    Arc,
+};
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -22,6 +27,8 @@ pub struct Session {
     pub id: i32,
     pub srv: ServerHandle,
     pub database: Database,
+    pub visitor_count: Arc<AtomicUsize>,
+    pub viewer_tx: Sender<()>,
 }
 
 impl Handler<Response> for Session {
@@ -48,14 +55,25 @@ impl Actor for Session {
     /// the actor. It is typically used to interact with the actor system, send messages, access the
     /// actor's address, and manage the actor's lifecycle.
     fn started(&mut self, ctx: &mut Self::Context) {
-        if self.srv.tx.send(Command::Connect(self.id, ctx.address())).is_err() {
+        if self
+            .srv
+            .tx
+            .send(Command::Connect(self.id, ctx.address()))
+            .is_err()
+        {
             ctx.stop();
         }
+
+        self.visitor_count.fetch_add(1, Ordering::SeqCst);
+        let _ = self.viewer_tx.send(());
     }
 
     /// The function `stopping` sends a `Disconnect` message to an address and returns `Running::Stop`.
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
         let _ = self.srv.tx.send(Command::Disconnect(self.id));
+        self.visitor_count.fetch_sub(1, Ordering::SeqCst);
+        let _ = self.viewer_tx.send(());
+
         Running::Stop
     }
 }

@@ -5,7 +5,7 @@ import { PlatformContext } from "../contexts/Platform";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 
-interface Data {
+interface Captacion {
   visitor_count: number;
 }
 
@@ -23,9 +23,8 @@ export default function Dashboard() {
         platform ?? "",
         SOCKET_URL,
         (message: any) => {
-          const data: Data = JSON.parse(message.data);
-          console.log(data);
-          setActive(data.visitor_count);
+          const captacion: Captacion = JSON.parse(message);
+          setActive(captacion.visitor_count);
         },
         token as string
       );
@@ -51,7 +50,7 @@ export default function Dashboard() {
           <div className="text-gray-500 font-bold text-lg">activos</div>
         </div>
         <div className="flex items-baseline">
-          <div className="text-red-700 font-bold text-2xl mr-3">{inactive}</div>
+          <div className="text-red-700 font-bold text-2xl mr-3">{inactive - active}</div>
           <div className="text-gray-500 font-bold text-lg">inactivos</div>
         </div>
       </div>

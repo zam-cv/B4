@@ -1,4 +1,4 @@
-use crate::{database::Database, socket::server::Command};
+use crate::database::Database;
 use actix_web::{web, Error, HttpMessage, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
 use std::sync::{atomic::AtomicUsize, Arc};
@@ -13,6 +13,8 @@ pub async fn server_index(
     req: HttpRequest,
     stream: web::Payload,
     srv: web::Data<server::ServerHandle>,
+    visitor_count: web::Data<Arc<AtomicUsize>>,
+    viewer_tx: web::Data<Sender<()>>,
     database: web::Data<Database>,
 ) -> Result<HttpResponse, Error> {
     // The id was obtained from the token when authenticating
@@ -20,8 +22,10 @@ pub async fn server_index(
         return ws::start(
             session::Session {
                 id: *id,
+                visitor_count: visitor_count.get_ref().clone(),
                 srv: srv.get_ref().clone(),
                 database: database.get_ref().clone(),
+                viewer_tx: viewer_tx.get_ref().clone(),
             },
             &req,
             stream,
@@ -35,11 +39,12 @@ pub async fn server_index(
 pub async fn viewer_index(
     req: HttpRequest,
     stream: web::Payload,
-    tx: web::Data<Sender<Command>>,
+    visitor_count: web::Data<Arc<AtomicUsize>>,
+    tx: web::Data<Sender<()>>,
 ) -> Result<HttpResponse, Error> {
     ws::start(
         viewer::Viewer {
-            visitor_count: Arc::new(AtomicUsize::new(0)),
+            visitor_count: visitor_count.get_ref().clone(),
             tx: tx.into_inner(),
         },
         &req,

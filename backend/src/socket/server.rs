@@ -8,7 +8,7 @@ use crate::{
 };
 use actix::prelude::*;
 use std::collections::HashMap;
-use tokio::sync::{broadcast::Sender, mpsc};
+use tokio::sync::mpsc;
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -95,7 +95,7 @@ impl Server {
         }
     }
 
-    pub async fn run(&mut self, viewer_tx: Sender<Command>) {
+    pub async fn run(&mut self) {
         while let Some(cmd) = self.rx.recv().await {
             match &cmd {
                 Command::Connect(id, addr) => {
@@ -108,8 +108,6 @@ impl Server {
                     self.message(id, text).await;
                 }
             }
-
-            let _ = viewer_tx.send(cmd);
         }
     }
 }
