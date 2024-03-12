@@ -1,12 +1,43 @@
-use crate::{config::CONFIG, database::Database, models, routes::signin, utils};
+use crate::{config::CONFIG, database::Database, models, utils};
 use actix_web::{error, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
 };
+use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-signin!(get_admin_by_email, CONFIG.admin_secret_key);
+#[derive(Serialize, Deserialize)]
+pub struct Info {
+    pub token: String,
+    pub admin: models::Admin,
+}
+
+#[post("/signin")]
+pub async fn signin(
+    database: web::Data<Database>,
+    profile: web::Json<models::Admin>,
+) -> impl Responder {
+    if let Ok(Some(admin)) = database.get_admin_by_email(profile.email.clone()).await {
+        if let Ok(password) = PasswordHash::new(&admin.password) {
+            if Argon2::default()
+                .verify_password(profile.password.as_bytes(), &password)
+                .is_ok()
+            {
+                if let Some(id) = admin.id {
+                    if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
+                        let cookie = utils::get_cookie_with_token(&token);
+                        return HttpResponse::Ok()
+                            .cookie(cookie)
+                            .json(Info { token, admin });
+                    }
+                }
+            }
+        }
+    }
+
+    HttpResponse::Unauthorized().body("Username or password is incorrect")
+}
 
 #[post("/register")]
 pub async fn register(

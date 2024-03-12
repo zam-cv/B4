@@ -13,8 +13,8 @@ use tokio::{sync::broadcast::Sender, task};
 pub struct Message(pub String);
 
 #[derive(Serialize)]
-pub struct Captacion<'a> {
-    pub visitor_count: &'a AtomicUsize,
+pub struct Captacion {
+    pub visitor_count: usize,
 }
 
 pub struct Viewer {
@@ -36,16 +36,17 @@ impl Actor for Viewer {
     fn started(&mut self, ctx: &mut Self::Context) {
         let mut rx = self.tx.subscribe();
         let addr = ctx.address();
-        let visitor_count = self.visitor_count.clone();
 
         let captacion = Captacion {
-            visitor_count: &visitor_count,
+            visitor_count: self.visitor_count.load(Ordering::SeqCst)
         };
 
         // Send the initial visitor count
         if let Ok(text) = serde_json::to_string(&captacion) {
             addr.do_send(Message(text));
         }
+
+        let visitor_count = self.visitor_count.clone();
 
         task::spawn(async move {
             while let Ok(cmd) = rx.recv().await {
@@ -62,7 +63,7 @@ impl Actor for Viewer {
                 }
 
                 let captacion = Captacion {
-                    visitor_count: &visitor_count,
+                    visitor_count: visitor_count.clone().load(Ordering::SeqCst)
                 };
 
                 if let Ok(text) = serde_json::to_string(&captacion) {

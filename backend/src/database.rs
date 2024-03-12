@@ -104,6 +104,11 @@ impl Database {
         .await
     }
 
+    pub async fn get_players_count(&self) -> anyhow::Result<i64> {
+        self.query_wrapper(move |conn| schema::players::table.count().get_result::<i64>(conn))
+            .await
+    }
+
     #[allow(dead_code)]
     pub async fn update_user(&self, user: models::User) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {

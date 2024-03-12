@@ -14,3 +14,13 @@ pub async fn get_player(
 
     Ok(web::Json(player))
 }
+
+#[get("/count")]
+pub async fn get_players_count(database: web::Data<Database>) -> Result<impl Responder> {
+    let count = database
+        .get_players_count()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(web::Json(count))
+}

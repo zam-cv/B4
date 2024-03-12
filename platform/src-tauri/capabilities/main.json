@@ -9,6 +9,8 @@
     "window:default",
     "window:allow-start-dragging",
     "app:default",
+    "websocket:default",
+    "websocket:allow-connect",
     "os:allow-platform",
     "resources:default",
     "menu:default",

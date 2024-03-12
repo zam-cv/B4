@@ -2,9 +2,35 @@ import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, AuthContextType } from "../contexts/AuthContext";
+import { invoke } from "@tauri-apps/api/core";
 
 export interface Admin {
   email: string;
+}
+
+export interface Info {
+  token: string;
+  admin: Admin;
+}
+
+export async function getToken(): Promise<string | null> {
+  try {
+    return await invoke("get_token", {});
+  } catch (_) {
+    return null;
+  }
+}
+
+export async function setToken(token: string) {
+  try {
+    await invoke("set_token", { token });
+  } catch (_) {}
+}
+
+export async function deleteToken() {
+  try {
+    await invoke("delete_token", {});
+  } catch (_) {}
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -33,8 +59,10 @@ export function useProvideAuth() {
         },
         { withCredentials: true }
       )
-      .then((_) => {
+      .then(({ data }: { data: Info }) => {
         setIsAuthenticated(true);
+        setAdmin(data.admin);
+        setToken(data.token);
         setLoading(false);
       })
       .catch((error) => {
@@ -48,6 +76,8 @@ export function useProvideAuth() {
       .delete(`${API_URL}/auth/signout`, { withCredentials: true })
       .then((_) => {
         setIsAuthenticated(false);
+        setAdmin(null);
+        deleteToken();
       })
       .catch((error) => {
         console.error(error);
@@ -55,19 +85,24 @@ export function useProvideAuth() {
   };
 
   useEffect(() => {
-    axios
-      .get(`${API_URL}/auth`, { withCredentials: true })
-      .then(({ data: Admin }) => {
-        setIsAuthenticated(true);
-        setAdmin(Admin);
-        setLoading(false);
-      })
-      .catch((_) => {
-        setIsAuthenticated(false);
-        setLoading(false);
-      });
-
-    console.log("Auth provider mounted");
+    (async () => {
+      axios
+        .get(`${API_URL}/auth`, {
+          withCredentials: true,
+          headers: {
+            token: await getToken(),
+          },
+        })
+        .then(({ data }: { data: Admin }) => {
+          setIsAuthenticated(true);
+          setAdmin(data);
+          setLoading(false);
+        })
+        .catch((_) => {
+          setIsAuthenticated(false);
+          setLoading(false);
+        });
+    })();
   }, []);
 
   return {

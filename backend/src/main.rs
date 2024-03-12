@@ -92,7 +92,11 @@ async fn main() -> std::io::Result<()> {
                                     )
                                     .service(
                                         web::scope("/player")
-                                            .service(routes::player::get_player),
+                                            .service(routes::player::get_player)
+                                    )
+                                    .service(
+                                        web::scope("/players")
+                                            .service(routes::player::get_players_count),
                                     )
                                     .service(
                                         web::scope("/data")

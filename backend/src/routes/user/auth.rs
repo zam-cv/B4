@@ -2,7 +2,6 @@ use crate::{
     config::{self, CONFIG},
     database::Database,
     models,
-    routes::signin,
     utils,
 };
 use actix_web::{error, post, web, HttpRequest, HttpResponse, Responder, Result};
@@ -13,7 +12,29 @@ use argon2::{
 use validator::Validate;
 use woothee::parser::Parser;
 
-signin!(get_user_by_email, CONFIG.user_secret_key);
+#[post("/signin")]
+pub async fn signin(
+    database: web::Data<Database>,
+    profile: web::Json<models::Admin>,
+) -> impl Responder {
+    if let Ok(Some(user)) = database.get_user_by_email(profile.email.clone()).await {
+        if let Ok(password) = PasswordHash::new(&user.password) {
+            if Argon2::default()
+                .verify_password(profile.password.as_bytes(), &password)
+                .is_ok()
+            {
+                if let Some(id) = user.id {
+                    if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
+                        let cookie = utils::get_cookie_with_token(&token);
+                        return HttpResponse::Ok().cookie(cookie).finish();
+                    }
+                }
+            }
+        }
+    }
+
+    HttpResponse::Unauthorized().body("Username or password is incorrect")
+}
 
 #[post("/register")]
 pub async fn register(

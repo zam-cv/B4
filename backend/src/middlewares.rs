@@ -6,6 +6,7 @@ use actix_web::{
 };
 use actix_web_lab::middleware::Next;
 
+const AUTH_HEADER: &str = "token";
 const AUTH_COOKIE: &str = "token";
 
 macro_rules! auth {
@@ -14,8 +15,13 @@ macro_rules! auth {
             req: ServiceRequest,
             next: Next<impl MessageBody + 'static>,
         ) -> Result<ServiceResponse<impl MessageBody>, Error> {
-            if let Some(token) = req.cookie(AUTH_COOKIE) {
-                if let Ok(claims) = utils::decode_token(&$secret_key, token.value()) {
+            let token = match req.headers().get(AUTH_HEADER) {
+                Some(token) => token.to_str().ok().map(|s| s.to_string()),
+                None => req.cookie(AUTH_COOKIE).map(|cookie| cookie.value().to_string()),
+            };
+
+            if let Some(token) = token {
+                if let Ok(claims) = utils::decode_token(&$secret_key, &token) {
                     if claims.exp < chrono::Utc::now().timestamp() as usize {
                         let cookie = utils::get_cookie_with_expired_token();
                         let response = HttpResponse::Unauthorized().cookie(cookie).finish();
