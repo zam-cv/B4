@@ -7,6 +7,7 @@ pub struct Config {
     pub user_secret_key: String,
     pub admin_secret_key: String,
     pub database_url: String,
+    pub ipinfo_token: String,
 }
 
 lazy_static! {
@@ -22,6 +23,7 @@ lazy_static! {
             user_secret_key: env::var("USER_SECRET_KEY").expect("USER_SECRET_KEY must be set"),
             admin_secret_key: env::var("ADMIN_SECRET_KEY").expect("ADMIN_SECRET_KEY must be set"),
             database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
+            ipinfo_token: env::var("IPINFO_TOKEN").expect("IPINFO_TOKEN must be set"),
         }
     };
 }

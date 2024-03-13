@@ -27,6 +27,7 @@ pub struct User {
     #[serde(skip_deserializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    #[validate(length(max = 15))]
     pub user_type: String,
     #[validate(length(min = 1))]
     pub username: String,
@@ -34,15 +35,19 @@ pub struct User {
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
-    #[validate(range(min = 1))]
-    pub age: i32,
+    #[validate(length(max = 15))]
     pub gender: String,
     #[serde(skip_deserializing)]
-    pub ip: Option<String>,
-    #[serde(skip_deserializing)]
+    #[validate(length(max = 15))]
     pub os: Option<String>,
     #[serde(skip_deserializing, skip_serializing)]
-    pub player_id: i32
+    pub player_id: i32,
+    #[serde(skip_deserializing)]
+    pub latitude: Option<f64>,
+    #[serde(skip_deserializing)]
+    pub longitude: Option<f64>,
+    #[validate(range(min = 1920, max = 3000))]
+    pub year_of_birth: i32,
 }
 
 #[derive(Clone, Deserialize, Serialize)]

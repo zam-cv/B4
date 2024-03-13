@@ -19,11 +19,12 @@ CREATE TABLE `users`(
 	`username` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(255) NOT NULL,
 	`password` VARCHAR(150) NOT NULL,
-	`age` INTEGER NOT NULL,
 	`gender` VARCHAR(15) NOT NULL,
-	`ip` VARCHAR(30),
 	`os` VARCHAR(50),
 	`player_id` INTEGER NOT NULL,
+	`longitude` FLOAT4(30),
+	`latitude` FLOAT4(30),
+	`year_of_birth` INTEGER NOT NULL,
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
 

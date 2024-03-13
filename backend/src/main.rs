@@ -1,10 +1,10 @@
-use crate::{database::Database, socket::server::Server};
+use crate::{database::Database, socket::server::Server, config::CONFIG};
 use actix_cors::Cors;
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
-use config::CONFIG;
-use std::sync::{atomic::AtomicUsize, Arc};
+use ip2location::DB;
+use std::sync::{atomic::AtomicUsize, Arc, Mutex};
 use tokio::sync::broadcast;
 
 #[allow(dead_code, unused_imports, private_interfaces)]
@@ -18,6 +18,8 @@ mod schema;
 mod socket;
 mod utils;
 
+const IPV6BIN: &str = "assets/IP2LOCATION-LITE-DB5.IPV6.BIN";
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
@@ -26,6 +28,9 @@ async fn main() -> std::io::Result<()> {
 
     let bank = bank::Bank::new();
     log::info!("Bank created");
+
+    let location_db = Arc::new(Mutex::new(DB::from_file(IPV6BIN).unwrap()));
+    log::info!("Location database connected");
 
     let database = Database::new();
     log::info!("Database connected");
@@ -42,6 +47,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .wrap(cors)
+            .app_data(web::Data::new(location_db.clone()))
             .app_data(web::Data::new(database.clone()))
             .app_data(web::Data::new(server_tx.clone()))
             .app_data(web::Data::new(viewer_tx_clone.clone()))

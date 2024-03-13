@@ -80,14 +80,14 @@ diesel::table! {
         email -> Varchar,
         #[max_length = 150]
         password -> Varchar,
-        age -> Integer,
         #[max_length = 15]
         gender -> Varchar,
-        #[max_length = 30]
-        ip -> Nullable<Varchar>,
         #[max_length = 50]
         os -> Nullable<Varchar>,
         player_id -> Integer,
+        longitude -> Nullable<Double>,
+        latitude -> Nullable<Double>,
+        year_of_birth -> Integer,
     }
 }
 

@@ -6,7 +6,7 @@ User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:70.0) Gecko/2010010
   "username": "{{username}}",
   "email": "{{email}}",
   "password": "{{password}}",
-  "age": {{age}},
+  "year_of_birth": {{year_of_birth}},
   "gender": "{{gender}}"
 }
 HTTP 200
