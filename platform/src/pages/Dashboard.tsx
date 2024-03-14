@@ -4,8 +4,9 @@ import Socket from "../utils/socket";
 import { PlatformContext } from "../contexts/Platform";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import UsersTable from "../components/UsersTable";
+import UsersTable, { Payment } from "../components/UsersTable";
 import PlayerInfo from "../components/PlayerInfo";
+import Map from "../components/Map";
 
 interface Captacion {
   visitor_count: number;
@@ -13,6 +14,7 @@ interface Captacion {
 
 export default function Dashboard() {
   const [userId, setUserId] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<Payment | null>(null);
   const { platform } = useContext(PlatformContext);
   const [active, setActive] = useState(0);
   const [inactive, setInactive] = useState(0);
@@ -56,9 +58,14 @@ export default function Dashboard() {
       </div>
       <div className="pt-5 grid grid-cols-2 grid-rows-3 gap-5">
         <div className="row-span-3">
-          <UsersTable setUserId={setUserId} />
+          <UsersTable setUserId={setUserId} setUserInfo={setUserInfo} />
         </div>
-        <div className="bg-slate-300 row-span-2"></div>
+        <div>
+          
+        </div>
+        <div>
+          <Map userInfo={userInfo} />
+        </div>
         <div>
           <PlayerInfo userId={userId} />
         </div>

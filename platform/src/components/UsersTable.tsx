@@ -5,7 +5,7 @@ import { DataTable } from "./DataTable";
 import { getConfig } from "../utils/auth";
 import axios from "axios";
 
-type Payment = {
+export type Payment = {
   id: string;
   username: string;
   user_type: string;
@@ -13,6 +13,8 @@ type Payment = {
   gender: string;
   age: number;
   os: string;
+  latitude: number;
+  longitude: number;
 };
 
 export const columns: ColumnDef<Payment>[] = [
@@ -55,8 +57,10 @@ async function getData(): Promise<Payment[]> {
 
 export default function PlayersTable({
   setUserId,
+  setUserInfo
 }: {
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
+  setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>;
 }) {
   const [data, setData] = useState<Payment[]>([]);
 
@@ -64,5 +68,5 @@ export default function PlayersTable({
     getData().then(setData);
   }, []);
 
-  return <DataTable columns={columns} data={data} setUserId={setUserId} />;
+  return <DataTable columns={columns} data={data} setUserId={setUserId} setUserInfo={setUserInfo} />;
 }
