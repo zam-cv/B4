@@ -2,7 +2,7 @@ import { API_URL } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
-import { getToken } from "../hooks/useAuth";
+import { getConfig } from "../utils/auth";
 import axios from "axios";
 
 type Payment = {
@@ -44,25 +44,25 @@ export const columns: ColumnDef<Payment>[] = [
 
 async function getData(): Promise<Payment[]> {
   let date = new Date();
-
-  let users = await axios.get(`${API_URL}/users`, {
-    withCredentials: true,
-    headers: { token: await getToken() },
-  });
+  let users = await axios.get(`${API_URL}/users`, await getConfig());
 
   users.data.forEach((user: any) => {
     user.age = date.getFullYear() - user.year_of_birth;
-  })
+  });
 
   return users.data;
 }
 
-export default function PlayersTable() {
+export default function PlayersTable({
+  setUserId,
+}: {
+  setUserId: React.Dispatch<React.SetStateAction<string | null>>;
+}) {
   const [data, setData] = useState<Payment[]>([]);
 
   useEffect(() => {
     getData().then(setData);
   }, []);
 
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columns} data={data} setUserId={setUserId} />;
 }

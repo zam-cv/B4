@@ -1,23 +1,25 @@
 import { SOCKET_URL, API_URL } from "../utils/constants";
-import { getToken } from "../hooks/useAuth";
+import { getConfig } from "../utils/auth";
 import Socket from "../utils/socket";
 import { PlatformContext } from "../contexts/Platform";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UsersTable from "../components/UsersTable";
+import PlayerInfo from "../components/PlayerInfo";
 
 interface Captacion {
   visitor_count: number;
 }
 
 export default function Dashboard() {
+  const [userId, setUserId] = useState<string | null>(null);
   const { platform } = useContext(PlatformContext);
   const [active, setActive] = useState(0);
   const [inactive, setInactive] = useState(0);
 
   useEffect(() => {
     (async () => {
-      const token = await getToken();
+      const config = await getConfig();
       if (!platform) return;
 
       Socket(
@@ -27,16 +29,11 @@ export default function Dashboard() {
           const captacion: Captacion = JSON.parse(message);
           setActive(captacion.visitor_count);
         },
-        token as string
+        config.headers.token as string
       );
 
       axios
-        .get(`${API_URL}/players/count`, {
-          withCredentials: true,
-          headers: {
-            token,
-          },
-        })
+        .get(`${API_URL}/players/count`, config)
         .then(({ data }: { data: any }) => {
           setInactive(data);
         });
@@ -57,12 +54,14 @@ export default function Dashboard() {
           <div className="text-gray-500 font-bold text-lg">inactivos</div>
         </div>
       </div>
-      <div className="py-5 grid grid-cols-2 grid-rows-3 gap-5">
+      <div className="pt-5 grid grid-cols-2 grid-rows-3 gap-5">
         <div className="row-span-3">
-          <UsersTable />
+          <UsersTable setUserId={setUserId} />
         </div>
         <div className="bg-slate-300 row-span-2"></div>
-        <div className="bg-slate-300"></div>
+        <div>
+          <PlayerInfo userId={userId} />
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, AuthContextType } from "../contexts/AuthContext";
-import { invoke } from "@tauri-apps/api/core";
+import { getToken, setToken, deleteToken } from "../utils/auth";
 
 export interface Admin {
   email: string;
@@ -11,26 +11,6 @@ export interface Admin {
 export interface Info {
   token: string;
   admin: Admin;
-}
-
-export async function getToken(): Promise<string | null> {
-  try {
-    return await invoke("get_token", {});
-  } catch (_) {
-    return null;
-  }
-}
-
-export async function setToken(token: string) {
-  try {
-    await invoke("set_token", { token });
-  } catch (_) {}
-}
-
-export async function deleteToken() {
-  try {
-    await invoke("delete_token", {});
-  } catch (_) {}
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
