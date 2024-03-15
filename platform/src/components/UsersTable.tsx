@@ -44,7 +44,10 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-async function getData(): Promise<Payment[]> {
+async function getData(
+  setUserId: React.Dispatch<React.SetStateAction<string | null>>,
+  setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>
+): Promise<Payment[]> {
   let date = new Date();
   let users = await axios.get(`${API_URL}/users`, await getConfig());
 
@@ -52,12 +55,14 @@ async function getData(): Promise<Payment[]> {
     user.age = date.getFullYear() - user.year_of_birth;
   });
 
+  setUserId(users.data[0].id);
+  setUserInfo(users.data[0]);
   return users.data;
 }
 
-export default function PlayersTable({
+export default function UsersTable({
   setUserId,
-  setUserInfo
+  setUserInfo,
 }: {
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
   setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>;
@@ -65,8 +70,15 @@ export default function PlayersTable({
   const [data, setData] = useState<Payment[]>([]);
 
   useEffect(() => {
-    getData().then(setData);
+    getData(setUserId, setUserInfo).then(setData);
   }, []);
 
-  return <DataTable columns={columns} data={data} setUserId={setUserId} setUserInfo={setUserInfo} />;
+  return (
+    <DataTable
+      columns={columns}
+      data={data}
+      setUserId={setUserId}
+      setUserInfo={setUserInfo}
+    />
+  );
 }

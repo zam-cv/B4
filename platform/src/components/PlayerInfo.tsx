@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { API_URL } from "../utils/constants";
 import { getConfig } from "../utils/auth";
+import { Payment } from "./UsersTable";
 
 interface Player {
   current_cycle: number;
@@ -10,7 +11,21 @@ interface Player {
   max_plots: number;
 }
 
-export default function PlayerInfo({ userId }: { userId: string | null }) {
+function Field({ title, value }: { title: string; value: string | number }) {
+  return (
+    <div className="flex text-base">
+      <span className="font-bold pr-3">{title}:</span> <p>{value}</p>
+    </div>
+  );
+}
+
+export default function PlayerInfo({
+  userId,
+  userInfo,
+}: {
+  userId: string | null;
+  userInfo: Payment | null;
+}) {
   const [player, setPlayer] = useState<Player | null>(null);
 
   useEffect(() => {
@@ -27,24 +42,23 @@ export default function PlayerInfo({ userId }: { userId: string | null }) {
 
   return (
     player && (
-      <div className="grid grid-cols-2 grid-rows-2 h-full p-5">
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-xl font-bold text-center pb-5">Ciclo actual</h2>
-          <p>{player.current_cycle}</p>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-xl font-bold text-center pb-5">Puntaje actual</h2>
-          <p>{player.current_score}</p>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-xl font-bold text-center pb-5">Saldo actual</h2>
-          <p>{player.current_balance}</p>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-xl font-bold text-center pb-5">Máximo numero de parcelas</h2>
-          <p>{player.max_plots}</p>
-        </div>
+      <div className="grid grid-cols-2 h-full p-5">
+        <Field title="Nombre de usuario" value={userInfo?.username ?? ""} />
+        <Field title="Tipo de usuario" value={userInfo?.user_type ?? ""} />
+        <Field title="Correo electrónico" value={userInfo?.email ?? ""} />
+        <Field title="Genero" value={userInfo?.gender ?? ""} />
+        <Field title="Edad" value={userInfo?.age.toString() as any} />
+        <Field title="Sistema operativo" value={userInfo?.os ?? ""} />
+        <Field title="Latitud" value={userInfo?.latitude.toString() as any} />
+        <Field title="Longitud" value={userInfo?.longitude.toString() as any} />
+        <Field title="Ciclo actual" value={player.current_cycle.toString()} />
+        <Field title="Puntaje actual" value={player.current_score.toString()} />
+        <Field title="Saldo actual" value={player.current_balance.toString()} />
+        <Field
+          title="Máximo numero de parcelas"
+          value={player.max_plots.toString()}
+        />
       </div>
     )
-  )
+  );
 }

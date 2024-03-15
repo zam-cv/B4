@@ -7,6 +7,12 @@ import axios from "axios";
 import UsersTable, { Payment } from "../components/UsersTable";
 import PlayerInfo from "../components/PlayerInfo";
 import Map from "../components/Map";
+import Statistics from "../components/Statistics";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 interface Captacion {
   visitor_count: number;
@@ -56,19 +62,39 @@ export default function Dashboard() {
           <div className="text-gray-500 font-bold text-lg">inactivos</div>
         </div>
       </div>
-      <div className="pt-5 grid grid-cols-2 grid-rows-3 gap-5">
-        <div className="row-span-3">
-          <UsersTable setUserId={setUserId} setUserInfo={setUserInfo} />
-        </div>
-        <div>
-          
-        </div>
-        <div>
-          <Map userInfo={userInfo} />
-        </div>
-        <div>
-          <PlayerInfo userId={userId} />
-        </div>
+      <div className="p-5">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="rounded-lg border"
+        >
+          <ResizablePanel defaultSize={50}>
+            <div className="p-5">
+              <UsersTable setUserId={setUserId} setUserInfo={setUserInfo} />
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={50}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={40}>
+                <div>
+                  <Map userInfo={userInfo} />
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={30}>
+                <div className="h-full p-5">
+                  <Statistics />
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={30}>
+                <div>
+                  <PlayerInfo userId={userId} userInfo={userInfo} />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </div>
   );

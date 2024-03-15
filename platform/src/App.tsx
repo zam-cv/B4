@@ -3,7 +3,10 @@ import { platform } from "@tauri-apps/plugin-os";
 import { PlatformContext } from "./contexts/Platform";
 import { AuthProvider } from "./hooks/useAuth";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { initChart } from "./utils/chart";
 import Layout from "./components/Layout";
+
+initChart();
 
 // pages
 import Dashboard from "./pages/Dashboard";
