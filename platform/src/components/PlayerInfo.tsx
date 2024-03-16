@@ -47,10 +47,10 @@ export default function PlayerInfo({
         <Field title="Tipo de usuario" value={userInfo?.user_type ?? ""} />
         <Field title="Correo electrónico" value={userInfo?.email ?? ""} />
         <Field title="Genero" value={userInfo?.gender ?? ""} />
-        <Field title="Edad" value={userInfo?.age.toString() as any} />
+        <Field title="Edad" value={userInfo?.age ?? 0} />
         <Field title="Sistema operativo" value={userInfo?.os ?? ""} />
-        <Field title="Latitud" value={userInfo?.latitude.toString() as any} />
-        <Field title="Longitud" value={userInfo?.longitude.toString() as any} />
+        <Field title="Latitud" value={userInfo?.latitude ?? 0} />
+        <Field title="Longitud" value={userInfo?.longitude ?? 0} />
         <Field title="Ciclo actual" value={player.current_cycle.toString()} />
         <Field title="Puntaje actual" value={player.current_score.toString()} />
         <Field title="Saldo actual" value={player.current_balance.toString()} />

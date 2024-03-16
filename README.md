@@ -6,6 +6,7 @@ Qrops is a 2D video game that combines entertainment with education, allowing pl
 
 ### Prerequisites
 
+- [Nix](https://nixos.org/download.html)
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [Git](https://git-scm.com/downloads)
@@ -22,7 +23,9 @@ cd B4
 For Development:
 
 ```bash
-docker-compose --profile dev up
+nix-shell
+cd backend
+cargo run --release
 ```
 
 For Production:
