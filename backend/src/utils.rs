@@ -2,6 +2,7 @@ use crate::config;
 use actix_web::cookie::{self, Cookie};
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+use woothee::parser::Parser;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -60,6 +61,12 @@ pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
         .same_site(cookie::SameSite::Strict)
         .path("/")
         .finish()
+}
+
+// The function `get_os` in Rust returns the operating system of the user based on the user agent.
+pub fn get_os(user_agent: &str) -> Option<String> {
+    let parser = Parser::new();
+    parser.parse(user_agent).map(|ua| ua.os.to_string())
 }
 
 #[cfg(test)]

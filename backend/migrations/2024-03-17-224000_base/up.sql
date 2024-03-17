@@ -15,11 +15,11 @@ CREATE TABLE `players`(
 
 CREATE TABLE `users`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`user_type` VARCHAR(20) NOT NULL,
+	`user_type` ENUM('inversionista', 'agricultor') NOT NULL,
 	`username` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(255) NOT NULL,
 	`password` VARCHAR(150) NOT NULL,
-	`gender` VARCHAR(15) NOT NULL,
+	`gender` ENUM('m', 'f') NOT NULL,
 	`os` VARCHAR(50),
 	`player_id` INTEGER NOT NULL,
 	`longitude` FLOAT4(30),
@@ -66,3 +66,4 @@ CREATE TABLE `plots`(
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
+

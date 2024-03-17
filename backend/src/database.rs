@@ -1,4 +1,4 @@
-use crate::{config::CONFIG, models, schema};
+use crate::{config::{self, CONFIG}, models, schema};
 use actix_web::web;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
@@ -165,8 +165,16 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_player(&self, new_player: models::Player) -> anyhow::Result<i32> {
+    pub async fn create_player(&self) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
+            let new_player = models::Player {
+                id: None,
+                current_cycle: 0,
+                current_score: config::INITIAL_SCORE,
+                current_balance: config::INITIAL_BALANCE,
+                max_plots: config::INITIAL_MAX_PLOTS,
+            };
+
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::players::table)
                     .values(&new_player)

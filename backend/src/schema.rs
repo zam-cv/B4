@@ -1,6 +1,9 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     admins (id) {
         id -> Integer,
         #[max_length = 50]
@@ -11,6 +14,9 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     crop_types (name) {
         #[max_length = 50]
         name -> Varchar,
@@ -19,6 +25,9 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     insurance (id) {
         id -> Integer,
         #[max_length = 10]
@@ -29,6 +38,9 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     loans (id) {
         id -> Integer,
         #[max_length = 10]
@@ -42,6 +54,9 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     players (id) {
         id -> Integer,
         current_cycle -> Integer,
@@ -52,6 +67,9 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     plots (id) {
         id -> Integer,
         #[max_length = 50]
@@ -61,6 +79,9 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     statistics (id) {
         id -> Integer,
         cycle -> Integer,
@@ -70,18 +91,21 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::exports::*;
+
     users (id) {
         id -> Integer,
-        #[max_length = 20]
-        user_type -> Varchar,
+        #[max_length = 13]
+        user_type -> UserType,
         #[max_length = 50]
         username -> Varchar,
         #[max_length = 255]
         email -> Varchar,
         #[max_length = 150]
         password -> Varchar,
-        #[max_length = 15]
-        gender -> Varchar,
+        #[max_length = 1]
+        gender -> Gender,
         #[max_length = 50]
         os -> Nullable<Varchar>,
         player_id -> Integer,

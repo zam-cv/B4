@@ -1,8 +1,4 @@
-use crate::{
-    config::{self, CONFIG},
-    database::Database,
-    models, utils,
-};
+use crate::{config::CONFIG, database::Database, models, utils};
 use actix_web::{error, post, web, HttpRequest, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
@@ -11,7 +7,6 @@ use argon2::{
 use ipinfo::{IpInfo, IpInfoConfig};
 use std::sync::{Arc, Mutex};
 use validator::Validate;
-use woothee::parser::Parser;
 
 #[post("/signin")]
 pub async fn signin(
@@ -50,29 +45,19 @@ pub async fn register(
 
     if let Ok(hash) = utils::get_hash!(user.password) {
         if let Ok(None) = database.get_user_by_email(user.email.clone()).await {
-            let parser = Parser::new();
-
             let ip = req.peer_addr().map(|addr| addr.ip());
             log::debug!("IP: {:?}", ip);
 
-            let os = if let Some(user_agent) = req.headers().get("user-agent") {
-                if let Ok(user_agent) = user_agent.to_str() {
-                    parser.parse(user_agent).map(|ua| ua.os.to_string())
-                } else {
-                    None
-                }
-            } else {
-                None
-            };
+            let os = req
+                .headers()
+                .get("user-agent")
+                .map(|ua| ua.to_str().ok())
+                .flatten()
+                .map(|user_agent| utils::get_os(user_agent))
+                .flatten();
 
             let player_id = database
-                .create_player(models::Player {
-                    id: None,
-                    current_cycle: 0,
-                    current_score: config::INITIAL_SCORE,
-                    current_balance: config::INITIAL_BALANCE,
-                    max_plots: config::INITIAL_MAX_PLOTS,
-                })
+                .create_player()
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 

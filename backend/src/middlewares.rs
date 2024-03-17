@@ -1,4 +1,4 @@
-use crate::{utils, CONFIG};
+use crate::{config::CONFIG, utils};
 use actix_web::{
     body::MessageBody,
     dev::{ServiceRequest, ServiceResponse},
@@ -17,7 +17,9 @@ macro_rules! auth {
         ) -> Result<ServiceResponse<impl MessageBody>, Error> {
             let token = match req.headers().get(AUTH_HEADER) {
                 Some(token) => token.to_str().ok().map(|s| s.to_string()),
-                None => req.cookie(AUTH_COOKIE).map(|cookie| cookie.value().to_string()),
+                None => req
+                    .cookie(AUTH_COOKIE)
+                    .map(|cookie| cookie.value().to_string()),
             };
 
             if let Some(token) = token {

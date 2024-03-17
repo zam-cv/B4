@@ -2,6 +2,22 @@ use crate::schema;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
+use diesel_derive_enum::DbEnum;
+use rand_derive::Rand;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(DbEnum, Serialize, Deserialize, Rand)]
+pub enum Gender {
+    M,
+    F
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(DbEnum, Serialize, Deserialize, Rand)]
+pub enum UserType {
+    Inversionista,
+    Agricultor
+}
 
 #[derive(Serialize, Deserialize, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable)]
@@ -18,7 +34,7 @@ pub struct Admin {
     pub password: String,
 }
 
-#[derive(Clone, Deserialize, Serialize, Validate)]
+#[derive(Clone, Deserialize, Serialize, Validate, Debug, PartialEq)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -27,16 +43,14 @@ pub struct User {
     #[serde(skip_deserializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
-    #[validate(length(max = 15))]
-    pub user_type: String,
-    #[validate(length(min = 1))]
+    pub user_type: UserType,
+    #[validate(length(min = 1, max = 20))]
     pub username: String,
     #[validate(email)]
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
-    #[validate(length(max = 15))]
-    pub gender: String,
+    pub gender: Gender,
     #[serde(skip_deserializing)]
     #[validate(length(max = 15))]
     pub os: Option<String>,
@@ -142,4 +156,9 @@ pub struct Plot {
     pub crop_type_id: Option<String>,
     #[serde(skip_serializing)]
     pub player_id: i32
+}
+
+pub(crate) mod exports {
+    pub use super::GenderMapping as Gender;
+    pub use super::UserTypeMapping as UserType;
 }
