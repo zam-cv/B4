@@ -23,15 +23,73 @@ cd B4
 For Development:
 
 ```bash
+docker run -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 -d mysql:8.0
+```
+
+```bash
 nix-shell
 cd backend
-cargo run --release
+cargo run
 ```
 
 For Production:
 
 ```bash
 docker-compose --profile prod up
+```
+
+### Using the platform
+
+For Development:
+
+```bash
+nix-shell
+cd backend
+cargo run
+```
+
+```bash
+nix-shell
+cd platform
+npm install
+npm run dev
+```
+
+For Production:
+
+```bash
+docker-compose --profile prod up
+```
+
+```bash
+cd platform
+npm install
+npm run tauri build
+```
+
+### Environment Variables
+
+Example of variables in the backend:
+
+```bash
+# backend/.env
+
+HOST = 0.0.0.0
+PORT = 8080
+USER_SECRET_KEY = user_secret_key
+ADMIN_SECRET_KEY = admin_secret_key
+DATABASE_URL = mysql://root:root@127.0.0.1:3307/game
+IPINFO_TOKEN = ipinfo_token
+```
+
+Example of variables in the platform:
+
+```bash
+# platform/.env
+
+VITE_APP_SERVER_HOST = "localhost"
+VITE_APP_SERVER_PORT = 8080
+VITE_APP_API_ROUTE = "/api/admin"
 ```
 
 ## Usage

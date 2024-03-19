@@ -1,7 +1,7 @@
 {
   "productName": "platform",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.verqor.dev",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
