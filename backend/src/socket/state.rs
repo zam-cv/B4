@@ -1,7 +1,11 @@
 use crate::{
+    bank::Bank,
     database::Database,
     models,
-    socket::session::{self, Session},
+    socket::{
+        context::Context,
+        session::{self, Session},
+    },
 };
 use actix::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -16,12 +20,14 @@ pub struct CycleData {
 pub enum Request {
     Cycle(CycleData),
     CreateCropSection,
+    // TODO: Add more
 }
 
 #[derive(Serialize)]
 pub enum Response {
     Init(models::Player),
     CycleResolved,
+    // TODO: Add more
 }
 
 pub struct State {
@@ -53,24 +59,34 @@ impl State {
         anyhow::bail!("User not found");
     }
 
-    // Send a message to the user
-    pub fn send(&self, response: Response) -> anyhow::Result<()> {
-        self.session
-            .do_send(session::Response::String(serde_json::to_string(&response)?));
-        Ok(())
-    }
-
     // Send user data at startup
     pub fn init(&self) -> anyhow::Result<()> {
         self.send(Response::Init(self.player.clone()))
     }
 
+    // Send a message to the user
+    pub fn send(&self, response: Response) -> anyhow::Result<()> {
+        let response = serde_json::to_string(&response)?;
+        self.session.do_send(session::Response::String(response));
+        Ok(())
+    }
+
     // resolve the user's cycle request
     pub async fn resolve_cycle<'a>(
         &mut self,
-        _: CycleData,
+        cycle_data: CycleData,
         database: &'a Database,
+        bank: &'a Bank,
     ) -> anyhow::Result<()> {
+        let context = Context {
+            id_user: &self.id,
+            database,
+            player: &mut self.player,
+            plots: &mut self.plots,
+            session: &self.session,
+        };
+
+        bank.handle_cycle(&cycle_data, context);
         self.player.current_cycle += 1;
         self.send(Response::CycleResolved)?;
 
@@ -91,11 +107,12 @@ impl State {
         &mut self,
         message: &str,
         database: &'a Database,
+        bank: &'a Bank,
     ) -> anyhow::Result<()> {
         if let Ok(request) = serde_json::from_str::<Request>(message) {
             match request {
                 Request::Cycle(data) => {
-                    self.resolve_cycle(data, database).await?;
+                    self.resolve_cycle(data, database, bank).await?;
                 }
                 Request::CreateCropSection => {
                     log::debug!("Create crop section");

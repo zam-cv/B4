@@ -8,6 +8,7 @@ pub mod server;
 pub mod session;
 pub mod state;
 pub mod viewer;
+pub mod context;
 
 pub async fn server_index(
     req: HttpRequest,

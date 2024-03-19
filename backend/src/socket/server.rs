@@ -91,7 +91,7 @@ impl Server {
         log::debug!("Message from {}: {}", id, text);
 
         if let Some(state) = self.sessions.get_mut(id) {
-            let _ = state.handle_message(text, &self.database).await;
+            let _ = state.handle_message(text, &self.database, &self.bank).await;
         }
     }
 

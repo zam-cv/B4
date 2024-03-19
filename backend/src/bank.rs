@@ -1,3 +1,4 @@
+use crate::socket::{context::Context, state::CycleData};
 use lazy_static::lazy_static;
 use rand::Rng;
 use regex::Regex;
@@ -11,8 +12,6 @@ lazy_static! {
 
 const NUMBER_OF_RANDOM_EVENTS: usize = 4;
 const PATH: &str = "./assets/sentences.json";
-
-pub struct Context;
 
 enum Getter {
     Basic(fn(Vec<String>) -> String),
@@ -60,7 +59,7 @@ impl Bank {
         Bank { getters, sentences }
     }
 
-    pub fn create_sentence(&self) -> String {
+    pub fn handle_cycle<'a>(&self, _: &'a CycleData, mut context: Context<'a>) -> String {
         let mut sentences = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
         let events = [&self.sentences.positive, &self.sentences.negative];
 
@@ -73,24 +72,21 @@ impl Bank {
             for (key, value) in &sentence.getters {
                 if let Some(captures) = GETTER_REGEX.captures(value) {
                     let name = captures.get(1).map_or("", |m| m.as_str());
-                let args: Vec<String> = captures
-                    .get(2)
-                    .map_or("", |m| m.as_str())
-                    .split(',')
-                    .map(|s| s.to_string())
-                    .collect();
+                    let args: Vec<String> = captures
+                        .get(2)
+                        .map_or("", |m| m.as_str())
+                        .split(',')
+                        .map(|s| s.to_string())
+                        .collect();
 
-                if let Some(handler) = self.getters.get(name) {
-                    let result = match handler {
-                        Getter::Basic(handler) => handler(args),
-                        Getter::Advanced(handler) => {
-                            let mut context = Context;
-                            handler(&mut context, args)
-                        }
-                    };
+                    if let Some(handler) = self.getters.get(name) {
+                        let result = match handler {
+                            Getter::Basic(handler) => handler(args),
+                            Getter::Advanced(handler) => handler(&mut context, args),
+                        };
 
-                    values.insert(key, result);
-                }
+                        values.insert(key, result);
+                    }
                 }
             }
 
@@ -102,17 +98,5 @@ impl Bank {
         }
 
         String::from("This is a sentence")
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_create_sentence() {
-        let bank = Bank::new();
-        let sentence = bank.create_sentence();
-        println!("{}", sentence);
     }
 }
