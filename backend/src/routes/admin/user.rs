@@ -1,16 +1,18 @@
 use crate::database::Database;
 use actix_web::{error, get, web, HttpResponse, Responder, Result};
 
-#[get("")]
-pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
-    let users = database
-        .get_users()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+const CONTEXT_PATH: &str = "/api/admin/user";
 
-    Ok(HttpResponse::Ok().json(users))
-}
-
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The user was found", body = User),
+    (status = 404, description = "The user was not found")
+  ),
+  params(
+    ("id" = u64, Path, description = "The id of the user")
+  )
+)]
 #[get("/{id}")]
 pub async fn get_user(
     database: web::Data<Database>,
@@ -28,6 +30,16 @@ pub async fn get_user(
     }
 }
 
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The user was found", body = Vec<StatisticsSample>),
+    (status = 404, description = "The user was not found")
+  ),
+  params(
+    ("id" = u64, Path, description = "The id of the user")
+  )
+)]
 #[get("/statistics/{id}")]
 pub async fn get_user_statistics(
     database: web::Data<Database>,

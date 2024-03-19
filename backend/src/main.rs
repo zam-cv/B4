@@ -9,6 +9,7 @@ mod routes;
 mod schema;
 mod socket;
 mod utils;
+mod docs;
 
 #[cfg(test)]
 mod tests;

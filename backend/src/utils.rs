@@ -69,6 +69,12 @@ pub fn get_os(user_agent: &str) -> Option<String> {
     parser.parse(user_agent).map(|ua| ua.os.to_string())
 }
 
+// This function makes the field not show when responding the structure in a request 
+// but it does show in the documentation api
+pub fn always_skip<T>(_: &T) -> bool {
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

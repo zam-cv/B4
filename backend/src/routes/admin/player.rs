@@ -1,6 +1,17 @@
 use crate::database::Database;
 use actix_web::{error, get, web, Responder, Result};
 
+const CONTEXT_PATH: &str = "/api/admin/player";
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The player was found", body = Player)
+  ),
+  params(
+    ("id" = u64, Path, description = "The id of the player")
+  )
+)]
 #[get("/{id}")]
 pub async fn get_player(
     database: web::Data<Database>,
@@ -13,14 +24,4 @@ pub async fn get_player(
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(web::Json(player))
-}
-
-#[get("/count")]
-pub async fn get_players_count(database: web::Data<Database>) -> Result<impl Responder> {
-    let count = database
-        .get_players_count()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
-    Ok(web::Json(count))
 }

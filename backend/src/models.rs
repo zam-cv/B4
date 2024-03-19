@@ -1,25 +1,26 @@
-use crate::schema;
+use crate::{schema, utils};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 use diesel_derive_enum::DbEnum;
 use rand_derive::Rand;
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize, Rand)]
 pub enum Gender {
     M,
     F
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize, Rand)]
 pub enum UserType {
     Inversionista,
     Agricultor
 }
 
-#[derive(Serialize, Deserialize, Validate)]
+#[derive(Serialize, Deserialize, Validate, ToSchema)]
 #[derive(Queryable, Selectable, Identifiable, Insertable)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -34,7 +35,7 @@ pub struct Admin {
     pub password: String,
 }
 
-#[derive(Clone, Deserialize, Serialize, Validate, Debug, PartialEq)]
+#[derive(Clone, Deserialize, Serialize, Validate, Debug, PartialEq, ToSchema)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -48,7 +49,7 @@ pub struct User {
     pub username: String,
     #[validate(email)]
     pub email: String,
-    #[serde(skip_serializing)]
+    #[serde(skip_serializing_if = "utils::always_skip")]
     pub password: String,
     pub gender: Gender,
     #[serde(skip_deserializing)]
@@ -64,7 +65,7 @@ pub struct User {
     pub year_of_birth: i32,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize, ToSchema)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -114,7 +115,7 @@ pub struct Insurance {
     pub loan_id: i32,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToSchema)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, Associations)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -130,7 +131,7 @@ pub struct StatisticsSample {
     pub player_id: i32
 }
 
-#[derive(Deserialize, Validate)]
+#[derive(Deserialize, Validate, ToSchema)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(name))]

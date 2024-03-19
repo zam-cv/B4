@@ -12,6 +12,7 @@ initChart();
 import Dashboard from "./pages/Dashboard";
 import Distribution from "./pages/Distribution";
 import Emails from "./pages/Emails";
+import Docs from "./pages/Docs";
 
 function App() {
   const [platformName, setPlatform] = useState<string | null>(null);
@@ -36,6 +37,7 @@ function App() {
               <Route path="/distribution" element={<Distribution />} />
               <Route path="/emails" element={<Emails />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/docs" element={<Docs />} />
             </Route>
           </Routes>
         </BrowserRouter>

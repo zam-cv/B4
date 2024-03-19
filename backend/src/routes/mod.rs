@@ -1,12 +1,20 @@
-use crate::utils;
-use actix_web::{delete, HttpResponse};
+use crate::models::Admin;
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+use validator::Validate;
 
 pub mod admin;
-pub mod player;
-pub mod user;
+pub mod auth;
 
-#[delete("/signout")]
-pub async fn signout() -> HttpResponse {
-    let cookie = utils::get_cookie_with_expired_token();
-    HttpResponse::Ok().cookie(cookie).finish()
+#[derive(Deserialize, ToSchema, Validate)]
+pub struct Credentials {
+    #[validate(email)]
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Serialize, Deserialize, ToSchema)]
+pub struct Info {
+    pub token: String,
+    pub admin: Admin,
 }

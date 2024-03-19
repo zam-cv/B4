@@ -23,6 +23,7 @@ export default function Header() {
         <Sub title="Dashboard" route="/dashboard" />
         <Sub title="Distribución" route="/distribution" />
         <Sub title="Correos" route="/emails" />
+        <Sub title="Documentación" route="/docs" />
       </div>
       <div className="flex items-center">
         <span

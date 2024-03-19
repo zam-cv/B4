@@ -1,5 +1,5 @@
-use crate::{config::CONFIG, database::Database, models, utils};
-use actix_web::{error, post, web, HttpRequest, HttpResponse, Responder, Result};
+use crate::{config::CONFIG, database::Database, models, utils, routes};
+use actix_web::{delete, error, post, web, HttpRequest, HttpResponse, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -8,10 +8,20 @@ use ipinfo::{IpInfo, IpInfoConfig};
 use std::sync::{Arc, Mutex};
 use validator::Validate;
 
+const CONTEXT_PATH: &str = "/api/auth";
+
+#[utoipa::path(
+    context_path = CONTEXT_PATH,
+    responses(
+        (status = 201, description = "The credentials were correct"),
+        (status = 401, description = "The credentials were incorrect")
+    ),
+    request_body = Credentials
+)]
 #[post("/signin")]
 pub async fn signin(
     database: web::Data<Database>,
-    profile: web::Json<models::Admin>,
+    profile: web::Json<routes::Credentials>,
 ) -> impl Responder {
     if let Ok(Some(user)) = database.get_user_by_email(profile.email.clone()).await {
         if let Ok(password) = PasswordHash::new(&user.password) {
@@ -32,6 +42,14 @@ pub async fn signin(
     HttpResponse::Unauthorized().body("Username or password is incorrect")
 }
 
+#[utoipa::path(
+    context_path = CONTEXT_PATH,
+    responses(
+        (status = 200, description = "The user was created"),
+        (status = 401, description = "The email already exists")
+    ),
+    request_body = User
+)]
 #[post("/register")]
 pub async fn register(
     req: HttpRequest,
@@ -120,4 +138,14 @@ pub async fn register(
     }
 
     Err(actix_web::error::ErrorBadRequest("Failed"))
+}
+
+#[utoipa::path(
+    context_path = CONTEXT_PATH,
+    responses((status = 200, description = "The user was signed out"))
+)]
+#[delete("/signout")]
+pub async fn signout() -> HttpResponse {
+    let cookie = utils::get_cookie_with_expired_token();
+    HttpResponse::Ok().cookie(cookie).finish()
 }
