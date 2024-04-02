@@ -1,0 +1,70 @@
+{
+  "positive": [
+    {
+      "getters": {
+        "product": "getProductRandom()",
+        "percentage": "getValueRandom(1, 100)"
+      },
+      "value": "Tu mercancia de ${product.name} incremento en un ${percentage}%",
+      "handlers": [
+        "incrementMoneyWithPriceAndPercentage(product.price, percentage)"
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "getters": {
+        "product": "getProductRandom()",
+        "percentage": "getValueRandom(1, 100)"
+      },
+      "value": "Tu mercancia de ${product.name} decremento en un ${percentage}%",
+      "handlers": [
+        "decrementMoneyWithPriceAndPercentage(product.price, percentage)"
+      ]
+    },
+    {
+      "getters": {
+        "product": "",
+        "percentage": ""
+      },
+      "value": "Tu mercancia se pudrio, perdiste el 100% de tu mercancia",
+      "handlers": ["decrementMoneyWithPriceAndPercentage(product.price, 100)"]
+    },
+    {
+      "getters": {
+        "product": "",
+        "percentage": "getValueRandom(1, 100)"
+      },
+      "value": "Te han robado, perdiste el ${percentage}% de tu mercancia",
+      "handlers": [
+        "decrementMoneyWithPriceAndPercentage(product.price, percentage)"
+      ]
+    }
+  ],
+  "default": [
+    {
+      "getters": {
+        "money": "getMoney()"
+      },
+      "value": "Haz tenido una ganancia de ${money} en el dia de hoy!",
+      "handlers": ["incrementMoney(money)"]
+    },
+    {
+      "getters": {
+        "debt": "getDebt()"
+      },
+      "value": "Ha llegado el dia de pagar la deuda, pagas ${debt}",
+      "handlers": ["decrementMoney(debt)"]
+    }
+  ],
+  "tips": [
+    "Verqor es la fintech del sector agrícola. La solución digital todo en uno para el sector agrícola en México. Proporcionamos una plataforma única para que los agricultores accedan a crédito formal, insumos de calidad y compradores de productos, junto con asesoramiento de expertos.",
+    "Seguridad alimentaria se refiere a la capacidad de todas las personas en todo momento de tener acceso a suficientes alimentos inocuos y nutritivos para satisfacer sus necesidades dietéticas y preferencias alimentarias que les permita llevar una vida activa y saludable.",
+    "Rendimiento es la cantidad de masa (toneladas) producidas por área (hectárea) generadas para un cultivo dado.",
+    "Prácticas regenerativas son prácticas que mejoran las condiciones productivas de una parcela con un daño mínimo o impacto positivo hacia el medio ambiente. Las prácticas adecuadas para una parcela dependen de su geografía y del cultivo, pero algunos ejemplos son: agricultura bajo sombra, rotación de cultivos, incorporación de cultivos de cobertura, cercas vivientes, sistemas silvopastoriles, labranza de conservación o cero labranza, y el uso de biodigestores.",
+    "Parcela es la superficie de tierra donde se siembra, crece y cosecha el cultivo",
+    "Ciclo productivo es el tiempo que tarda un cultivo desde que inicia la preparación de la tierra donde se generará la producción, hasta que se cosecha.",
+    "Agroinsumos son todos los consumibles a utilizar en el proceso productivo, desde fertilizantes, agroquímicos o equipo como lonas o plásticos, cintillas, etc.",
+    "Parcela es la superficie de tierra donde se siembra, crece y cosecha el cultivo."
+  ]
+}
