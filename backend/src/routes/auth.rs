@@ -54,7 +54,7 @@ pub async fn signin(
 pub async fn register(
     req: HttpRequest,
     database: web::Data<Database>,
-    location_db: web::Data<Arc<Mutex<ip2location::DB>>>,
+    location_db: web::Data<Option<Arc<Mutex<ip2location::DB>>>>,
     mut user: web::Json<models::User>,
 ) -> Result<impl Responder> {
     if let Err(_) = user.validate() {
@@ -113,11 +113,13 @@ pub async fn register(
 
                 // If the IP lookup fails, use the location database
                 if !accepted {
-                    if let Ok(mut location_db) = location_db.lock() {
-                        if let Ok(ip2location::Record::LocationDb(rec)) = location_db.ip_lookup(ip)
-                        {
-                            user.latitude = rec.latitude.map(|lat| lat as f64);
-                            user.longitude = rec.longitude.map(|long| long as f64);
+                    if let Some(location_db) = location_db.get_ref() {
+                        if let Ok(mut location_db) = location_db.lock() {
+                            if let Ok(ip2location::Record::LocationDb(rec)) = location_db.ip_lookup(ip)
+                            {
+                                user.latitude = rec.latitude.map(|lat| lat as f64);
+                                user.longitude = rec.longitude.map(|long| long as f64);
+                            }
                         }
                     }
                 }

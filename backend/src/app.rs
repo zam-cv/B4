@@ -20,7 +20,13 @@ pub async fn app() -> std::io::Result<()> {
     let bank = bank::Bank::new();
     log::info!("Bank created");
 
-    let location_db = Arc::new(Mutex::new(DB::from_file(IPV6BIN).unwrap()));
+    // let location_db = Arc::new(Mutex::new(DB::from_file(IPV6BIN).unwrap()));
+    let location_db = if let Ok(db) = DB::from_file(IPV6BIN) {
+        Some(Arc::new(Mutex::new(db)))
+    } else {
+        log::warn!("Failed to load location database, using empty database");
+        None
+    };
     log::info!("Location database connected");
 
     let database = Database::new();
