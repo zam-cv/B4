@@ -18,6 +18,15 @@ git clone https://github.com/zam-cv/B4
 cd B4
 ```
 
+#### Windows Installation (WSL)
+
+```powershell
+wsl --install
+ubuntu
+sudo apt install libssl-dev pkg-config
+nix-env -iA nixpkgs.diesel-cli
+```
+
 ### Running the game
 
 For Development:
