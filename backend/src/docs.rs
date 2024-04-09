@@ -20,12 +20,13 @@ use utoipa::OpenApi;
         routes::admin::users::get_users,
     ),
     components(schemas(
-        routes::Credentials,
+        routes::UserCredentials,
+        routes::AdminCredentials,
         models::User,
         models::Gender,
         models::UserType,
         models::Admin,
-        routes::Info,
+        routes::AdminInfo,
         models::CropType,
         models::Player,
         models::StatisticsSample

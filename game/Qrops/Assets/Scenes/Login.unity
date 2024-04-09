@@ -339,7 +339,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 170486927}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 763907619}
+        m_TargetAssemblyTypeName: Login, Assembly-CSharp
+        m_MethodName: AttemptLogin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &170486927
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -885,6 +897,8 @@ GameObject:
   - component: {fileID: 763907617}
   - component: {fileID: 763907616}
   - component: {fileID: 763907615}
+  - component: {fileID: 763907619}
+  - component: {fileID: 763907620}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -979,6 +993,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &763907619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763907614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e84d0e7a7cc04080b11df3881ed4275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  username: {fileID: 2093076099}
+  password: {fileID: 266938821}
+--- !u!114 &763907620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763907614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 793fc62b6f5b14b45ad3945fdf499c02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &813034591
 GameObject:
   m_ObjectHideFlags: 0
@@ -1281,7 +1321,7 @@ GameObject:
   - component: {fileID: 1179632788}
   - component: {fileID: 1179632787}
   m_Layer: 5
-  m_Name: Login (1)
+  m_Name: Others
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

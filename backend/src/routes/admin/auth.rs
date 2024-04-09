@@ -45,7 +45,7 @@ pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<imp
 #[post("/signin")]
 pub async fn signin(
     database: web::Data<Database>,
-    profile: web::Json<routes::Credentials>,
+    profile: web::Json<routes::AdminCredentials>,
 ) -> impl Responder {
     if let Ok(Some(admin)) = database.get_admin_by_email(profile.email.clone()).await {
         if let Ok(password) = PasswordHash::new(&admin.password) {
@@ -58,7 +58,7 @@ pub async fn signin(
                         let cookie = utils::get_cookie_with_token(&token);
                         return HttpResponse::Ok()
                             .cookie(cookie)
-                            .json(routes::Info { token, admin });
+                            .json(routes::AdminInfo { token, admin });
                     }
                 }
             }
@@ -79,7 +79,7 @@ pub async fn signin(
 #[post("/register")]
 pub async fn register(
     database: web::Data<Database>,
-    admin: web::Json<routes::Credentials>,
+    admin: web::Json<routes::AdminCredentials>,
 ) -> Result<impl Responder> {
     if let Err(_) = admin.validate() {
         return Ok(HttpResponse::Unauthorized().body("Invalid"));
