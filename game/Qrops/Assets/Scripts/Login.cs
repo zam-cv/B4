@@ -33,8 +33,7 @@ public class Login : MonoBehaviour
 
         string json = JsonUtility.ToJson(user);
 
-        UnityWebRequest request =
-            UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
+        UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
 
         yield return request.SendWebRequest();
 
