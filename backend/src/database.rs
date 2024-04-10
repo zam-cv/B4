@@ -104,6 +104,16 @@ impl Database {
         .await
     }
 
+    pub async fn get_user_by_username(&self, username: String) -> anyhow::Result<Option<models::User>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .filter(schema::users::username.eq(username))
+                .first::<models::User>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn get_players_count(&self) -> anyhow::Result<i64> {
         self.query_wrapper(move |conn| schema::players::table.count().get_result::<i64>(conn))
             .await
