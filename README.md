@@ -33,6 +33,12 @@ nix-env -iA nixpkgs.diesel-cli
 ```
 Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar el repositorio en la carpeta de tu elección dentro de la ruta /mnt/c/Users/TuNombreDeUsuario/
 
+##### SQL Install
+
+´´´bash
+sudo apt install mysql-server
+sudo apt-get install libmysqlclient-dev # Opcional si hay problemas con SQL al ejecutar el backend
+´´´
 
 ### Running the game
 
