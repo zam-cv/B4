@@ -22,10 +22,14 @@ cd B4
 
 ```powershell
 wsl --install
+wsl --list --online  # Permite habilitar las distribuciones de linux disponibles
+wsl --install -d Ubuntu-20.04 # Forma de instalar una distribucion disponible
 ubuntu
 sudo apt install libssl-dev pkg-config
 nix-env -iA nixpkgs.diesel-cli
 ```
+Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar el repositorio en la carpeta 
+
 
 ### Running the game
 
