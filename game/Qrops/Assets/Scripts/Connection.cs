@@ -41,11 +41,11 @@ public class Connection : MonoBehaviour
             {
                 case "Init":
                     State.Instance.scoreText.text = data["current_score"].ToString();
-                    State.Instance.verqorText.text = data["current_balance"].ToString();
-                    State.Instance.coyoteText.text = data["current_balance"].ToString();
-                    State.Instance.cashText.text = data["current_balance"].ToString();
+                    State.Instance.cashText.text = data["balance_cash"].ToString();
+                    State.Instance.verqorText.text = data["balance_verqor"].ToString();
+                    State.Instance.coyoteText.text = data["balance_coyote"].ToString();
                     break;
-                    // Add more cases here
+                    // Add more cases hereb
             }
         };
 

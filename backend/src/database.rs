@@ -181,7 +181,9 @@ impl Database {
                 id: None,
                 current_cycle: 0,
                 current_score: config::INITIAL_SCORE,
-                current_balance: config::INITIAL_BALANCE,
+                balance_cash: config::INITIAL_BALANCE_CASH,
+                balance_verqor: config::INITIAL_BALANCE,
+                balance_coyote: config::INITIAL_BALANCE,
                 max_plots: config::INITIAL_MAX_PLOTS,
             };
 

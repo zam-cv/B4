@@ -61,7 +61,9 @@ diesel::table! {
         id -> Integer,
         current_cycle -> Integer,
         current_score -> Integer,
-        current_balance -> Integer,
+        balance_cash -> Integer,
+        balance_verqor -> Integer,
+        balance_coyote -> Integer,
         max_plots -> Integer,
     }
 }
