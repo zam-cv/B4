@@ -28,7 +28,7 @@ ubuntu
 sudo apt install libssl-dev pkg-config
 nix-env -iA nixpkgs.diesel-cli
 ```
-Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar el repositorio en la carpeta 
+Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar el repositorio en la carpeta de tu elección dentro de la ruta /mnt/c/Users/TuNombreDeUsuario/
 
 
 ### Running the game
