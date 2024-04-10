@@ -77,7 +77,9 @@ pub struct Player {
     pub id: Option<i32>,
     pub current_cycle: i32,
     pub current_score: i32,
-    pub current_balance: i32,
+    pub balance_cash: i32,
+    pub balance_verqor: i32,
+    pub balance_coyote: i32,
     pub max_plots: i32,
 }
 
