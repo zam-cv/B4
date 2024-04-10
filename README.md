@@ -19,12 +19,15 @@ cd B4
 ```
 
 #### Windows Installation (WSL)
-
+_Terminal de PowerShell_
 ```powershell
 wsl --install
 wsl --list --online  # Permite habilitar las distribuciones de linux disponibles
 wsl --install -d Ubuntu-20.04 # Forma de instalar una distribucion disponible
 ubuntu
+sudo apt update
+sudo apt upgrade
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # Para instalar rust
 sudo apt install libssl-dev pkg-config
 nix-env -iA nixpkgs.diesel-cli
 ```
