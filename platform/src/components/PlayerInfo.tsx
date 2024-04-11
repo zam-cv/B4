@@ -7,7 +7,9 @@ import { Payment } from "./UsersTable";
 interface Player {
   current_cycle: number;
   current_score: number;
-  current_balance: number;
+  balance_cash: number;
+  balance_verqor: number;
+  balance_coyote: number;
   max_plots: number;
 }
 
@@ -53,7 +55,15 @@ export default function PlayerInfo({
         <Field title="Longitud" value={userInfo?.longitude ?? 0} />
         <Field title="Ciclo actual" value={player.current_cycle.toString()} />
         <Field title="Puntaje actual" value={player.current_score.toString()} />
-        <Field title="Saldo actual" value={player.current_balance.toString()} />
+        <Field title="Saldo en efectivo" value={player.balance_cash.toString()} />
+        <Field
+          title="Saldo de verqor"
+          value={player.balance_verqor.toString()}
+        />
+        <Field
+          title="Saldo del coyote"
+          value={player.balance_coyote.toString()}
+        />
         <Field
           title="Máximo numero de parcelas"
           value={player.max_plots.toString()}

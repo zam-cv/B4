@@ -1,5 +1,9 @@
 use crate::config;
 use actix_web::cookie::{self, Cookie};
+use argon2::{
+    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
+    Argon2,
+};
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use woothee::parser::Parser;
@@ -17,6 +21,14 @@ macro_rules! get_hash {
 }
 
 pub(crate) use get_hash;
+
+pub fn get_hash_in_string(password: &str) -> anyhow::Result<String> {
+    if let Ok(hash) = get_hash!(password) {
+        Ok(hash.to_string())
+    } else {
+        Err(anyhow::anyhow!("Failed to hash the password"))
+    }
+}
 
 pub fn create_token(secret_key: &String, id: i32) -> anyhow::Result<String> {
     let my_claims = Claims {
@@ -69,7 +81,7 @@ pub fn get_os(user_agent: &str) -> Option<String> {
     parser.parse(user_agent).map(|ua| ua.os.to_string())
 }
 
-// This function makes the field not show when responding the structure in a request 
+// This function makes the field not show when responding the structure in a request
 // but it does show in the documentation api
 pub fn always_skip<T>(_: &T) -> bool {
     true
