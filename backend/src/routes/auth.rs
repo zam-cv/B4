@@ -16,14 +16,14 @@ const CONTEXT_PATH: &str = "/api/auth";
         (status = 201, description = "The credentials were correct"),
         (status = 401, description = "The credentials were incorrect")
     ),
-    request_body = Credentials
+    request_body = UserCredentials
 )]
 #[post("/signin")]
 pub async fn signin(
     database: web::Data<Database>,
-    profile: web::Json<routes::Credentials>,
+    profile: web::Json<routes::UserCredentials>,
 ) -> impl Responder {
-    if let Ok(Some(user)) = database.get_user_by_email(profile.email.clone()).await {
+    if let Ok(Some(user)) = database.get_user_by_username(profile.username.clone()).await {
         if let Ok(password) = PasswordHash::new(&user.password) {
             if Argon2::default()
                 .verify_password(profile.password.as_bytes(), &password)
@@ -32,7 +32,7 @@ pub async fn signin(
                 if let Some(id) = user.id {
                     if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
                         let cookie = utils::get_cookie_with_token(&token);
-                        return HttpResponse::Ok().cookie(cookie).finish();
+                        return HttpResponse::Ok().cookie(cookie).body(token);
                     }
                 }
             }

@@ -104,6 +104,16 @@ impl Database {
         .await
     }
 
+    pub async fn get_user_by_username(&self, username: String) -> anyhow::Result<Option<models::User>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .filter(schema::users::username.eq(username))
+                .first::<models::User>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn get_players_count(&self) -> anyhow::Result<i64> {
         self.query_wrapper(move |conn| schema::players::table.count().get_result::<i64>(conn))
             .await
@@ -171,7 +181,9 @@ impl Database {
                 id: None,
                 current_cycle: 0,
                 current_score: config::INITIAL_SCORE,
-                current_balance: config::INITIAL_BALANCE,
+                balance_cash: config::INITIAL_BALANCE_CASH,
+                balance_verqor: config::INITIAL_BALANCE,
+                balance_coyote: config::INITIAL_BALANCE,
                 max_plots: config::INITIAL_MAX_PLOTS,
             };
 

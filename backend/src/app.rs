@@ -7,20 +7,28 @@ use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
 use ip2location::DB;
+use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
 use std::sync::{atomic::AtomicUsize, Arc, Mutex};
 use tokio::sync::broadcast;
 use utoipa::OpenApi;
 
 const IPV6BIN: &str = "assets/IP2LOCATION-LITE-DB5.IPV6.BIN";
 
+fn get_ssl_acceptor() -> anyhow::Result<SslAcceptorBuilder> {
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls())?;
+    builder.set_private_key_file("cert/key.pem", SslFiletype::PEM)?;
+    builder.set_certificate_chain_file("cert/cert.pem")?;
+    Ok(builder)
+}
+
 pub async fn app() -> std::io::Result<()> {
+    // Create a channel for the viewer
     let (viewer_tx, _) = broadcast::channel::<()>(10);
     let viewer_tx_clone = viewer_tx.clone();
 
     let bank = bank::Bank::new();
     log::info!("Bank created");
 
-    // let location_db = Arc::new(Mutex::new(DB::from_file(IPV6BIN).unwrap()));
     let location_db = if let Ok(db) = DB::from_file(IPV6BIN) {
         Some(Arc::new(Mutex::new(db)))
     } else {
@@ -123,9 +131,17 @@ pub async fn app() -> std::io::Result<()> {
                     .index_file("index.html"),
             )
             .wrap(Logger::default())
-    })
-    .bind(&CONFIG.address)?;
+    });
 
-    log::info!("Server running at http://{}", &CONFIG.address);
+    // SSL configuration
+    let server = if let Ok(builder) = get_ssl_acceptor() {
+        log::info!("SSL configuration loaded");
+        server.bind_openssl(&CONFIG.address, builder)?
+    } else {
+        log::warn!("Failed to load SSL configuration, using insecure connection");
+        server.bind(&CONFIG.address)?
+    };
+
+    log::info!("Server running at https://{}", &CONFIG.address);
     server.run().await
 }

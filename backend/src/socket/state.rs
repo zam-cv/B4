@@ -24,6 +24,7 @@ pub enum Request {
 }
 
 #[derive(Serialize)]
+#[serde(tag = "type")]
 pub enum Response {
     Init(models::Player),
     CycleResolved,

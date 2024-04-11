@@ -9,7 +9,9 @@ CREATE TABLE `players`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`current_cycle` INTEGER NOT NULL,
 	`current_score` INTEGER NOT NULL,
-	`current_balance` INTEGER NOT NULL,
+	`balance_cash` INTEGER NOT NULL,
+	`balance_verqor` INTEGER NOT NULL,
+	`balance_coyote` INTEGER NOT NULL,
 	`max_plots` INTEGER NOT NULL
 );
 
@@ -66,4 +68,3 @@ CREATE TABLE `plots`(
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
-
