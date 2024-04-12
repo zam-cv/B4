@@ -1,4 +1,4 @@
-using System.Collections;
+usin System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -20,6 +20,45 @@ public class Login : MonoBehaviour
         public string password;
     }
 
+    void Start()
+    {
+        // Para borrar el token de la sesión para probar login
+        // PlayerPrefs.DeleteAll();
+
+        if (PlayerPrefs.HasKey("token"))
+        {
+            AttemptAuth();
+        }
+    }
+
+
+
+    public void AttemptAuth()
+    {
+        StartCoroutine(RequestAuth());
+    }
+
+    IEnumerator RequestAuth()
+    {
+        string token = PlayerPrefs.GetString("token");
+        UnityWebRequest request = UnityWebRequest.Get("http://localhost:8080/api/auth");
+        request.SetRequestHeader("token", token);
+
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success && request.responseCode == 200)
+        {
+            // Token es válido
+            Debug.Log("Token validado con éxito: " + request.downloadHandler.text);
+            SceneManager.LoadScene("Game");
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey("token");
+            SceneManager.LoadScene("Login");
+        }
+    }
+
     public void AttemptLogin()
     {
         StartCoroutine(RequestLogin());
@@ -32,25 +71,25 @@ public class Login : MonoBehaviour
         user.password = password.text.ToString();
 
         string json = JsonUtility.ToJson(user);
+        
+            UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
 
-        UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
+            yield return request.SendWebRequest();
 
-        yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string token = request.downloadHandler.text;
+                Context.Instance.AuthToken = token;
 
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            string token = request.downloadHandler.text;
-            Context.Instance.AuthToken = token;
-            SceneManager.LoadScene("Game");
-        }
-        else
-        {
-            print("ERROR: " + request.error);
-        }
-    }
+                PlayerPrefs.SetString("token", token);
+                PlayerPrefs.Save();
 
-    public void GoToSignUp()
-    {
-        SceneManager.LoadScene("SignUp");
+                SceneManager.LoadScene("Game");
+            }
+            else
+            {
+                print("ERROR: " + request.error);
+            }
+
     }
 }
