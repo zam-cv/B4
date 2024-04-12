@@ -1,5 +1,5 @@
 use crate::{
-    bank::Bank,
+    bank::{Bank, core::ResolveCycleData},
     database::Database,
     models,
     socket::{
@@ -28,7 +28,7 @@ pub enum Request {
 #[serde(tag = "type")]
 pub enum Response {
     Init(models::Player),
-    CycleResolved { message: String },
+    CycleResolved(ResolveCycleData),
     // TODO: Add more
 }
 
@@ -88,9 +88,9 @@ impl State {
             session: &self.session,
         };
 
-        let message = bank.handle_cycle(&cycle_data, context);
+        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context);
         self.player.current_cycle += 1;
-        self.send(Response::CycleResolved { message })?;
+        self.send(Response::CycleResolved(resolve_cycle_data))?;
 
         database
             .create_statistics(models::StatisticsSample {

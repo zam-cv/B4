@@ -13,6 +13,7 @@ use lazy_static::lazy_static;
 use rand::Rng;
 use regex::Regex;
 use std::collections::HashMap;
+use serde::Serialize;
 
 type Getter = fn(&mut Context, Vec<String>) -> Result<String>;
 type Handler = fn(&mut Context, Vec<String>) -> Result<()>;
@@ -22,6 +23,12 @@ const SENTENCES: &str = include_str!("../../assets/sentences.json");
 
 lazy_static! {
     static ref IDENT_REGEX: Regex = Regex::new(r"^[a-zA-Z_][a-zA-Z0-9_]*$").unwrap();
+}
+
+#[derive(Serialize)]
+pub struct ResolveCycleData {
+    events: Vec<String>,
+    tip: String
 }
 
 pub struct Bank {
@@ -135,33 +142,36 @@ impl Bank {
         message
     }
 
-    pub fn handle_cycle<'a>(&self, _: &'a CycleData, mut context: Context<'a>) -> String {
-        let mut sentences = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
-        let events = [&self.sentences.positive, &self.sentences.negative];
+    pub fn handle_cycle<'a>(&self, _: &'a CycleData, mut context: Context<'a>) -> ResolveCycleData {
+        let mut events = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
+        let random_events = [&self.sentences.positive, &self.sentences.negative];
         let mut variables = HashMap::new();
 
         for _ in 0..NUMBER_OF_RANDOM_EVENTS {
             // choose a positive or negative event
             let index = rand::thread_rng().gen_range(0..=1);
-            let event: &Vec<Sentence> = events[index];
+            let event: &Vec<Sentence> = random_events[index];
 
             // choose a random sentence
             let sentence = &event[rand::thread_rng().gen_range(0..event.len())];
 
             let message = self.handle_sentence(&sentence, &mut context, &mut variables);
-            sentences.push(message);
+            events.push(message);
         }
 
         // default event
         for sentence in &self.sentences.default {
             let message = self.handle_sentence(&sentence, &mut context, &mut variables);
-            sentences.push(message);
+            events.push(message);
         }
 
         // choose a random tip
-        let tip = rand::thread_rng().gen_range(0..self.sentences.tips.len());
-        sentences.push(self.sentences.tips[tip].to_string());
+        let tip_index = rand::thread_rng().gen_range(0..self.sentences.tips.len());
+        let tip = self.sentences.tips[tip_index].to_string();
 
-        sentences.join("\n")
+        ResolveCycleData {
+            events,
+            tip
+        }
     }
 }
