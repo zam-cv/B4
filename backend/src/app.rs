@@ -110,7 +110,12 @@ pub async fn app() -> std::io::Result<()> {
                         web::scope("/auth")
                             .service(routes::auth::signin)
                             .service(routes::auth::register)
-                            .service(routes::auth::signout),
+                            .service(routes::auth::signout)
+                            .service(
+                                web::scope("")
+                                    .wrap(from_fn(middlewares::user_auth))
+                                    .service(routes::auth::auth),
+                            ),
                     )
                     .service(
                         web::scope("/admin")
