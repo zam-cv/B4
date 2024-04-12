@@ -8,6 +8,7 @@ use utoipa::OpenApi;
         routes::auth::signin,
         routes::auth::register,
         routes::auth::signout,
+        routes::auth::auth,
         routes::admin::auth::auth,
         routes::admin::auth::signin,
         routes::admin::auth::signout,
