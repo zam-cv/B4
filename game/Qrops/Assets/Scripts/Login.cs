@@ -1,4 +1,4 @@
-usin System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,7 +17,6 @@ public class Login : MonoBehaviour
         public string password;
     }
 
-<<<<<<< Updated upstream
     void Start()
     {
         // Para borrar el token de la sesión para probar login
@@ -27,6 +26,9 @@ public class Login : MonoBehaviour
         {
             AttemptAuth();
         }
+
+        username = GameObject.Find("Username").GetComponent<TMP_InputField>();
+        password = GameObject.Find("Password").GetComponent<TMP_InputField>();
     }
 
 
@@ -57,13 +59,6 @@ public class Login : MonoBehaviour
         }
     }
 
-=======
-    public void Start()
-    {
-        username = GameObject.Find("Username").GetComponent<TMP_InputField>();
-        password = GameObject.Find("Password").GetComponent<TMP_InputField>();
-    }
->>>>>>> Stashed changes
     public void AttemptLogin()
     {
         StartCoroutine(RequestLogin());
@@ -81,26 +76,27 @@ public class Login : MonoBehaviour
 
             yield return request.SendWebRequest();
 
+            print(json);
+            
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string token = request.downloadHandler.text;
-                Context.Instance.AuthToken = token;
+                // Context.Instance.AuthToken = token;
 
                 PlayerPrefs.SetString("token", token);
                 PlayerPrefs.Save();
 
                 SceneManager.LoadScene("Game");
+
             }
             else
             {
                 print("ERROR: " + request.error);
             }
+    }
 
-<<<<<<< Updated upstream
-=======
     public void GoToSignUp()
     {
         SceneManager.LoadScene("Registro");
->>>>>>> Stashed changes
     }
 }

@@ -74,7 +74,7 @@ public void Start(){
         if (request.result == UnityWebRequest.Result.Success)
         {
             string token = request.downloadHandler.text;
-            Context.Instance.AuthToken = token;
+            // Context.Instance.AuthToken = token;
             SceneManager.LoadScene("Login");
         }
         else
