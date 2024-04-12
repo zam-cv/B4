@@ -8,7 +8,7 @@ using UnityEditor.Build.Content;
 using UnityEditor.XR;
 using System;
 
-public class SignUp : MonoBehaviour
+public class Registro : MonoBehaviour
 {    
     [SerializeField] private TMP_InputField username;
 

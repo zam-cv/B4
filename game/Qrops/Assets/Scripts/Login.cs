@@ -7,19 +7,17 @@ using TMPro;
 
 public class Login : MonoBehaviour
 {
-    [SerializeField]
-    private TMP_InputField username;
+    [SerializeField] private TMP_InputField username;
 
-    [SerializeField]
-    private TMP_InputField password;
+    [SerializeField] private TMP_InputField password;
 
-    [System.Serializable]
-    public struct UserData
+    [System.Serializable] public struct UserData
     {
         public string username;
         public string password;
     }
 
+<<<<<<< Updated upstream
     void Start()
     {
         // Para borrar el token de la sesión para probar login
@@ -59,6 +57,13 @@ public class Login : MonoBehaviour
         }
     }
 
+=======
+    public void Start()
+    {
+        username = GameObject.Find("Username").GetComponent<TMP_InputField>();
+        password = GameObject.Find("Password").GetComponent<TMP_InputField>();
+    }
+>>>>>>> Stashed changes
     public void AttemptLogin()
     {
         StartCoroutine(RequestLogin());
@@ -91,5 +96,11 @@ public class Login : MonoBehaviour
                 print("ERROR: " + request.error);
             }
 
+<<<<<<< Updated upstream
+=======
+    public void GoToSignUp()
+    {
+        SceneManager.LoadScene("Registro");
+>>>>>>> Stashed changes
     }
 }
