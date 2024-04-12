@@ -2,8 +2,8 @@ use crate::{
     bank::{
         getters, handlers,
         sentences::{
-            build_function_map, raw_sentences_to_sentences, Function, RawSentences, Sentence,
-            SentenceFragment, Sentences,
+            build_function_map, raw_sentences_to_sentences, Argument, Function, RawSentences,
+            Sentence, SentenceFragment, Sentences,
         },
     },
     socket::{context::Context, state::CycleData},
@@ -34,7 +34,8 @@ impl Bank {
     pub fn new() -> Self {
         let sentences: RawSentences = serde_json::from_str(SENTENCES).unwrap();
         let sentences = raw_sentences_to_sentences(sentences);
-        let getters = build_function_map!(Getter, getters, get_money, get_value_random);
+        let getters =
+            build_function_map!(Getter, getters, get_money, get_value_random, get_message);
         let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money);
 
         Bank {
@@ -98,14 +99,16 @@ impl Bank {
                     .args
                     .iter()
                     .map(|arg| {
-                        if IDENT_REGEX.is_match(arg) {
-                            if let Some(Ok(value)) = variables.get(arg) {
-                                value.clone()
-                            } else {
-                                "".to_string()
+                        match arg {
+                            Argument::Ident(ident) => {
+                                if let Some(Ok(value)) = variables.get(ident) {
+                                    value.clone()
+                                } else {
+                                    "".to_string()
+                                }
                             }
-                        } else {
-                            arg.to_string()
+                            Argument::Number(number) => number.to_string(),
+                            Argument::String(string) => string.to_string(),
                         }
                     })
                     .collect();

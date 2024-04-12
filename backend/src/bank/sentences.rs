@@ -6,6 +6,9 @@ use std::collections::HashMap;
 lazy_static! {
     static ref FUNCTION_REGEX: Regex = Regex::new(r"^([A-Za-x].*)\((.*)\)$").unwrap();
     static ref VARIABLES_REGEX: Regex = Regex::new(r"\$\{.*?\}").unwrap();
+    static ref IDENT_REGEX: Regex = Regex::new(r"^[a-zA-Z_][a-zA-Z0-9_]*$").unwrap();
+    static ref NUMBER_REGEX: Regex = Regex::new(r"^-?\d+(\.\d+)?$").unwrap();
+    static ref STRING_REGEX: Regex = Regex::new(r#"^"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'$"#).unwrap();
 }
 
 #[derive(Deserialize)]
@@ -25,9 +28,26 @@ pub struct RawSentences {
 }
 
 #[derive(Debug)]
+pub enum Argument {
+    Number(&'static str),
+    String(&'static str),
+    Ident(&'static str),
+}
+
+impl Argument {
+    pub fn to_string(&self) -> String {
+        match self {
+            Argument::Number(n) => n.to_string(),
+            Argument::String(s) => s.to_string(),
+            Argument::Ident(i) => i.to_string(),
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct Function {
     pub name: &'static str,
-    pub args: Vec<&'static str>,
+    pub args: Vec<Argument>,
 }
 
 #[derive(Debug)]
@@ -54,11 +74,24 @@ pub struct Sentences {
 fn get_function(function: &'static str) -> Function {
     let captures = FUNCTION_REGEX.captures(function).unwrap();
     let name = captures.get(1).map_or("", |m| m.as_str());
-    let args: Vec<&str> = captures
+
+    let args: Vec<Argument> = captures
         .get(2)
         .map_or("", |m| m.as_str())
         .split(',')
-        .map(|arg| arg.trim())
+        .map(str::trim)
+        .filter(|arg| !arg.is_empty())
+        .map(|arg| {
+            if NUMBER_REGEX.is_match(arg) {
+                Argument::Number(arg)
+            } else if STRING_REGEX.is_match(arg) {
+                Argument::String(&arg[1..arg.len()-1])
+            } else if IDENT_REGEX.is_match(arg) {
+                Argument::Ident(arg)
+            } else {
+                panic!("Invalid argument: {}", arg);
+            }
+        })
         .collect();
 
     Function { name, args }

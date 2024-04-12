@@ -10,26 +10,25 @@ fn handle_types(input_fn: ItemFn) -> Stmt {
         .inputs
         .iter()
         .skip(1)
-        .enumerate()
-        .map(|(i, input)| {
+        .map(|input| {
             if let syn::FnArg::Typed(arg) = input {
                 let arg_name = &arg.pat;
 
                 match arg.ty.to_token_stream().to_string().as_str() {
                     "String" => {
                         parse_quote! {
-                            let #arg_name = values[#i].trim().to_string();
+                            let #arg_name = values.remove(0);
                         }
                     }
                     "& str" => {
                         parse_quote! {
-                            let #arg_name = values[#i].trim();
+                            let #arg_name = values.remove(0).as_str();
                         }
                     }
                     type_str => {
                         let ty: Ident = parse_str(&type_str).unwrap();
                         parse_quote! {
-                            let #arg_name = values[#i].trim().parse::<#ty>()?;
+                            let #arg_name = values.remove(0).parse::<#ty>()?;
                         }
                     }
                 }
@@ -74,7 +73,7 @@ pub fn getter(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let gen = quote! {
         #input_fn
 
-        pub fn #fn_new_name(#arg_name: &mut Context, values: Vec<String>) -> anyhow::Result<String> {
+        pub fn #fn_new_name(#arg_name: &mut Context, mut values: Vec<String>) -> anyhow::Result<String> {
             #new_body
         }
     };
@@ -94,7 +93,7 @@ pub fn handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let gen = quote! {
         #input_fn
 
-        pub fn #fn_new_name(#arg_name: &mut Context, values: Vec<String>) -> anyhow::Result<()> {
+        pub fn #fn_new_name(#arg_name: &mut Context, mut values: Vec<String>) -> anyhow::Result<()> {
             #new_body
         }
     };
