@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 
@@ -10,6 +11,9 @@ public class prueba : MonoBehaviour
     private int etapaActual = 0; // Índice de la etapa de crecimiento actual
     private bool crecimientoIniciado = false; // Variable para controlar si el crecimiento ha sido iniciado
     private float tiempoInicio; // Tiempo en el que se inició el crecimiento
+
+    //Referencia al componente de texto mensaje
+    public TMP_Text  mensaje;
 
     void Start()
     {
@@ -22,12 +26,15 @@ public class prueba : MonoBehaviour
         if (crecimientoIniciado)
         {
             float tiempoTranscurrido = Time.time - tiempoInicio;
-            int indiceEtapa = Mathf.FloorToInt(tiempoTranscurrido / 10f * etapasCrecimiento.Length);
+            int indiceEtapa = Mathf.FloorToInt(tiempoTranscurrido / 5f * etapasCrecimiento.Length);
             indiceEtapa = Mathf.Clamp(indiceEtapa, 0, etapasCrecimiento.Length - 1);
             spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
             if (indiceEtapa == etapasCrecimiento.Length - 1)
             {
                 crecimientoIniciado = false; // Detener el crecimiento
+                //activar objeto mensaje
+
+                mensaje.gameObject.SetActive(true);
             }
         }
     }
@@ -40,11 +47,7 @@ public class prueba : MonoBehaviour
             tiempoInicio = Time.time;
             etapaActual = 0;
             spriteRenderer.sprite = etapasCrecimiento[0];
-            crecimientoIniciado = true;
-
-            // Establecer la posición del maíz al iniciar el crecimiento
-            //transform.position = new Vector3(0, 0, 0);
-            // Puedes ajustar las coordenadas X, Y y Z según la posición deseada del maíz en la escena
+            crecimientoIniciado = true;   
         }
     }
 }
