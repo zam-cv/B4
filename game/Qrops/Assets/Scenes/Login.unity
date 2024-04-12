@@ -1129,7 +1129,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   username: {fileID: 0}
   password: {fileID: 0}
->>>>>>> Stashed changes
 --- !u!1 &813034591
 GameObject:
   m_ObjectHideFlags: 0
