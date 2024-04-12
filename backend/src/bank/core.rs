@@ -34,8 +34,7 @@ impl Bank {
     pub fn new() -> Self {
         let sentences: RawSentences = serde_json::from_str(SENTENCES).unwrap();
         let sentences = raw_sentences_to_sentences(sentences);
-        let getters =
-            build_function_map!(Getter, getters, get_money, get_value_random, get_message);
+        let getters = build_function_map!(Getter, getters, get_money, get_value_random);
         let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money);
 
         Bank {

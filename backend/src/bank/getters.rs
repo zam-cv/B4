@@ -12,8 +12,3 @@ fn __get_money(ctx: &mut Context) -> Result<String> {
 fn __get_value_random(_: &mut Context, first: u32, second: u32) -> Result<String> {
     Ok(rand::thread_rng().gen_range(first..second).to_string())
 }
-
-#[getter]
-fn __get_message(_: &mut Context, message: String) -> Result<String> {
-    Ok(message)
-}
