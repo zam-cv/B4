@@ -1,3 +1,5 @@
+workspace = { members = ["macros"] }
+
 [package]
 name = "backend"
 version = "0.1.0"
@@ -35,6 +37,7 @@ ipinfo = "3.0.0"
 diesel-derive-enum = { version = "2.1.0", features = ["mysql"] }
 utoipa = { version="4.2.0", features = ["actix_extras"]}
 openssl = "0.10.64"
+macros = { path = "macros" }
 
 [dev-dependencies]
 actix-rt = "2.4.0"

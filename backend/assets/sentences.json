@@ -2,59 +2,32 @@
   "positive": [
     {
       "getters": {
-        "product": "getProductRandom()",
-        "percentage": "getValueRandom(1, 100)"
+        "value": "get_value_random(1, 100)"
       },
-      "value": "Tu mercancia de ${product.name} incremento en un ${percentage}%",
+      "value": "Tu saldo incremento ${value}",
       "handlers": [
-        "incrementMoneyWithPriceAndPercentage(product.price, percentage)"
+        "increment_money(value)"
       ]
     }
   ],
   "negative": [
     {
       "getters": {
-        "product": "getProductRandom()",
-        "percentage": "getValueRandom(1, 100)"
+        "value": "get_value_random(1, 100)"
       },
-      "value": "Tu mercancia de ${product.name} decremento en un ${percentage}%",
+      "value": "Tu saldo decremento ${value}",
       "handlers": [
-        "decrementMoneyWithPriceAndPercentage(product.price, percentage)"
-      ]
-    },
-    {
-      "getters": {
-        "product": "",
-        "percentage": ""
-      },
-      "value": "Tu mercancia se pudrio, perdiste el 100% de tu mercancia",
-      "handlers": ["decrementMoneyWithPriceAndPercentage(product.price, 100)"]
-    },
-    {
-      "getters": {
-        "product": "",
-        "percentage": "getValueRandom(1, 100)"
-      },
-      "value": "Te han robado, perdiste el ${percentage}% de tu mercancia",
-      "handlers": [
-        "decrementMoneyWithPriceAndPercentage(product.price, percentage)"
+        "decrement_money(value)"
       ]
     }
   ],
   "default": [
     {
       "getters": {
-        "money": "getMoney()"
+        "money": "get_money()"
       },
-      "value": "Haz tenido una ganancia de ${money} en el dia de hoy!",
-      "handlers": ["incrementMoney(money)"]
-    },
-    {
-      "getters": {
-        "debt": "getDebt()"
-      },
-      "value": "Ha llegado el dia de pagar la deuda, pagas ${debt}",
-      "handlers": ["decrementMoney(debt)"]
+      "value": "Tu efectivo es de ${money}",
+      "handlers": []
     }
   ],
   "tips": [
