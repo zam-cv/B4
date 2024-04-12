@@ -13,12 +13,15 @@ pub enum Gender {
     F
 }
 
+// Agregar tercer opcion de genero X
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize, Rand)]
 pub enum UserType {
     Inversionista,
     Agricultor
 }
+// Hace falta agregar perfiles de usuario
 
 #[derive(Serialize, Deserialize, Validate, ToSchema)]
 #[derive(Queryable, Selectable, Identifiable, Insertable)]

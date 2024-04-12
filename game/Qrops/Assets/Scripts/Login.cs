@@ -48,4 +48,9 @@ public class Login : MonoBehaviour
             print("ERROR: " + request.error);
         }
     }
+
+    public void GoToSignUp()
+    {
+        SceneManager.LoadScene("SignUp");
+    }
 }
