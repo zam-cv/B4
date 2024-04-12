@@ -1,6 +1,6 @@
 use crate::{
-    bank, config::CONFIG, database::Database, docs::ApiDoc, middlewares, routes, socket,
-    socket::server::Server,
+    bank, config::CONFIG, database::Database, docs::ApiDoc, middlewares, models, routes, socket,
+    socket::server::Server, utils,
 };
 use actix_cors::Cors;
 use actix_files as fs;
@@ -21,14 +21,35 @@ fn get_ssl_acceptor() -> anyhow::Result<SslAcceptorBuilder> {
     Ok(builder)
 }
 
+async fn create_default_admin(database: &Database) {
+    if let Ok(None) = database
+        .get_admin_by_email(CONFIG.admin_default_email.clone())
+        .await
+    {
+        if let Ok(password) = utils::get_hash_in_string(&CONFIG.admin_default_password) {
+            let admin = models::Admin {
+                id: None,
+                email: CONFIG.admin_default_email.clone(),
+                password
+            };
+
+            if let Ok(_) = database.create_admin(admin).await {
+                log::info!("Default admin created");
+            }
+        }
+    }
+}
+
 pub async fn app() -> std::io::Result<()> {
     // Create a channel for the viewer
     let (viewer_tx, _) = broadcast::channel::<()>(10);
     let viewer_tx_clone = viewer_tx.clone();
 
+    // Create the bank
     let bank = bank::Bank::new();
     log::info!("Bank created");
 
+    // Load the location database
     let location_db = if let Ok(db) = DB::from_file(IPV6BIN) {
         Some(Arc::new(Mutex::new(db)))
     } else {
@@ -37,9 +58,14 @@ pub async fn app() -> std::io::Result<()> {
     };
     log::info!("Location database connected");
 
+    // Create the database
     let database = Database::new();
     log::info!("Database connected");
 
+    // Create the default admin
+    create_default_admin(&database).await;
+
+    // Create the socket server
     let (mut socket_server, server_tx) = Server::new(bank, database.clone());
     tokio::spawn(async move { socket_server.run().await });
     log::info!("Socket server started");
@@ -52,7 +78,9 @@ pub async fn app() -> std::io::Result<()> {
     let doc_json = openapi.to_json().unwrap();
     log::info!("OpenAPI documentation generated");
 
+    // Create the server
     let server = HttpServer::new(move || {
+        // Create the CORS middleware
         let cors = Cors::permissive().supports_credentials();
 
         App::new()
@@ -82,14 +110,18 @@ pub async fn app() -> std::io::Result<()> {
                         web::scope("/auth")
                             .service(routes::auth::signin)
                             .service(routes::auth::register)
-                            .service(routes::auth::signout),
+                            .service(routes::auth::signout)
+                            .service(
+                                web::scope("")
+                                    .wrap(from_fn(middlewares::user_auth))
+                                    .service(routes::auth::auth),
+                            ),
                     )
                     .service(
                         web::scope("/admin")
                             .service(
                                 web::scope("/auth")
                                     .service(routes::admin::auth::signin)
-                                    .service(routes::admin::auth::register)
                                     .service(routes::admin::auth::signout)
                                     .service(
                                         web::scope("")
@@ -136,12 +168,13 @@ pub async fn app() -> std::io::Result<()> {
     // SSL configuration
     let server = if let Ok(builder) = get_ssl_acceptor() {
         log::info!("SSL configuration loaded");
+        log::info!("Server running at https://{}", &CONFIG.address);
         server.bind_openssl(&CONFIG.address, builder)?
     } else {
         log::warn!("Failed to load SSL configuration, using insecure connection");
+        log::info!("Server running at http://{}", &CONFIG.address);
         server.bind(&CONFIG.address)?
     };
 
-    log::info!("Server running at https://{}", &CONFIG.address);
     server.run().await
 }

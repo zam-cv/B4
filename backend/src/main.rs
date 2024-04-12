@@ -1,5 +1,4 @@
 mod app;
-#[allow(dead_code, unused_imports, private_interfaces)]
 mod bank;
 mod config;
 mod database;

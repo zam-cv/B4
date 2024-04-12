@@ -21,7 +21,7 @@ CREATE TABLE `users`(
 	`username` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(255) NOT NULL,
 	`password` VARCHAR(150) NOT NULL,
-	`gender` ENUM('m', 'f') NOT NULL,
+	`gender` ENUM('m', 'f', 'x') NOT NULL,
 	`os` VARCHAR(50),
 	`player_id` INTEGER NOT NULL,
 	`longitude` FLOAT4(30),

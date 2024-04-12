@@ -1,5 +1,5 @@
 use crate::{config::CONFIG, database::Database, models, utils, routes};
-use actix_web::{delete, error, post, web, HttpRequest, HttpResponse, Responder, Result};
+use actix_web::{delete, error, post, get, web, HttpRequest, HttpResponse, HttpMessage, Responder, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2, PasswordHash, PasswordVerifier,
@@ -9,6 +9,30 @@ use std::sync::{Arc, Mutex};
 use validator::Validate;
 
 const CONTEXT_PATH: &str = "/api/auth";
+
+#[utoipa::path(
+    context_path = CONTEXT_PATH,
+    responses(
+      (status = 200, description = "The admin was found"),
+      (status = 401, description = "The admin was not found")
+    )
+  )]
+  #[get("")]
+  pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<impl Responder> {
+      if let Some(id) = req.extensions().get::<i32>() {
+          let user = database
+              .get_user_by_id(*id)
+              .await
+              .map_err(|_| error::ErrorBadRequest("Failed"))?;
+  
+          return match user {
+              Some(_) => Ok(HttpResponse::Ok().finish()),
+              None => Ok(HttpResponse::NotFound().finish()),
+          };
+      }
+  
+      Ok(HttpResponse::Unauthorized().finish())
+  }
 
 #[utoipa::path(
     context_path = CONTEXT_PATH,

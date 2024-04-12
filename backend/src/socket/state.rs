@@ -17,6 +17,7 @@ pub struct CycleData {
 }
 
 #[derive(Deserialize)]
+#[serde(tag = "type")]
 pub enum Request {
     Cycle(CycleData),
     CreateCropSection,
@@ -27,7 +28,7 @@ pub enum Request {
 #[serde(tag = "type")]
 pub enum Response {
     Init(models::Player),
-    CycleResolved,
+    CycleResolved { message: String },
     // TODO: Add more
 }
 
@@ -87,9 +88,9 @@ impl State {
             session: &self.session,
         };
 
-        bank.handle_cycle(&cycle_data, context);
+        let message = bank.handle_cycle(&cycle_data, context);
         self.player.current_cycle += 1;
-        self.send(Response::CycleResolved)?;
+        self.send(Response::CycleResolved { message })?;
 
         database
             .create_statistics(models::StatisticsSample {

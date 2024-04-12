@@ -4,13 +4,25 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 use diesel_derive_enum::DbEnum;
 use rand_derive::Rand;
+use rand::{distributions::{Distribution, Standard}, Rng};
 use utoipa::ToSchema;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
-#[derive(DbEnum, Serialize, Deserialize, Rand)]
+#[derive(DbEnum, Serialize, Deserialize)]
 pub enum Gender {
     M,
-    F
+    F,
+    X
+}
+
+impl Distribution<Gender> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Gender {
+        match rng.gen_range(0..3) {
+            0 => Gender::M,
+            1 => Gender::F,
+            _ => Gender::X,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
