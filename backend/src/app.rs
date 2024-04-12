@@ -134,6 +134,10 @@ pub async fn app() -> std::io::Result<()> {
                                     .wrap(from_fn(middlewares::admin_auth))
                                     .service(routes::admin::docs::api)
                                     .service(
+                                        web::scope("/admins")
+                                            .service(routes::admin::admins::get_admins),
+                                    )
+                                    .service(
                                         web::scope("/user")
                                             .service(routes::admin::user::get_user_statistics)
                                             .service(routes::admin::user::get_user),

@@ -12,6 +12,7 @@ initChart();
 import Dashboard from "./pages/Dashboard";
 import Distribution from "./pages/Distribution";
 import Emails from "./pages/Emails";
+import Accounts from "./pages/Accounts";
 import Docs from "./pages/Docs";
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               <Route index path="/" element={<Dashboard />} />
               <Route path="/distribution" element={<Distribution />} />
               <Route path="/emails" element={<Emails />} />
+              <Route path="/accounts" element={<Accounts />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/docs" element={<Docs />} />
             </Route>

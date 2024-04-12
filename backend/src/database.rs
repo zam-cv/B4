@@ -1,4 +1,7 @@
-use crate::{config::{self, CONFIG}, models, schema};
+use crate::{
+    config::{self, CONFIG},
+    models, schema,
+};
 use actix_web::web;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
@@ -67,6 +70,11 @@ impl Database {
         .await
     }
 
+    pub async fn get_admins(&self) -> anyhow::Result<Vec<models::Admin>> {
+        self.query_wrapper(move |conn| schema::admins::table.load::<models::Admin>(conn))
+            .await
+    }
+
     pub async fn create_admin(&self, new_admin: models::Admin) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
@@ -104,7 +112,10 @@ impl Database {
         .await
     }
 
-    pub async fn get_user_by_username(&self, username: String) -> anyhow::Result<Option<models::User>> {
+    pub async fn get_user_by_username(
+        &self,
+        username: String,
+    ) -> anyhow::Result<Option<models::User>> {
         self.query_wrapper(move |conn| {
             schema::users::table
                 .filter(schema::users::username.eq(username))
