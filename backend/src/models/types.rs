@@ -3,6 +3,7 @@ use diesel_derive_enum::DbEnum;
 use macros::random_enum;
 use rand::{distributions::{Distribution, Standard}, Rng};
 use utoipa::ToSchema;
+use strum_macros::EnumIter;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize)]
@@ -29,14 +30,14 @@ pub enum UserType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(DbEnum, Serialize, Deserialize)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter)]
 pub enum RoleType {
     Admin,
     User
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(DbEnum, Serialize, Deserialize)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter)]
 pub enum PermissionType {
     ViewDocuments,
     ViewDashboard,

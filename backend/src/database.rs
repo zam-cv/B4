@@ -75,7 +75,8 @@ impl Database {
             schema::admins::table
                 .filter(schema::admins::email.ne(&CONFIG.admin_default_email))
                 .load::<models::Admin>(conn)
-        }).await
+        })
+        .await
     }
 
     pub async fn delete_admin_by_id(&self, id: i32) -> anyhow::Result<()> {
@@ -315,6 +316,63 @@ impl Database {
             schema::plots::table
                 .filter(schema::plots::player_id.eq(player_id))
                 .load::<models::Plot>(conn)
+        })
+        .await
+    }
+
+    pub async fn create_role(&self, new_role: models::Role) -> anyhow::Result<i32> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::roles::table)
+                    .values(&new_role)
+                    .execute(pooled)?;
+
+                // Get the last inserted id
+                schema::roles::table
+                    .select(schema::roles::id)
+                    .order(schema::roles::id.desc())
+                    .first::<i32>(pooled)
+            })
+        })
+        .await
+    }
+
+    pub async fn get_role_by_name(&self, name: models::RoleType) -> anyhow::Result<Option<models::Role>> {
+        self.query_wrapper(move |conn| {
+            schema::roles::table
+                .filter(schema::roles::name.eq(name))
+                .first::<models::Role>(conn)
+                .optional()
+        })
+        .await
+    }
+
+    pub async fn create_permission(&self, new_permission: models::Permission) -> anyhow::Result<i32> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::permissions::table)
+                    .values(&new_permission)
+                    .execute(pooled)?;
+
+                // Get the last inserted id
+                schema::permissions::table
+                    .select(schema::permissions::id)
+                    .order(schema::permissions::id.desc())
+                    .first::<i32>(pooled)
+            })
+        })
+        .await
+    }
+
+    pub async fn get_permission_by_name(
+        &self,
+        name: models::PermissionType,
+    ) -> anyhow::Result<Option<models::Permission>> {
+        self.query_wrapper(move |conn| {
+            schema::permissions::table
+                .filter(schema::permissions::name.eq(name))
+                .first::<models::Permission>(conn)
+                .optional()
         })
         .await
     }

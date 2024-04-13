@@ -10,7 +10,7 @@ pub mod users;
 pub mod permissions;
 
 pub use roles::*;
-// pub use permissions::*;
+pub use permissions::*;
 pub use types::*;
 pub use users::*;
 

@@ -38,6 +38,8 @@ diesel-derive-enum = { version = "2.1.0", features = ["mysql"] }
 utoipa = { version="4.2.0", features = ["actix_extras"]}
 openssl = "0.10.64"
 macros = { path = "macros" }
+strum = "0.26.2"
+strum_macros = "0.26.2"
 
 [dev-dependencies]
 actix-rt = "2.4.0"

@@ -1,54 +1,21 @@
 use crate::{
-    bank, config::CONFIG, database::Database, docs::ApiDoc, middlewares, models, routes, socket,
-    socket::server::Server, utils,
+    bank,
+    config::{self, CONFIG},
+    database::Database,
+    docs::ApiDoc,
+    middlewares, routes, socket,
+    socket::server::Server,
 };
 use actix_cors::Cors;
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
 use ip2location::DB;
-use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
 use std::sync::{atomic::AtomicUsize, Arc, Mutex};
 use tokio::sync::broadcast;
 use utoipa::OpenApi;
 
 const IPV6BIN: &str = "assets/IP2LOCATION-LITE-DB5.IPV6.BIN";
-
-fn get_ssl_acceptor() -> anyhow::Result<SslAcceptorBuilder> {
-    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls())?;
-    builder.set_private_key_file("cert/key.pem", SslFiletype::PEM)?;
-    builder.set_certificate_chain_file("cert/cert.pem")?;
-    Ok(builder)
-}
-
-async fn create_default_admin(database: &Database) -> anyhow::Result<i32> {
-    match database
-        .get_admin_by_email(CONFIG.admin_default_email.clone())
-        .await
-    {
-        Ok(None) => {
-            if let Ok(password) = utils::get_hash_in_string(&CONFIG.admin_default_password) {
-                let admin = models::Admin {
-                    id: None,
-                    email: CONFIG.admin_default_email.clone(),
-                    password,
-                };
-
-                if let Ok(id) = database.create_admin(admin).await {
-                    log::info!("Default admin created");
-                    return Ok(id);
-                }
-            }
-        }
-        Ok(Some(admin)) => {
-            log::info!("Default admin already exists");
-            return Ok(admin.id.unwrap());
-        }
-        _ => {}
-    };
-
-    Err(anyhow::anyhow!("Failed to create default admin"))
-}
 
 pub async fn app() -> std::io::Result<()> {
     // Create a channel for the viewer
@@ -73,7 +40,19 @@ pub async fn app() -> std::io::Result<()> {
     log::info!("Database connected");
 
     // Create the default admin
-    let default_admin_id = create_default_admin(&database).await.unwrap();
+    let default_admin_id = config::database::create_default_admin(&database)
+        .await
+        .unwrap();
+
+    // Create the default roles
+    config::database::create_default_roles(&database)
+        .await
+        .unwrap();
+
+    // Create the default permissions
+    config::database::create_default_permissions(&database)
+        .await
+        .unwrap();
 
     // Create the socket server
     let (mut socket_server, server_tx) = Server::new(bank, database.clone());
@@ -183,7 +162,7 @@ pub async fn app() -> std::io::Result<()> {
     });
 
     // SSL configuration
-    let server = if let Ok(builder) = get_ssl_acceptor() {
+    let server = if let Ok(builder) = config::ssl::get_ssl_acceptor() {
         log::info!("SSL configuration loaded");
         log::info!("Server running at https://{}", &CONFIG.address);
         server.bind_openssl(&CONFIG.address, builder)?

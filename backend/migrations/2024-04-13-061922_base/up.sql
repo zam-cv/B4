@@ -20,13 +20,13 @@ CREATE TABLE `users`(
 	`user_type` ENUM(
 		'cliente',
 		'agricultor',
-		'fabricante o distribuidor de agroinsumos',
-		'proverdor de seguros',
+		'fabricante_o_distribuidor_de_agroinsumos',
+		'proverdor_de_seguros',
 		'financiera',
-		'empresa cfg',
+		'empresa_cfg',
 		'acopiador',
 		'inversionista',
-		'publico en general'
+		'publico_en_general'
 	) NOT NULL,
 	`username` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(255) NOT NULL,
@@ -88,12 +88,12 @@ CREATE TABLE `roles`(
 CREATE TABLE `permissions`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`name` ENUM(
-		'view documents',
-		'view dashboard',
-		'view distribution',
-		'add accounts',
-		'edit accounts',
-		'send emails'
+		'view_documents',
+		'view_dashboard',
+		'view_distribution',
+		'add_accounts',
+		'edit_accounts',
+		'send_emails'
 	) NOT NULL
 );
 
