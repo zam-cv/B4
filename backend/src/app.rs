@@ -30,7 +30,7 @@ async fn create_default_admin(database: &Database) {
             let admin = models::Admin {
                 id: None,
                 email: CONFIG.admin_default_email.clone(),
-                password
+                password,
             };
 
             if let Ok(_) = database.create_admin(admin).await {
@@ -126,6 +126,7 @@ pub async fn app() -> std::io::Result<()> {
                                     .service(
                                         web::scope("")
                                             .wrap(from_fn(middlewares::admin_auth))
+                                            .service(routes::admin::auth::register)
                                             .service(routes::admin::auth::auth),
                                     ),
                             )

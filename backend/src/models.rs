@@ -38,7 +38,7 @@ pub enum UserType {
 #[diesel(primary_key(id))]
 #[diesel(table_name = schema::admins)]
 pub struct Admin {
-    #[serde(skip_deserializing, skip_serializing)]
+    #[serde(skip_deserializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
     #[validate(email)]

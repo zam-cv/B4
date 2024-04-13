@@ -1,3 +1,4 @@
+import { handleKeyDown, handleEnter } from "../utils";
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -8,23 +9,6 @@ export default function Login() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    ref: React.RefObject<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      ref.current?.focus();
-    }
-  };
-
-  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      login();
-    }
-  };
 
   function login() {
     const email = emailRef.current?.value;
@@ -64,7 +48,7 @@ export default function Login() {
       <input
         ref={passwordRef}
         type="password"
-        onKeyDown={handleEnter}
+        onKeyDown={(e) => handleEnter(e, login)}
         tabIndex={2}
         className="rounded-md border border-gray-300 p-2"
       />
