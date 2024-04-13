@@ -42,7 +42,7 @@ export default function Accounts() {
         confirmRef.current!.value = "";
         setLoading(false);
 
-        let id = data.id as string;
+        let id = data as string;
         let payment: Payment = { id, email };
         setData((prev) => [...prev, payment]);
       })

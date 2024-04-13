@@ -13,6 +13,7 @@ use utoipa::OpenApi;
         routes::admin::auth::signin,
         routes::admin::auth::signout,
         routes::admin::auth::register,
+        routes::admin::admins::delete_admin,
         routes::admin::admins::get_admins,
         routes::admin::data::create_crop_type,
         routes::admin::player::get_player,

@@ -71,8 +71,20 @@ impl Database {
     }
 
     pub async fn get_admins(&self) -> anyhow::Result<Vec<models::Admin>> {
-        self.query_wrapper(move |conn| schema::admins::table.load::<models::Admin>(conn))
-            .await
+        self.query_wrapper(move |conn| {
+            schema::admins::table
+                .filter(schema::admins::email.ne(&CONFIG.admin_default_email))
+                .load::<models::Admin>(conn)
+        }).await
+    }
+
+    pub async fn delete_admin_by_id(&self, id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::delete(schema::admins::table.find(id)).execute(conn)
+        })
+        .await?;
+
+        Ok(())
     }
 
     pub async fn create_admin(&self, new_admin: models::Admin) -> anyhow::Result<i32> {

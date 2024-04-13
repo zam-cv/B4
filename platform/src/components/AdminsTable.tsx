@@ -21,14 +21,18 @@ export const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => {
       const payment = row.original;
 
+      async function deleteAdmin() {
+        const config = await getConfig();
+
+        axios.delete(`${API_URL}/admins/${payment.id}`, config).then(() => {
+          // @ts-ignore
+          payment.deleteAdmin(payment.id);
+        });
+      }
+
       return (
         <div className="flex justify-end px-2 hover:text-red-600">
-          <span
-            className="cursor-pointer"
-            onClick={() => {
-              console.log(payment.id);
-            }}
-          >
+          <span className="cursor-pointer" onClick={deleteAdmin}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -60,11 +64,20 @@ export default function AdminsTable({
   setData,
 }: {
   data: Payment[];
-  setData: React.Dispatch<React.SetStateAction<Payment[]>>
+  setData: React.Dispatch<React.SetStateAction<Payment[]>>;
 }) {
   useEffect(() => {
     getData().then(setData);
   }, []);
 
-  return <DataTable columns={columns} data={data} />;
+  function deleteAdmin(id: string) {
+    setData(data.filter((admin) => admin.id !== id));
+  }
+
+  return (
+    <DataTable
+      columns={columns}
+      data={data.map((a) => ({ ...a, deleteAdmin }))}
+    />
+  );
 }
