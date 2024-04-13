@@ -1,14 +1,40 @@
 -- Your SQL goes here
+CREATE TABLE `roles`(
+	`name` VARCHAR(50) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE `permissions`(
+	`name` VARCHAR(50) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE `role_permissions`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`role_id` VARCHAR(150) NOT NULL,
+	`permission_id` VARCHAR(50) NOT NULL,
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`name`),
+	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`name`)
+);
+
 CREATE TABLE `admins`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`email` VARCHAR(50) NOT NULL,
-	`password` VARCHAR(150) NOT NULL
+	`password` VARCHAR(150) NOT NULL,
+	`role_id` VARCHAR(150) NOT NULL,
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`name`)
+);
+
+CREATE TABLE `admin_permissions`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`admin_id` INTEGER NOT NULL,
+	`permission_id` VARCHAR(50) NOT NULL,
+	FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`),
+	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`name`)
 );
 
 CREATE TABLE `players`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`current_cycle` INTEGER NOT NULL,
-	`current_score` FLOAT4(30),
+	`current_score` FLOAT4(30) NOT NULL,
 	`balance_cash` INTEGER NOT NULL,
 	`balance_verqor` INTEGER NOT NULL,
 	`balance_coyote` INTEGER NOT NULL,
@@ -37,7 +63,9 @@ CREATE TABLE `users`(
 	`longitude` FLOAT4(30),
 	`latitude` FLOAT4(30),
 	`year_of_birth` INTEGER NOT NULL,
-	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
+	`role_id` VARCHAR(150) NOT NULL,
+	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`),
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`name`)
 );
 
 CREATE TABLE `loans`(
@@ -78,45 +106,4 @@ CREATE TABLE `plots`(
 	`player_id` INTEGER NOT NULL,
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
-);
-
-CREATE TABLE `roles`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`name` ENUM('admin', 'user') NOT NULL
-);
-
-CREATE TABLE `permissions`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`name` ENUM(
-		'view_documents',
-		'view_dashboard',
-		'view_distribution',
-		'add_accounts',
-		'edit_accounts',
-		'send_emails'
-	) NOT NULL
-);
-
-CREATE TABLE `role_permissions`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`role_id` INTEGER NOT NULL,
-	`permission_id` INTEGER NOT NULL,
-	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`),
-	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`)
-);
-
-CREATE TABLE `user_roles`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`user_id` INTEGER NOT NULL,
-	`role_id` INTEGER NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
-	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
-);
-
-CREATE TABLE `admin_roles`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`admin_id` INTEGER NOT NULL,
-	`role_id` INTEGER NOT NULL,
-	FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`),
-	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
 );

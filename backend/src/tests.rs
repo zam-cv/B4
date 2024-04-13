@@ -40,6 +40,7 @@ async fn create_users() {
                 latitude: address::en::Latitude().fake(),
                 longitude: address::en::Longitude().fake(),
                 year_of_birth: (1920..=2003).fake(),
+                role_id: models::RoleType::User.to_string(),
             };
 
             database.create_user(user).await.unwrap();

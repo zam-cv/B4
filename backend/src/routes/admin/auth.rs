@@ -34,6 +34,7 @@ pub async fn register(
                     id: None,
                     email: admin.email.clone(),
                     password: hash.to_string(),
+                    role_id: models::RoleType::Admin.to_string(),
                 })
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;

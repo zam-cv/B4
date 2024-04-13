@@ -12,6 +12,7 @@ pub async fn create_default_admin(database: &Database) -> anyhow::Result<i32> {
                     id: None,
                     email: CONFIG.admin_default_email.clone(),
                     password,
+                    role_id: models::RoleType::Admin.to_string(),
                 };
 
                 if let Ok(id) = database.create_admin(admin).await {
@@ -32,13 +33,12 @@ pub async fn create_default_admin(database: &Database) -> anyhow::Result<i32> {
 
 pub async fn create_default_roles(database: &Database) -> anyhow::Result<()> {
     for role in models::RoleType::iter() {
-        if let Ok(None) = database.get_role_by_name(role).await {
-            let role = models::Role {
-                id: None,
-                name: role,
-            };
-
-            database.create_role(role).await?;
+        if let Ok(None) = database.get_role(role).await {
+            database
+                .create_role(models::Role {
+                    name: role.to_string(),
+                })
+                .await?;
         }
     }
 
@@ -47,13 +47,12 @@ pub async fn create_default_roles(database: &Database) -> anyhow::Result<()> {
 
 pub async fn create_default_permissions(database: &Database) -> anyhow::Result<()> {
     for permission in models::PermissionType::iter() {
-        if let Ok(None) = database.get_permission_by_name(permission).await {
-            let permission = models::Permission {
-                id: None,
-                name: permission,
-            };
-
-            database.create_permission(permission).await?;
+        if let Ok(None) = database.get_permission(permission).await {
+            database
+                .create_permission(models::Permission {
+                    name: permission.to_string(),
+                })
+                .await?;
         }
     }
 

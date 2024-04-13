@@ -39,11 +39,6 @@ pub async fn app() -> std::io::Result<()> {
     let database = Database::new();
     log::info!("Database connected");
 
-    // Create the default admin
-    let default_admin_id = config::database::create_default_admin(&database)
-        .await
-        .unwrap();
-
     // Create the default roles
     config::database::create_default_roles(&database)
         .await
@@ -51,6 +46,11 @@ pub async fn app() -> std::io::Result<()> {
 
     // Create the default permissions
     config::database::create_default_permissions(&database)
+        .await
+        .unwrap();
+
+    // Create the default admin
+    let default_admin_id = config::database::create_default_admin(&database)
         .await
         .unwrap();
 

@@ -3,7 +3,7 @@ use diesel_derive_enum::DbEnum;
 use macros::random_enum;
 use rand::{distributions::{Distribution, Standard}, Rng};
 use utoipa::ToSchema;
-use strum_macros::EnumIter;
+use strum_macros::{EnumIter, EnumString, Display};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize)]
@@ -30,14 +30,14 @@ pub enum UserType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(DbEnum, Serialize, Deserialize, EnumIter)]
+#[derive(Serialize, Deserialize, EnumIter, EnumString, Display)]
 pub enum RoleType {
     Admin,
     User
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[derive(DbEnum, Serialize, Deserialize, EnumIter)]
+#[derive(Serialize, Deserialize, EnumIter, EnumString, Display)]
 pub enum PermissionType {
     ViewDocuments,
     ViewDashboard,
@@ -50,6 +50,4 @@ pub enum PermissionType {
 pub(crate) mod exports {
   pub use super::GenderMapping as Gender;
   pub use super::UserTypeMapping as UserType;
-  pub use super::RoleTypeMapping as RoleType;
-  pub use super::PermissionTypeMapping as PermissionType;
 }

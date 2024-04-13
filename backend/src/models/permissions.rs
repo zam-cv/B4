@@ -1,14 +1,12 @@
 use crate::{schema, models::*};
 
 #[derive(Clone)]
-#[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
+#[derive(Queryable, Selectable, Identifiable, Insertable)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
-#[diesel(primary_key(id))]
+#[diesel(primary_key(name))]
 #[diesel(table_name = schema::permissions)]
 pub struct Permission {
-    #[diesel(deserialize_as = i32)]
-    pub id: Option<i32>,
-    pub name: PermissionType
+    pub name: String
 }
 
 #[derive(Clone)]
@@ -21,6 +19,6 @@ pub struct Permission {
 pub struct RolePermission {
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
-    pub role_id: i32,
-    pub permission_id: i32
+    pub role_id: String,
+    pub permission_id: String
 }

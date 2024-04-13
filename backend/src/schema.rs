@@ -10,6 +10,8 @@ diesel::table! {
         email -> Varchar,
         #[max_length = 150]
         password -> Varchar,
+        #[max_length = 150]
+        role_id -> Varchar,
     }
 }
 
@@ -115,6 +117,8 @@ diesel::table! {
         longitude -> Nullable<Double>,
         latitude -> Nullable<Double>,
         year_of_birth -> Integer,
+        #[max_length = 150]
+        role_id -> Varchar,
     }
 }
 
@@ -122,9 +126,9 @@ diesel::table! {
     use diesel::sql_types::*;
     use crate::models::types::exports::*;
 
-    roles (id) {
-        id -> Integer,
-        name -> RoleType,
+    roles (name) {
+        #[max_length = 50]
+        name -> Varchar,
     }
 }
 
@@ -132,10 +136,9 @@ diesel::table! {
     use diesel::sql_types::*;
     use crate::models::types::exports::*;
 
-    user_roles(id) {
-        id -> Integer,
-        user_id -> Integer,
-        role_id -> Integer,
+    permissions (name) {
+        #[max_length = 50]
+        name -> Varchar,
     }
 }
 
@@ -143,20 +146,11 @@ diesel::table! {
     use diesel::sql_types::*;
     use crate::models::types::exports::*;
 
-    admin_roles(id) {
+    admin_permissions(id) {
         id -> Integer,
         admin_id -> Integer,
-        role_id -> Integer,
-    }
-}
-
-diesel::table! {
-    use diesel::sql_types::*;
-    use crate::models::types::exports::*;
-
-    permissions (id) {
-        id -> Integer,
-        name -> PermissionType,
+        #[max_length = 50]
+        permission_id -> Varchar,
     }
 }
 
@@ -166,21 +160,23 @@ diesel::table! {
 
     role_permissions (id) {
         id -> Integer,
-        role_id -> Integer,
-        permission_id -> Integer,
+        #[max_length = 150]
+        role_id -> Varchar,
+        #[max_length = 50]
+        permission_id -> Varchar,
     }
 }
 
+diesel::joinable!(users -> roles (role_id));
+diesel::joinable!(admins -> roles (role_id));
 diesel::joinable!(insurance -> loans (loan_id));
 diesel::joinable!(loans -> players (player_id));
 diesel::joinable!(plots -> crop_types (crop_type_id));
 diesel::joinable!(plots -> players (player_id));
 diesel::joinable!(statistics -> players (player_id));
 diesel::joinable!(users -> players (player_id));
-diesel::joinable!(user_roles -> roles (role_id));
-diesel::joinable!(user_roles -> users (user_id));
-diesel::joinable!(admin_roles -> admins (admin_id));
-diesel::joinable!(admin_roles -> roles (role_id));
+diesel::joinable!(admin_permissions -> admins (admin_id));
+diesel::joinable!(admin_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> roles (role_id));
 
@@ -194,8 +190,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     statistics,
     users,
     roles,
-    user_roles,
-    admin_roles,
+    admin_permissions,
     permissions,
     role_permissions,
 );

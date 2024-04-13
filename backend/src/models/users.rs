@@ -17,6 +17,7 @@ pub struct Admin {
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
+    pub role_id: String,
 }
 
 #[derive(Clone, Deserialize, Serialize, Validate, Debug, PartialEq, ToSchema)]
@@ -47,6 +48,7 @@ pub struct User {
     pub longitude: Option<f64>,
     #[validate(range(min = 1920, max = 3000))]
     pub year_of_birth: i32,
+    pub role_id: String,
 }
 
 #[derive(Clone, Deserialize, Serialize, ToSchema)]
