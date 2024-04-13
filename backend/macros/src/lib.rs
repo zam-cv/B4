@@ -2,7 +2,7 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, parse_quote, parse_str, Ident, ItemFn, Stmt};
+use syn::{parse_macro_input, parse_quote, parse_str, Ident, ItemEnum, ItemFn, Stmt};
 
 fn handle_types(input_fn: ItemFn) -> Stmt {
     let statements: Vec<Stmt> = input_fn
@@ -64,7 +64,7 @@ fn get_arg_name(input_fn: &ItemFn) -> Box<syn::Pat> {
 #[proc_macro_attribute]
 pub fn getter(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let item_clone = item.clone();
-    let input_fn = parse_macro_input!(item_clone as ItemFn);   
+    let input_fn = parse_macro_input!(item_clone as ItemFn);
     let new_body = handle_types(input_fn.clone());
 
     let fn_new_name = get_name(&input_fn);
@@ -84,7 +84,7 @@ pub fn getter(_attr: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let item_clone = item.clone();
-    let input_fn = parse_macro_input!(item_clone as ItemFn);   
+    let input_fn = parse_macro_input!(item_clone as ItemFn);
     let new_body = handle_types(input_fn.clone());
 
     let fn_new_name = get_name(&input_fn);
@@ -99,4 +99,33 @@ pub fn handler(_attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     gen.into()
+}
+
+#[proc_macro_attribute]
+pub fn random_enum(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    let input_enum = parse_macro_input!(item as ItemEnum);
+    let enum_name = &input_enum.ident;
+    let variants = &input_enum.variants;
+    let count = variants.len();
+    let cases = variants.iter().enumerate().map(|(index, variant)| {
+        let name = &variant.ident;
+        quote! {
+            #index => #enum_name::#name,
+        }
+    });
+
+    let expanded = quote! {
+        #input_enum
+
+        impl Distribution<#enum_name> for Standard {
+            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> #enum_name {
+                match rng.gen_range(0..#count) {
+                    #(#cases)*
+                    _ => unreachable!(),
+                }
+            }
+        }
+    };
+
+    TokenStream::from(expanded)
 }

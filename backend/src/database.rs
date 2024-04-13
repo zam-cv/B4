@@ -202,7 +202,7 @@ impl Database {
         self.query_wrapper(move |conn| {
             let new_player = models::Player {
                 id: None,
-                current_cycle: 0,
+                current_cycle: config::INITIAL_CYCLE,
                 current_score: config::INITIAL_SCORE,
                 balance_cash: config::INITIAL_BALANCE_CASH,
                 balance_verqor: config::INITIAL_BALANCE,

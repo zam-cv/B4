@@ -8,7 +8,7 @@ CREATE TABLE `admins`(
 CREATE TABLE `players`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`current_cycle` INTEGER NOT NULL,
-	`current_score` INTEGER NOT NULL,
+	`current_score` FLOAT4(30),
 	`balance_cash` INTEGER NOT NULL,
 	`balance_verqor` INTEGER NOT NULL,
 	`balance_coyote` INTEGER NOT NULL,
@@ -17,7 +17,17 @@ CREATE TABLE `players`(
 
 CREATE TABLE `users`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`user_type` ENUM('inversionista', 'agricultor') NOT NULL,
+	`user_type` ENUM(
+		'cliente',
+		'agricultor',
+		'fabricante o distribuidor de agroinsumos',
+		'proverdor de seguros',
+		'financiera',
+		'empresa cfg',
+		'acopiador',
+		'inversionista',
+		'publico en general'
+	) NOT NULL,
 	`username` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(255) NOT NULL,
 	`password` VARCHAR(150) NOT NULL,
@@ -58,7 +68,8 @@ CREATE TABLE `statistics`(
 
 CREATE TABLE `crop_types`(
 	`name` VARCHAR(50) NOT NULL PRIMARY KEY,
-	`price` INTEGER NOT NULL
+	`price` INTEGER NOT NULL,
+	`duration` INTEGER NOT NULL
 );
 
 CREATE TABLE `plots`(
@@ -67,4 +78,45 @@ CREATE TABLE `plots`(
 	`player_id` INTEGER NOT NULL,
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
+);
+
+CREATE TABLE `roles`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`name` ENUM('admin', 'user') NOT NULL
+);
+
+CREATE TABLE `permissions`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`name` ENUM(
+		'view documents',
+		'view dashboard',
+		'view distribution',
+		'add accounts',
+		'edit accounts',
+		'send emails'
+	) NOT NULL
+);
+
+CREATE TABLE `role_permissions`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`role_id` INTEGER NOT NULL,
+	`permission_id` INTEGER NOT NULL,
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`),
+	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`)
+);
+
+CREATE TABLE `user_roles`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`user_id` INTEGER NOT NULL,
+	`role_id` INTEGER NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`),
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
+);
+
+CREATE TABLE `admin_roles`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`admin_id` INTEGER NOT NULL,
+	`role_id` INTEGER NOT NULL,
+	FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`),
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`)
 );
