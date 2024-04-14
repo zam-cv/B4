@@ -5,6 +5,16 @@ export const API_URL = `http://${SERVER_HOST}:${SERVER_PORT}${API_ROUTE}`;
 export const SERVER_URL = `http://${SERVER_HOST}:${SERVER_PORT}`;
 export const SOCKET_URL = `ws://${SERVER_HOST}:${SERVER_PORT}/viewer/`;
 
+export const ADMIN_PERMISSIONS = {
+  VIEW_DOCUMENTS: "ViewDocuments",
+  VIEW_DASHBOARD: "ViewDashboard",
+  VIEW_DISTRIBUTION: "ViewDistribution",
+  VIEW_ACCOUNTS: "ViewAccounts",
+  ADD_ACCOUNTS: "AddAccounts",
+  EDIT_ACCOUNTS: "EditAccounts",
+  SEND_EMAILS: "SendEmails",
+};
+
 export function getOptions() {
   return {
     responsive: true,

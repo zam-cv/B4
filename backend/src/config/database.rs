@@ -1,16 +1,17 @@
 use crate::{config::CONFIG, database::Database, models, utils};
 use strum::IntoEnumIterator;
 
-const ADMIN_PERMISSIONS: [models::PermissionType; 6] = [
+const ADMIN_PERMISSIONS: [models::PermissionType; 7] = [
     models::PermissionType::ViewDocuments,
     models::PermissionType::ViewDashboard,
     models::PermissionType::ViewDistribution,
+    models::PermissionType::ViewAccounts,
     models::PermissionType::AddAccounts,
     models::PermissionType::EditAccounts,
     models::PermissionType::SendEmails,
 ];
 
-const USERS_WITH_PERMISSIONS: [(models::RoleType, [models::PermissionType; 6]); 1] =
+const USERS_WITH_PERMISSIONS: [(models::RoleType, [models::PermissionType; 7]); 1] =
     [(models::RoleType::Admin, ADMIN_PERMISSIONS)];
 
 pub async fn create_default_admin(database: &Database) -> anyhow::Result<i32> {

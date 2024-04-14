@@ -23,20 +23,20 @@ export function useAuth(): AuthContextType {
   return useContext(AuthContext);
 }
 
-async function getPermissions(): Promise<string[]> {
+async function getPermissions(): Promise<Set<string>> {
   const config = await getConfig();
 
   return axios
     .get(`${API_URL}/permissions`, config)
-    .then(({ data }: { data: string[] }) => data)
-    .catch((_) => []);
+    .then(({ data }: { data: string[] }) => new Set(data))
+    .catch((_) => new Set());
 }
 
 export function useProvideAuth() {
   const [admin, setAdmin] = useState<Admin | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [permissions, setPermissions] = useState<string[] | null>(null);
+  const [permissions, setPermissions] = useState<Set<string> | null>(null);
 
   const signin = async (email: string, password: string) => {
     setLoading(true);

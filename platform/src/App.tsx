@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { platform } from "@tauri-apps/plugin-os";
 import { PlatformContext } from "./contexts/Platform";
 import { AuthProvider } from "./hooks/useAuth";
+import { useAuth } from "./hooks/useAuth";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { initChart } from "./utils/chart";
 import Layout from "./components/Layout";
+import { ADMIN_PERMISSIONS } from "@/utils/constants";
 
 initChart();
 
@@ -14,6 +16,64 @@ import Distribution from "./pages/Distribution";
 import Emails from "./pages/Emails";
 import Accounts from "./pages/Accounts";
 import Docs from "./pages/Docs";
+
+export const pagePermissions = [
+  {
+    title: "Dashboard",
+    route: "/dashboard",
+    permission: ADMIN_PERMISSIONS.VIEW_DASHBOARD,
+    component: Dashboard,
+  },
+  {
+    title: "Distribución",
+    route: "/distribution",
+    permission: ADMIN_PERMISSIONS.VIEW_DISTRIBUTION,
+    component: Distribution,
+  },
+  {
+    title: "Correos",
+    route: "/emails",
+    permission: ADMIN_PERMISSIONS.SEND_EMAILS,
+    component: Emails,
+  },
+  {
+    title: "Cuentas",
+    route: "/accounts",
+    permission: ADMIN_PERMISSIONS.VIEW_ACCOUNTS,
+    component: Accounts,
+  },
+  {
+    title: "Documentación",
+    route: "/docs",
+    permission: ADMIN_PERMISSIONS.VIEW_DOCUMENTS,
+    component: Docs,
+  },
+];
+
+function Pages() {
+  const { permissions } = useAuth();
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {permissions?.has(ADMIN_PERMISSIONS.VIEW_DASHBOARD) ? (
+            <Route index path="/" element={<Dashboard />} />
+          ) : null}
+          {pagePermissions.map((page) => {
+            return (
+              <Route
+                key={page.title}
+                path={page.route}
+                element={<page.component />}
+              />
+            );
+          })}
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
 function App() {
   const [platformName, setPlatform] = useState<string | null>(null);
@@ -31,18 +91,7 @@ function App() {
   return (
     <PlatformContext.Provider value={{ platform: platformName }}>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index path="/" element={<Dashboard />} />
-              <Route path="/distribution" element={<Distribution />} />
-              <Route path="/emails" element={<Emails />} />
-              <Route path="/accounts" element={<Accounts />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/docs" element={<Docs />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <Pages />
       </AuthProvider>
     </PlatformContext.Provider>
   );
