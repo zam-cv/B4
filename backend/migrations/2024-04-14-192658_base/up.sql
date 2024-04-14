@@ -24,9 +24,9 @@ CREATE TABLE `admins`(
 );
 
 CREATE TABLE `admin_permissions`(
-	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`admin_id` INTEGER NOT NULL,
 	`permission_id` VARCHAR(50) NOT NULL,
+	PRIMARY KEY(`admin_id`, `permission_id`),
 	FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`),
 	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`name`)
 );

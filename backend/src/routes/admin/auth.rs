@@ -13,7 +13,7 @@ const CONTEXT_PATH: &str = "/api/admin/auth";
 #[utoipa::path(
     context_path = CONTEXT_PATH,
     responses(
-      (status = 200, description = "The admin was created"),
+      (status = 200, description = "The admin was created", body = Admin),
       (status = 401, description = "The email already exists")
     ),
     request_body = AdminCredentials
@@ -29,24 +29,24 @@ pub async fn register(
 
     if let Ok(hash) = utils::get_hash!(admin.password) {
         if let Ok(None) = database.get_admin_by_email(admin.email.clone()).await {
+            let mut new_admin = models::Admin {
+                id: None,
+                email: admin.email.clone(),
+                password: hash.to_string(),
+                role_id: models::RoleType::Admin.to_string(),
+            };
+
             let id = database
                 .create_admin(
-                    models::Admin {
-                        id: None,
-                        email: admin.email.clone(),
-                        password: hash.to_string(),
-                        role_id: models::RoleType::Admin.to_string(),
-                    },
+                    new_admin.clone(),
                     // no permissions by default
                     Vec::new(),
                 )
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-            if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
-                let cookie = utils::get_cookie_with_token(&token);
-                return Ok(HttpResponse::Ok().cookie(cookie).body(id.to_string()));
-            }
+            new_admin.id = Some(id);
+            return Ok(HttpResponse::Ok().json(new_admin));
         }
 
         return Ok(HttpResponse::Unauthorized().body("Email already exists"));

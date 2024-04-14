@@ -14,6 +14,10 @@ use utoipa::OpenApi;
         routes::admin::auth::signout,
         routes::admin::auth::register,
         routes::admin::permissions::get_permissions,
+        routes::admin::permissions::get_permission_types,
+        routes::admin::permissions::get_permissions_by_admin_id,
+        routes::admin::permissions::add_permission,
+        routes::admin::permissions::delete_permission,
         routes::admin::admins::delete_admin,
         routes::admin::admins::get_admins,
         routes::admin::data::create_crop_type,
@@ -34,7 +38,8 @@ use utoipa::OpenApi;
         models::CropType,
         models::Player,
         models::StatisticsSample,
-        models::PermissionType
+        models::PermissionType,
+        routes::admin::permissions::PermissionPayload
     ))
 )]
 pub struct ApiDoc;

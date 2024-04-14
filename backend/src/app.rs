@@ -140,7 +140,13 @@ pub async fn app() -> std::io::Result<()> {
                                     )
                                     .service(
                                         web::scope("/permissions")
-                                            .service(routes::admin::permissions::get_permissions),
+                                            .service(routes::admin::permissions::get_permissions)
+                                            .service(routes::admin::permissions::get_permission_types)
+                                            .service(
+                                                routes::admin::permissions::get_permissions_by_admin_id,
+                                            )
+                                            .service(routes::admin::permissions::add_permission)
+                                            .service(routes::admin::permissions::delete_permission),
                                     ),
                             ),
                     ),

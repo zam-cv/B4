@@ -146,8 +146,7 @@ diesel::table! {
     use diesel::sql_types::*;
     use crate::models::types::exports::*;
 
-    admin_permissions(id) {
-        id -> Integer,
+    admin_permissions(admin_id, permission_id) {
         admin_id -> Integer,
         #[max_length = 50]
         permission_id -> Varchar,

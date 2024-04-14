@@ -80,6 +80,8 @@ impl Database {
     }
 
     pub async fn delete_admin_by_id(&self, id: i32) -> anyhow::Result<()> {
+        self.delete_permissions_by_admin_id(id).await?;
+
         self.query_wrapper(move |conn| {
             diesel::delete(schema::admins::table.find(id)).execute(conn)
         })
@@ -93,35 +95,26 @@ impl Database {
         new_admin: models::Admin,
         permissions: Vec<models::PermissionType>,
     ) -> anyhow::Result<i32> {
-        self.query_wrapper(move |conn| {
-            conn.transaction(|pooled| {
-                diesel::insert_into(schema::admins::table)
-                    .values(&new_admin)
-                    .execute(pooled)?;
+        let id = self
+            .query_wrapper(move |conn| {
+                conn.transaction(|pooled| {
+                    diesel::insert_into(schema::admins::table)
+                        .values(&new_admin)
+                        .execute(pooled)?;
 
-                // Get the last inserted id
-                let id = schema::admins::table
-                    .select(schema::admins::id)
-                    .order(schema::admins::id.desc())
-                    .first::<i32>(pooled)?;
+                    // Get the last inserted id
+                    let id = schema::admins::table
+                        .select(schema::admins::id)
+                        .order(schema::admins::id.desc())
+                        .first::<i32>(pooled)?;
 
-                let permissions = permissions
-                    .into_iter()
-                    .map(|permission| models::AdminPermissions {
-                        id: None,
-                        admin_id: id,
-                        permission_id: permission.to_string(),
-                    })
-                    .collect::<Vec<_>>();
-
-                diesel::insert_into(schema::admin_permissions::table)
-                    .values(&permissions)
-                    .execute(pooled)?;
-
-                Ok(id)
+                    Ok(id)
+                })
             })
-        })
-        .await
+            .await?;
+
+        self.set_permissions_by_admin_id(id, permissions).await?;
+        Ok(id)
     }
 
     pub async fn get_user_by_email(&self, email: String) -> anyhow::Result<Option<models::User>> {
@@ -436,8 +429,112 @@ impl Database {
         .map(|permissions| {
             permissions
                 .into_iter()
-                .map(|permission| permission.parse().unwrap())
+                .filter_map(|permission| match permission.parse() {
+                    Ok(permission) => Some(permission),
+                    Err(_) => None,
+                })
                 .collect()
         })
+    }
+
+    pub async fn get_permissions_by_role_id(
+        &self,
+        role_id: String,
+    ) -> anyhow::Result<Vec<models::PermissionType>> {
+        self.query_wrapper(move |conn| {
+            schema::role_permissions::table
+                .filter(schema::role_permissions::role_id.eq(role_id))
+                .select(schema::role_permissions::permission_id)
+                .load::<String>(conn)
+        })
+        .await
+        .map(|permissions| {
+            permissions
+                .into_iter()
+                .filter_map(|permission| match permission.parse() {
+                    Ok(permission) => Some(permission),
+                    Err(_) => None,
+                })
+                .collect()
+        })
+    }
+
+    pub async fn set_permissions_by_admin_id(
+        &self,
+        admin_id: i32,
+        permissions: Vec<models::PermissionType>,
+    ) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::delete(
+                    schema::admin_permissions::table
+                        .filter(schema::admin_permissions::admin_id.eq(admin_id)),
+                )
+                .execute(pooled)?;
+
+                for permission in permissions {
+                    diesel::insert_into(schema::admin_permissions::table)
+                        .values(models::AdminPermissions {
+                            admin_id,
+                            permission_id: permission.to_string(),
+                        })
+                        .execute(pooled)?;
+                }
+
+                Ok(())
+            })
+        })
+        .await
+    }
+
+    pub async fn unsert_permission_by_admin_id(
+        &self,
+        admin_id: i32,
+        permission: models::PermissionType,
+    ) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::insert_into(schema::admin_permissions::table)
+                .values(models::AdminPermissions {
+                    admin_id,
+                    permission_id: permission.to_string(),
+                })
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn delete_permission_by_admin_id(
+        &self,
+        admin_id: i32,
+        permission: models::PermissionType,
+    ) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::delete(
+                schema::admin_permissions::table.filter(
+                    schema::admin_permissions::admin_id
+                        .eq(admin_id)
+                        .and(schema::admin_permissions::permission_id.eq(permission.to_string())),
+                ),
+            )
+            .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn delete_permissions_by_admin_id(&self, admin_id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::delete(
+                schema::admin_permissions::table
+                    .filter(schema::admin_permissions::admin_id.eq(admin_id)),
+            )
+            .execute(conn)
+        })
+        .await?;
+
+        Ok(())
     }
 }
