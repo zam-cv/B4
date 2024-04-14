@@ -36,7 +36,7 @@ pub enum RoleType {
     User
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(Serialize, Deserialize, EnumIter, EnumString, Display)]
 pub enum PermissionType {
     ViewDocuments,

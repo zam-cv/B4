@@ -39,20 +39,8 @@ pub async fn app() -> std::io::Result<()> {
     let database = Database::new();
     log::info!("Database connected");
 
-    // Create the default roles
-    config::database::create_default_roles(&database)
-        .await
-        .unwrap();
-
-    // Create the default permissions
-    config::database::create_default_permissions(&database)
-        .await
-        .unwrap();
-
-    // Create the default admin
-    let default_admin_id = config::database::create_default_admin(&database)
-        .await
-        .unwrap();
+    // Setup the database
+    let default_admin_id = config::database::setup(&database).await;
 
     // Create the socket server
     let (mut socket_server, server_tx) = Server::new(bank, database.clone());
@@ -149,6 +137,10 @@ pub async fn app() -> std::io::Result<()> {
                                     .service(
                                         web::scope("/data")
                                             .service(routes::admin::data::create_crop_type),
+                                    )
+                                    .service(
+                                        web::scope("/permissions")
+                                            .service(routes::admin::permissions::get_permissions),
                                     ),
                             ),
                     ),

@@ -30,12 +30,16 @@ pub async fn register(
     if let Ok(hash) = utils::get_hash!(admin.password) {
         if let Ok(None) = database.get_admin_by_email(admin.email.clone()).await {
             let id = database
-                .create_admin(models::Admin {
-                    id: None,
-                    email: admin.email.clone(),
-                    password: hash.to_string(),
-                    role_id: models::RoleType::Admin.to_string(),
-                })
+                .create_admin(
+                    models::Admin {
+                        id: None,
+                        email: admin.email.clone(),
+                        password: hash.to_string(),
+                        role_id: models::RoleType::Admin.to_string(),
+                    },
+                    // no permissions by default
+                    Vec::new(),
+                )
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 

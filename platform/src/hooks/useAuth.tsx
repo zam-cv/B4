@@ -2,7 +2,8 @@ import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, AuthContextType } from "../contexts/AuthContext";
-import { getToken, setToken, deleteToken } from "../utils/auth";
+import { setToken, deleteToken } from "../utils/auth";
+import { getConfig } from "../utils/auth";
 
 export interface Admin {
   email: string;
@@ -22,13 +23,24 @@ export function useAuth(): AuthContextType {
   return useContext(AuthContext);
 }
 
+async function getPermissions(): Promise<string[]> {
+  const config = await getConfig();
+
+  return axios
+    .get(`${API_URL}/permissions`, config)
+    .then(({ data }: { data: string[] }) => data)
+    .catch((_) => []);
+}
+
 export function useProvideAuth() {
   const [admin, setAdmin] = useState<Admin | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [permissions, setPermissions] = useState<string[] | null>(null);
 
-  const signin = (email: string, password: string) => {
+  const signin = async (email: string, password: string) => {
     setLoading(true);
+    const config = await getConfig();
 
     axios
       .post(
@@ -37,12 +49,13 @@ export function useProvideAuth() {
           email,
           password,
         },
-        { withCredentials: true }
+        config
       )
       .then(({ data }: { data: Info }) => {
         setIsAuthenticated(true);
         setAdmin(data.admin);
         setToken(data.token);
+        getPermissions().then((permissions) => setPermissions(permissions));
         setLoading(false);
       })
       .catch((error) => {
@@ -51,12 +64,15 @@ export function useProvideAuth() {
       });
   };
 
-  const signout = () => {
+  const signout = async () => {
+    const config = await getConfig();
+
     axios
-      .delete(`${API_URL}/auth/signout`, { withCredentials: true })
+      .delete(`${API_URL}/auth/signout`, config)
       .then((_) => {
         setIsAuthenticated(false);
         setAdmin(null);
+        setPermissions(null);
         deleteToken();
       })
       .catch((error) => {
@@ -66,16 +82,14 @@ export function useProvideAuth() {
 
   useEffect(() => {
     (async () => {
+      const config = await getConfig();
+
       axios
-        .get(`${API_URL}/auth`, {
-          withCredentials: true,
-          headers: {
-            token: await getToken(),
-          },
-        })
+        .get(`${API_URL}/auth`, config)
         .then(({ data }: { data: Admin }) => {
           setIsAuthenticated(true);
           setAdmin(data);
+          getPermissions().then((permissions) => setPermissions(permissions));
           setLoading(false);
         })
         .catch((_) => {
@@ -91,5 +105,6 @@ export function useProvideAuth() {
     isAuthenticated,
     signin,
     signout,
+    permissions,
   };
 }

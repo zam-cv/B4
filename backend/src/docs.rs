@@ -13,6 +13,7 @@ use utoipa::OpenApi;
         routes::admin::auth::signin,
         routes::admin::auth::signout,
         routes::admin::auth::register,
+        routes::admin::permissions::get_permissions,
         routes::admin::admins::delete_admin,
         routes::admin::admins::get_admins,
         routes::admin::data::create_crop_type,
@@ -32,7 +33,8 @@ use utoipa::OpenApi;
         routes::AdminInfo,
         models::CropType,
         models::Player,
-        models::StatisticsSample
+        models::StatisticsSample,
+        models::PermissionType
     ))
 )]
 pub struct ApiDoc;

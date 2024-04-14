@@ -88,7 +88,11 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_admin(&self, new_admin: models::Admin) -> anyhow::Result<i32> {
+    pub async fn create_admin(
+        &self,
+        new_admin: models::Admin,
+        permissions: Vec<models::PermissionType>,
+    ) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::admins::table)
@@ -96,10 +100,25 @@ impl Database {
                     .execute(pooled)?;
 
                 // Get the last inserted id
-                schema::admins::table
+                let id = schema::admins::table
                     .select(schema::admins::id)
                     .order(schema::admins::id.desc())
-                    .first::<i32>(pooled)
+                    .first::<i32>(pooled)?;
+
+                let permissions = permissions
+                    .into_iter()
+                    .map(|permission| models::AdminPermissions {
+                        id: None,
+                        admin_id: id,
+                        permission_id: permission.to_string(),
+                    })
+                    .collect::<Vec<_>>();
+
+                diesel::insert_into(schema::admin_permissions::table)
+                    .values(&permissions)
+                    .execute(pooled)?;
+
+                Ok(id)
             })
         })
         .await
@@ -369,5 +388,56 @@ impl Database {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn create_role_permission(
+        &self,
+        new_role_permission: models::RolePermission,
+    ) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::insert_into(schema::role_permissions::table)
+                .values(&new_role_permission)
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn get_role_permission(
+        &self,
+        role_name: String,
+        permission_name: String,
+    ) -> anyhow::Result<Option<models::RolePermission>> {
+        self.query_wrapper(move |conn| {
+            schema::role_permissions::table
+                .filter(
+                    schema::role_permissions::role_id
+                        .eq(role_name)
+                        .and(schema::role_permissions::permission_id.eq(permission_name)),
+                )
+                .first::<models::RolePermission>(conn)
+                .optional()
+        })
+        .await
+    }
+
+    pub async fn get_permissions_by_admin_id(
+        &self,
+        admin_id: i32,
+    ) -> anyhow::Result<Vec<models::PermissionType>> {
+        self.query_wrapper(move |conn| {
+            schema::admin_permissions::table
+                .filter(schema::admin_permissions::admin_id.eq(admin_id))
+                .select(schema::admin_permissions::permission_id)
+                .load::<String>(conn)
+        })
+        .await
+        .map(|permissions| {
+            permissions
+                .into_iter()
+                .map(|permission| permission.parse().unwrap())
+                .collect()
+        })
     }
 }

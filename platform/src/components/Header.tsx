@@ -12,7 +12,8 @@ export function Sub({ title, route }: { title: string; route: string }) {
 }
 
 export default function Header() {
-  const { signout, admin } = useAuth();
+  const { signout, admin, permissions } = useAuth();
+  console.log(permissions);
 
   return (
     <div className="grid grid-cols-[1fr_auto] p-1 shadow-lg px-5">
