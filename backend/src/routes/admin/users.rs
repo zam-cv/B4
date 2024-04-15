@@ -118,3 +118,19 @@ pub async fn get_user_locations_by_type(database: web::Data<Database>) -> Result
     
     Ok(HttpResponse::Ok().json(user_types))
 }
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The average age was found", body = f64)
+  )
+)]
+#[get("/average-age")]
+pub async fn get_average_age(database: web::Data<Database>) -> Result<impl Responder> {
+    let average_age = database
+        .get_average_age()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().body(average_age.unwrap_or(0.0).to_string()))
+}

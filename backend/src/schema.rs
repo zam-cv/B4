@@ -62,6 +62,7 @@ diesel::table! {
 
     players (id) {
         id -> Integer,
+        time_in_game -> Double,
         current_cycle -> Integer,
         current_score -> Double,
         balance_cash -> Integer,

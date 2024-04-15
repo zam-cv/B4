@@ -15,7 +15,9 @@ async fn create_users() {
     for _ in 0..100 {
         let database = database.clone();
         futures.push(async move {
-            let player_id = database.create_player().await.unwrap();
+            let mut new_player = models::Player::default();
+            new_player.time_in_game = (0.0..=1000.0).fake();
+            let player_id = database.create_player(new_player).await.unwrap();
             let password: String = internet::en::Password(Range { start: 8, end: 16 }).fake();
 
             let mut rng = rand::thread_rng();

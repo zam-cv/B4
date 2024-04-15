@@ -1,15 +1,20 @@
-use crate::{
-    config::{self, CONFIG},
-    models, schema,
-};
+use crate::{config::CONFIG, models, schema};
 use actix_web::web;
+use chrono::Datelike;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
-use chrono::Datelike;
 
 macro_rules! count_star {
     ($type:ty) => {
         diesel::dsl::sql::<$type>("count(*)")
+    };
+}
+
+macro_rules! avg {
+    ($column:expr) => {
+        diesel::dsl::sql::<diesel::sql_types::Nullable<diesel::sql_types::Double>>(concat!(
+            "AVG(", $column, ")"
+        ))
     };
 }
 
@@ -218,18 +223,8 @@ impl Database {
         Ok(())
     }
 
-    pub async fn create_player(&self) -> anyhow::Result<i32> {
+    pub async fn create_player(&self, new_player: models::Player) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
-            let new_player = models::Player {
-                id: None,
-                current_cycle: config::INITIAL_CYCLE,
-                current_score: config::INITIAL_SCORE,
-                balance_cash: config::INITIAL_BALANCE_CASH,
-                balance_verqor: config::INITIAL_BALANCE,
-                balance_coyote: config::INITIAL_BALANCE,
-                max_plots: config::INITIAL_MAX_PLOTS,
-            };
-
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::players::table)
                     .values(&new_player)
@@ -241,6 +236,15 @@ impl Database {
                     .order(schema::players::id.desc())
                     .first::<i32>(pooled)
             })
+        })
+        .await
+    }
+
+    pub async fn get_average_time_in_game(&self) -> anyhow::Result<Option<f64>> {
+        self.query_wrapper(move |conn| {
+            schema::players::table
+                .select(diesel::dsl::avg(schema::players::time_in_game))
+                .first::<Option<f64>>(conn)
         })
         .await
     }
@@ -296,6 +300,20 @@ impl Database {
                 .first::<Option<i32>>(conn)
         })
         .await
+    }
+
+    pub async fn get_average_age(&self) -> anyhow::Result<Option<f64>> {
+        let current_year = chrono::Utc::now().year();
+
+        let average = self
+            .query_wrapper(move |conn| {
+                schema::users::table
+                    .select(avg!("year_of_birth"))
+                    .first::<Option<f64>>(conn)
+            })
+            .await?;
+
+        Ok(average.map(|average| current_year as f64 - average))
     }
 
     pub async fn get_user_count_by_age_range(
@@ -354,21 +372,26 @@ impl Database {
     }
 
     pub async fn get_user_locations_by_type(
-        &self
+        &self,
     ) -> anyhow::Result<Vec<(models::UserType, Vec<(Option<f64>, Option<f64>)>)>> {
         self.query_wrapper(move |conn| {
             schema::users::table
-                .select((schema::users::user_type, (schema::users::latitude, schema::users::longitude)))
-                .filter(schema::users::latitude.is_not_null().and(schema::users::longitude.is_not_null()))
+                .select((
+                    schema::users::user_type,
+                    (schema::users::latitude, schema::users::longitude),
+                ))
+                .filter(
+                    schema::users::latitude
+                        .is_not_null()
+                        .and(schema::users::longitude.is_not_null()),
+                )
                 .load::<(models::UserType, (Option<f64>, Option<f64>))>(conn)
         })
         .await
         .map(|locations| {
             let mut map = std::collections::HashMap::new();
             for (user_type, location) in locations {
-                map.entry(user_type)
-                    .or_insert_with(Vec::new)
-                    .push(location);
+                map.entry(user_type).or_insert_with(Vec::new).push(location);
             }
 
             map.into_iter().collect()

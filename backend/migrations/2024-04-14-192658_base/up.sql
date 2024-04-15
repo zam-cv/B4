@@ -33,6 +33,7 @@ CREATE TABLE `admin_permissions`(
 
 CREATE TABLE `players`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`time_in_game` FLOAT4(30) NOT NULL,
 	`current_cycle` INTEGER NOT NULL,
 	`current_score` FLOAT4(30) NOT NULL,
 	`balance_cash` INTEGER NOT NULL,

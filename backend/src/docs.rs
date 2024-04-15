@@ -23,6 +23,7 @@ use utoipa::OpenApi;
         routes::admin::data::create_crop_type,
         routes::admin::player::get_player,
         routes::admin::players::get_players_count,
+        routes::admin::players::get_average_time_in_game,
         routes::admin::user::get_user,
         routes::admin::user::get_user_statistics,
         routes::admin::users::get_users,
@@ -31,7 +32,8 @@ use utoipa::OpenApi;
         routes::admin::users::get_user_genders,
         routes::admin::users::get_user_count_by_gender,
         routes::admin::users::get_user_count_by_age_range,
-        routes::admin::users::get_user_locations_by_type
+        routes::admin::users::get_user_locations_by_type,
+        routes::admin::users::get_average_age,
     ),
     components(schemas(
         routes::UserCredentials,

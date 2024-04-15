@@ -1,4 +1,4 @@
-use crate::{schema, utils, models::types::*};
+use crate::{schema, utils, models::types::*, config};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -63,10 +63,26 @@ pub struct Player {
     #[serde(skip_deserializing, skip_serializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    pub time_in_game: f64,
     pub current_cycle: i32,
     pub current_score: f64,
     pub balance_cash: i32,
     pub balance_verqor: i32,
     pub balance_coyote: i32,
     pub max_plots: i32,
+}
+
+impl Player {
+    pub fn default() -> Self {
+        Player {
+            id: None,
+            time_in_game: config::INITIAL_TIME,
+            current_cycle: config::INITIAL_CYCLE,
+            current_score: config::INITIAL_SCORE,
+            balance_cash: config::INITIAL_BALANCE_CASH,
+            balance_verqor: config::INITIAL_BALANCE,
+            balance_coyote: config::INITIAL_BALANCE,
+            max_plots: config::INITIAL_MAX_PLOTS,
+        }
+    }
 }

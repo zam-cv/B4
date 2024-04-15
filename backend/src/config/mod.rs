@@ -39,6 +39,7 @@ lazy_static! {
 pub const TOKEN_EXPIRATION_TIME: usize = 60 * 60 * 24 * 15; // 15 days
 
 // Game constants
+pub const INITIAL_TIME: f64 = 0.0;
 pub const INITIAL_CYCLE: i32 = 0;
 pub const INITIAL_SCORE: f64 = 0.0;
 pub const INITIAL_BALANCE: i32 = 0;

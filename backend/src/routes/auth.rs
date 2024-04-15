@@ -90,7 +90,7 @@ pub async fn register(
                 .flatten();
 
             let player_id = database
-                .create_player()
+                .create_player(models::Player::default())
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 

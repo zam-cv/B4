@@ -130,7 +130,8 @@ pub async fn app() -> std::io::Result<()> {
                                             .service(routes::admin::users::get_user_genders)
                                             .service(routes::admin::users::get_user_count_by_gender)
                                             .service(routes::admin::users::get_user_count_by_age_range)
-                                            .service(routes::admin::users::get_user_locations_by_type),
+                                            .service(routes::admin::users::get_user_locations_by_type)
+                                            .service(routes::admin::users::get_average_age),
                                     )
                                     .service(
                                         web::scope("/player")
@@ -138,7 +139,8 @@ pub async fn app() -> std::io::Result<()> {
                                     )
                                     .service(
                                         web::scope("/players")
-                                            .service(routes::admin::players::get_players_count),
+                                            .service(routes::admin::players::get_players_count)
+                                            .service(routes::admin::players::get_average_time_in_game),
                                     )
                                     .service(
                                         web::scope("/data")
