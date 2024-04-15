@@ -12,3 +12,13 @@ export default function Chart({
     </div>
   );
 }
+
+export function getData(types: string[], values: [string, number][]): number[] {
+  const map = new Map<string, number>();
+
+  for (const [type, count] of values) {
+    map.set(type, count);
+  }
+
+  return types.map((type) => map.get(type) ?? 0);
+}

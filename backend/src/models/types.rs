@@ -6,7 +6,7 @@ use utoipa::ToSchema;
 use strum_macros::{EnumIter, EnumString, Display};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
-#[derive(DbEnum, Serialize, Deserialize)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
 #[random_enum]
 pub enum Gender {
     M,

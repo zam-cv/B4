@@ -279,6 +279,19 @@ impl Database {
         .await
     }
 
+    pub async fn get_user_count_by_gender(&self) -> anyhow::Result<Vec<(models::Gender, i64)>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .select((
+                    schema::users::gender,
+                    count_star!(diesel::sql_types::BigInt),
+                ))
+                .group_by(schema::users::gender)
+                .load::<(models::Gender, i64)>(conn)
+        })
+        .await
+    }
+
     pub async fn get_statistics(
         &self,
         player_id: i32,

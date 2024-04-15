@@ -1,4 +1,4 @@
-use crate::{database::Database, models::UserType};
+use crate::{database::Database, models::{UserType, Gender}};
 use actix_web::{error, get, web, HttpResponse, Responder, Result};
 use lazy_static::lazy_static;
 use strum::IntoEnumIterator;
@@ -7,6 +7,7 @@ const CONTEXT_PATH: &str = "/api/admin/users";
 
 lazy_static! {
   static ref USER_TYPES: Vec<UserType> = UserType::iter().collect();
+  static ref GENDERS: Vec<Gender> = Gender::iter().collect();
 }
 
 #[utoipa::path(
@@ -28,8 +29,8 @@ pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> 
 #[utoipa::path(
   context_path = CONTEXT_PATH,
   responses(
-    (status = 200, description = "The user was found", body = Vec<String>),
-    (status = 404, description = "The user was not found")
+    (status = 200, description = "The types were found", body = Vec<UserType>),
+    (status = 404, description = "The types were not found")
   )
 )]
 #[get("/types")]
@@ -51,5 +52,34 @@ pub async fn get_user_count_by_type(database: web::Data<Database>) -> Result<imp
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
+    Ok(HttpResponse::Ok().json(user_types))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The genders were found", body = Vec<Gender>),
+    (status = 404, description = "The genders were not found")
+  )
+)]
+#[get("/genders")]
+pub async fn get_user_genders() -> Result<impl Responder> {
+    Ok(HttpResponse::Ok().json(GENDERS.clone()))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The user was found", body = Vec<(String, i64)>),
+    (status = 404, description = "The user was not found")
+  )
+)]
+#[get("/genders/count")]
+pub async fn get_user_count_by_gender(database: web::Data<Database>) -> Result<impl Responder> {
+    let user_types = database
+        .get_user_count_by_gender()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+    
     Ok(HttpResponse::Ok().json(user_types))
 }
