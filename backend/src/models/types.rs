@@ -14,7 +14,7 @@ pub enum Gender {
     X
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
+#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
 #[random_enum]
 pub enum UserType {

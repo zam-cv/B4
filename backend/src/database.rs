@@ -353,6 +353,28 @@ impl Database {
         .await
     }
 
+    pub async fn get_user_locations_by_type(
+        &self
+    ) -> anyhow::Result<Vec<(models::UserType, Vec<(Option<f64>, Option<f64>)>)>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .select((schema::users::user_type, (schema::users::latitude, schema::users::longitude)))
+                .filter(schema::users::latitude.is_not_null().and(schema::users::longitude.is_not_null()))
+                .load::<(models::UserType, (Option<f64>, Option<f64>))>(conn)
+        })
+        .await
+        .map(|locations| {
+            let mut map = std::collections::HashMap::new();
+            for (user_type, location) in locations {
+                map.entry(user_type)
+                    .or_insert_with(Vec::new)
+                    .push(location);
+            }
+
+            map.into_iter().collect()
+        })
+    }
+
     pub async fn get_statistics(
         &self,
         player_id: i32,

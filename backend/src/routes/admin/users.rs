@@ -101,3 +101,20 @@ pub async fn get_user_count_by_age_range(database: web::Data<Database>) -> Resul
     
     Ok(HttpResponse::Ok().json(user_types))
 }
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The locations were found", body = Vec<(User_Type, Vec<(f64, f64)>)>),
+    (status = 404, description = "The locations were not found")
+  )
+)]
+#[get("/locations/types")]
+pub async fn get_user_locations_by_type(database: web::Data<Database>) -> Result<impl Responder> {
+    let user_types = database
+        .get_user_locations_by_type()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+    
+    Ok(HttpResponse::Ok().json(user_types))
+}

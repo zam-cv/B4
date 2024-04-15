@@ -23,10 +23,7 @@ export default function UsersByGender() {
     <Chart title="Cantidad de usuarios por rango de edades">
       <Bar
         data={{
-          labels: range.map(([range]) => {
-            console.log(range);
-            return range;
-          }),
+          labels: range.map(([range]) => range),
           datasets: [
             {
               label: "Usuarios",
