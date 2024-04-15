@@ -47,9 +47,9 @@ CREATE TABLE `users`(
 		'cliente',
 		'agricultor',
 		'fabricante_o_distribuidor_de_agroinsumos',
-		'proverdor_de_seguros',
+		'proveedor_de_seguros',
 		'financiera',
-		'empresa_cfg',
+		'empresa_cPG',
 		'acopiador',
 		'inversionista',
 		'publico_en_general'

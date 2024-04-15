@@ -21,7 +21,7 @@ pub enum UserType {
     Cliente,
     Agricultor,
     FabricanteODistribuidorDeAgroinsumos,
-    ProvedorDeSeguros,
+    ProveedorDeSeguros,
     Financiera,
     EmpresaCPG,
     Acopiador,

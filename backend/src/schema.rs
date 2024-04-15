@@ -101,7 +101,6 @@ diesel::table! {
 
     users (id) {
         id -> Integer,
-        #[max_length = 13]
         user_type -> UserType,
         #[max_length = 50]
         username -> Varchar,
@@ -109,7 +108,6 @@ diesel::table! {
         email -> Varchar,
         #[max_length = 150]
         password -> Varchar,
-        #[max_length = 1]
         gender -> Gender,
         #[max_length = 50]
         os -> Nullable<Varchar>,
