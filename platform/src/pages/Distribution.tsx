@@ -37,6 +37,9 @@ export default function Distribution() {
   const [locations, setLocations] = useState<[string, [number, number][]][]>(
     []
   );
+  const [visibility, setVisibility] = useState<boolean[]>(
+    locations.map(() => true)
+  );
   const data = getData(typesUsers, locations);
 
   useEffect(() => {
@@ -45,6 +48,7 @@ export default function Distribution() {
 
       axios.get(`${API_URL}/users/types`, config).then(({ data }) => {
         setTypesUsers(data);
+        setVisibility(data.map(() => true));
       });
 
       axios.get(`${API_URL}/users/locations/types`, config).then(({ data }) => {
@@ -53,9 +57,14 @@ export default function Distribution() {
     })();
   }, []);
 
+  function handleVisibility(index: number) {
+    let newVisibility = [...visibility];
+    newVisibility[index] = !newVisibility[index];
+    setVisibility(newVisibility);
+  }
+
   return (
-    <div className="grid grid-cols-4 grid-rows-4 gap-5 h-full">
-      <div className="bg-gray-300 row-span-3"></div>
+    <div className="w-full h-full">
       <div className="col-span-3 row-span-4 w-full h-full overflow-hidden">
         <div className="grid grid-rows-[1fr_auto] grid-cols-1 w-full h-full">
           <div className="w-full h-full relative flex justify-center items-center overflow-hidden">
@@ -73,12 +82,14 @@ export default function Distribution() {
                       ))
                     }
                   </Geographies>
-                  {data.data.map((coordinates) =>
-                    coordinates.map((coordinate, index) => (
-                      <Marker key={index} coordinates={coordinate}>
-                        <circle r={3} fill={data.colors[index]} />
-                      </Marker>
-                    ))
+                  {data.data.map((coordinates, index) =>
+                    visibility[index]
+                      ? coordinates.map((coordinate, i) => (
+                          <Marker key={i} coordinates={coordinate}>
+                            <circle r={2} fill={data.colors[index]} />
+                          </Marker>
+                        ))
+                      : null
                   )}
                 </ZoomableGroup>
               </ComposableMap>
@@ -91,12 +102,22 @@ export default function Distribution() {
               </h1>
               <div className="flex flex-wrap justify-center">
                 {data.labels.map((label, index) => (
-                  <div key={index} className="flex items-center gap-2 py-2 px-7">
-                    <div
-                      className="w-4 h-4 rounded-full"
-                      style={{ backgroundColor: data.colors[index] }}
-                    ></div>
-                    <div>{label}</div>
+                  <div key={index} className="py-2 px-7">
+                    <span
+                      className="flex items-center gap-2 cursor-pointer select-none"
+                      style={
+                        visibility[index]
+                          ? { opacity: 1 }
+                          : { opacity: 0.5, textDecoration: "line-through" }
+                      }
+                      onClick={() => handleVisibility(index)}
+                    >
+                      <div
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: data.colors[index] }}
+                      ></div>
+                      <div>{label}</div>
+                    </span>
                   </div>
                 ))}
               </div>
@@ -104,7 +125,6 @@ export default function Distribution() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-300"></div>
     </div>
   );
 }
