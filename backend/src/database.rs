@@ -6,6 +6,12 @@ use actix_web::web;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
 
+macro_rules! count_star {
+    ($type:ty) => {
+        diesel::dsl::sql::<$type>("count(*)")
+    };
+}
+
 const MAX_POOL_SIZE: u32 = 5;
 pub type DBPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
@@ -258,6 +264,19 @@ impl Database {
     pub async fn get_users(&self) -> anyhow::Result<Vec<models::User>> {
         self.query_wrapper(move |conn| schema::users::table.load::<models::User>(conn))
             .await
+    }
+
+    pub async fn get_user_count_by_type(&self) -> anyhow::Result<Vec<(models::UserType, i64)>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .select((
+                    schema::users::user_type,
+                    count_star!(diesel::sql_types::BigInt),
+                ))
+                .group_by(schema::users::user_type)
+                .load::<(models::UserType, i64)>(conn)
+        })
+        .await
     }
 
     pub async fn get_statistics(

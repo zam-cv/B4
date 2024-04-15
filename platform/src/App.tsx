@@ -13,6 +13,7 @@ initChart();
 // pages
 import Dashboard from "./pages/Dashboard";
 import Distribution from "./pages/Distribution";
+import Users from "./pages/Users";
 import Emails from "./pages/Emails";
 import Accounts from "./pages/Accounts";
 import Docs from "./pages/Docs";
@@ -23,6 +24,12 @@ export const pagePermissions = [
     route: "/dashboard",
     permission: ADMIN_PERMISSIONS.VIEW_DASHBOARD,
     component: Dashboard,
+  },
+  {
+    title: "Usuarios",
+    route: "/users",
+    permission: ADMIN_PERMISSIONS.VIEW_USERS,
+    component: Users,
   },
   {
     title: "Distribución",

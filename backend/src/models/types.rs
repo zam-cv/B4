@@ -15,13 +15,13 @@ pub enum Gender {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
-#[derive(DbEnum, Serialize, Deserialize)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
 #[random_enum]
 pub enum UserType {
     Cliente,
     Agricultor,
     FabricanteODistribuidorDeAgroinsumos,
-    ProverdorDeSeguros,
+    ProvedorDeSeguros,
     Financiera,
     EmpresaCPG,
     Acopiador,
@@ -42,6 +42,7 @@ pub enum PermissionType {
     ViewDocuments,
     ViewDashboard,
     ViewDistribution,
+    ViewUsers,
     ViewAccounts,
     AddAccounts,
     EditAccounts,

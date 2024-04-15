@@ -26,6 +26,8 @@ use utoipa::OpenApi;
         routes::admin::user::get_user,
         routes::admin::user::get_user_statistics,
         routes::admin::users::get_users,
+        routes::admin::users::get_user_types,
+        routes::admin::users::get_user_count_by_type
     ),
     components(schemas(
         routes::UserCredentials,

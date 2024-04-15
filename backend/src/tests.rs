@@ -16,7 +16,7 @@ async fn create_users() {
     let mut futures = Vec::new();
     let database = Database::new();
 
-    for _ in 0..10 {
+    for _ in 0..100 {
         let database = database.clone();
         futures.push(async move {
             let player_id = database.create_player().await.unwrap();
