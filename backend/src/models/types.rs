@@ -20,12 +20,16 @@ pub enum Gender {
 pub enum UserType {
     Cliente,
     Agricultor,
+    #[serde(alias = "Fabricante o Distribuidor de Agroinsumos")]
     FabricanteODistribuidorDeAgroinsumos,
+    #[serde(alias = "Proveedor de Seguros")]
     ProveedorDeSeguros,
     Financiera,
-    EmpresaCPG,
+    #[serde(alias = "Empresa CPG")]
+    EmpresaCpg,
     Acopiador,
     Inversionista,
+    #[serde(alias = "Publico en General")]
     PublicoEnGeneral
 }
 

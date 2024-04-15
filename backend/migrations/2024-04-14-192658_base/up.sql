@@ -49,7 +49,7 @@ CREATE TABLE `users`(
 		'fabricante_o_distribuidor_de_agroinsumos',
 		'proveedor_de_seguros',
 		'financiera',
-		'empresa_cPG',
+		'empresa_cpg',
 		'acopiador',
 		'inversionista',
 		'publico_en_general'
