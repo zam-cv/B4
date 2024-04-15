@@ -21,7 +21,7 @@ pub async fn create_default_admin(database: &Database) -> anyhow::Result<i32> {
         .await
     {
         Ok(None) => {
-            if let Ok(password) = utils::get_hash_in_string(&CONFIG.admin_default_password) {
+            if let Ok(password) = utils::hash_password(&CONFIG.admin_default_password) {
                 let admin = models::Admin {
                     id: None,
                     email: CONFIG.admin_default_email.clone(),

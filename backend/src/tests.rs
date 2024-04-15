@@ -1,8 +1,4 @@
 use crate::{database::Database, models, utils};
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
-    Argon2,
-};
 use fake::{
     faker::{address, internet},
     Fake,
@@ -33,7 +29,7 @@ async fn create_users() {
                 user_type,
                 username: internet::en::Username().fake(),
                 email: internet::en::SafeEmail().fake(),
-                password: utils::get_hash!(password).unwrap().to_string(),
+                password: utils::hash_password(&password).unwrap().to_string(),
                 gender,
                 os: utils::get_os(internet::en::UserAgent().fake()),
                 player_id,

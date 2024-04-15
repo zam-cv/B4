@@ -2,10 +2,6 @@ use crate::{config::CONFIG, database::Database, models, routes, utils};
 use actix_web::{
     delete, error, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result,
 };
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
-    Argon2, PasswordHash, PasswordVerifier,
-};
 use validator::Validate;
 
 const CONTEXT_PATH: &str = "/api/admin/auth";
@@ -27,7 +23,7 @@ pub async fn register(
         return Ok(HttpResponse::Unauthorized().body("Invalid"));
     }
 
-    if let Ok(hash) = utils::get_hash!(admin.password) {
+    if let Ok(hash) = utils::hash_password(&admin.password) {
         if let Ok(None) = database.get_admin_by_email(admin.email.clone()).await {
             let mut new_admin = models::Admin {
                 id: None,
@@ -93,18 +89,13 @@ pub async fn signin(
     profile: web::Json<routes::AdminCredentials>,
 ) -> impl Responder {
     if let Ok(Some(admin)) = database.get_admin_by_email(profile.email.clone()).await {
-        if let Ok(password) = PasswordHash::new(&admin.password) {
-            if Argon2::default()
-                .verify_password(profile.password.as_bytes(), &password)
-                .is_ok()
-            {
-                if let Some(id) = admin.id {
-                    if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
-                        let cookie = utils::get_cookie_with_token(&token);
-                        return HttpResponse::Ok()
-                            .cookie(cookie)
-                            .json(routes::AdminInfo { token, admin });
-                    }
+        if let Ok(true) = utils::verify_password(&profile.password, &admin.password) {
+            if let Some(id) = admin.id {
+                if let Ok(token) = utils::create_token(&CONFIG.admin_secret_key, id) {
+                    let cookie = utils::get_cookie_with_token(&token);
+                    return HttpResponse::Ok()
+                        .cookie(cookie)
+                        .json(routes::AdminInfo { token, admin });
                 }
             }
         }

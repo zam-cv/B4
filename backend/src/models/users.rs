@@ -17,6 +17,7 @@ pub struct Admin {
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
+    #[serde(skip_deserializing)]
     pub role_id: String,
 }
 
@@ -48,6 +49,7 @@ pub struct User {
     pub longitude: Option<f64>,
     #[validate(range(min = 1920, max = 3000))]
     pub year_of_birth: i32,
+    #[serde(skip_deserializing)]
     pub role_id: String,
 }
 
