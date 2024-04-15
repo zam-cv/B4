@@ -17,31 +17,23 @@ export const ADMIN_PERMISSIONS = {
 };
 
 export const CHART_COLOR_LIST = [
-  "#008B8B", // Dark Cyan
-  "#4169E1", // Royal Blue
-  "#32CD32", // Lime Green
-  "#FF6347", // Tomato
-  "#40E0D0", // Turquoise
-  "#FF69B4", // Hot Pink
-  "#FA8072", // Salmon
-  "#2E8B57", // Sea Green
-  "#4682B4", // Steel Blue
-  "#FAFAD2", // Light Goldenrod Yellow
-  "#DB7093", // Pale Violet Red
-  "#DAA520", // Goldenrod
-  "#FF1493", // Deep Pink
-  "#1E90FF", // Dodger Blue
-  "#007BFF", // Bright Blue
-  "#50C878", // Emerald
-  "#FFD700", // Gold
-  "#DC143C", // Crimson
-  "#9B30FF", // Vivid Purple
-  "#00FA9A", // Medium Spring Green
-  "#FF00FF", // Fuchsia
-  "#FF4500", // Orange Red
-  "#C0C0C0", // Silver
-  "#FF007F", // Bright Pink
-  "#FFD700", // Bright Yellow
+  '#FF6384',  // rosy pink
+  '#36A2EB',  // bright blue
+  '#FFCE56',  // sunny yellow
+  '#4BC0C0',  // sea green
+  '#9966FF',  // amethyst purple
+  '#FF9F40',  // vivid orange
+  '#C9CB3F',  // lime green
+  '#50AF95',  // teal
+  '#703FEB',  // deep violet
+  '#3B1F2B',  // dark maroon
+  '#DAB5D7',  // soft lavender
+  '#77D970',  // fresh green
+  '#304D6D',  // midnight blue
+  '#F2C14E',  // goldenrod
+  '#8C5E58',  // muted brown
+  '#3DCCC7',   // light turquoise
+  '#F45B69',  // salmon pink
 ];
 
 export const CHART_DEFAULT_OPTIONS = {

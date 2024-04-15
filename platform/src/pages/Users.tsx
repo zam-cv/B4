@@ -68,22 +68,32 @@ export default function Users() {
           className="rounded-lg border"
         >
           <ResizablePanel defaultSize={50}>
-            <div className="p-5">
-              <UsersTable setUserId={setUserId} setUserInfo={setUserInfo} />
+            <div className="p-5 h-full">
+              <div className="h-full w-full relative">
+                <div className="absolute h-full w-full overflow-auto">
+                  <UsersTable setUserId={setUserId} setUserInfo={setUserInfo} />
+                </div>
+              </div>
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={50}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={40}>
-                <div>
-                  <Map userInfo={userInfo} />
+                <div className="relative w-full h-full flex justify-center items-center">
+                  <div className="absolute w-full h-full flex justify-center items-center">
+                    <Map userInfo={userInfo} />
+                  </div>
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
               <ResizablePanel defaultSize={30}>
-                <div className="h-full p-5">
-                  <Statistics />
+                <div className="p-5 h-full w-full">
+                  <div className="h-full w-full relative">
+                    <div className="h-full w-full absolute">
+                      <Statistics />
+                    </div>
+                  </div>
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />

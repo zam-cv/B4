@@ -6,7 +6,7 @@ use strum::IntoEnumIterator;
 const CONTEXT_PATH: &str = "/api/admin/users";
 
 lazy_static! {
-  static ref USER_TYPES: Vec<String> = UserType::iter().map(|x| x.to_string()).collect();
+  static ref USER_TYPES: Vec<UserType> = UserType::iter().collect();
 }
 
 #[utoipa::path(

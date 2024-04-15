@@ -43,7 +43,7 @@ export default function Users() {
           datasets: [
             {
               data: getData(typesUsers, users),
-              backgroundColor: getColors(3),
+              backgroundColor: getColors(typesUsers.length),
             },
           ],
         }}
