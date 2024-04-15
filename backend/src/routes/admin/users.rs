@@ -4,6 +4,7 @@ use lazy_static::lazy_static;
 use strum::IntoEnumIterator;
 
 const CONTEXT_PATH: &str = "/api/admin/users";
+const AGE_RANGE_STEP: i32 = 10;
 
 lazy_static! {
   static ref USER_TYPES: Vec<UserType> = UserType::iter().collect();
@@ -78,6 +79,23 @@ pub async fn get_user_genders() -> Result<impl Responder> {
 pub async fn get_user_count_by_gender(database: web::Data<Database>) -> Result<impl Responder> {
     let user_types = database
         .get_user_count_by_gender()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+    
+    Ok(HttpResponse::Ok().json(user_types))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The user was found", body = Vec<(String, i64)>),
+    (status = 404, description = "The user was not found")
+  )
+)]
+#[get("/ages/count")]
+pub async fn get_user_count_by_age_range(database: web::Data<Database>) -> Result<impl Responder> {
+    let user_types = database
+        .get_user_count_by_age_range(AGE_RANGE_STEP)
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
     

@@ -128,7 +128,8 @@ pub async fn app() -> std::io::Result<()> {
                                             .service(routes::admin::users::get_user_types)
                                             .service(routes::admin::users::get_user_count_by_type)
                                             .service(routes::admin::users::get_user_genders)
-                                            .service(routes::admin::users::get_user_count_by_gender),
+                                            .service(routes::admin::users::get_user_count_by_gender)
+                                            .service(routes::admin::users::get_user_count_by_age_range),
                                     )
                                     .service(
                                         web::scope("/player")

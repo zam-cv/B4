@@ -5,6 +5,7 @@ use crate::{
 use actix_web::web;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
+use chrono::Datelike;
 
 macro_rules! count_star {
     ($type:ty) => {
@@ -277,6 +278,66 @@ impl Database {
                 .load::<(models::UserType, i64)>(conn)
         })
         .await
+    }
+
+    pub async fn get_max_year_of_birth(&self) -> anyhow::Result<Option<i32>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .select(diesel::dsl::max(schema::users::year_of_birth))
+                .first::<Option<i32>>(conn)
+        })
+        .await
+    }
+
+    pub async fn get_min_year_of_birth(&self) -> anyhow::Result<Option<i32>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .select(diesel::dsl::min(schema::users::year_of_birth))
+                .first::<Option<i32>>(conn)
+        })
+        .await
+    }
+
+    pub async fn get_user_count_by_age_range(
+        &self,
+        step: i32,
+    ) -> anyhow::Result<Vec<(String, i64)>> {
+        let current_year = chrono::Utc::now().year();
+        let max = self.get_max_year_of_birth().await?;
+        let min = self.get_min_year_of_birth().await?;
+
+        if let (Some(max), Some(min)) = (max, min) {
+            let mut ranges = Vec::new();
+            let mut start = min;
+            let mut end = start + step;
+
+            while start < max {
+                let range = format!("{}-{}", current_year - start, current_year - end);
+                let count = self
+                    .query_wrapper(move |conn| {
+                        schema::users::table
+                            .filter(
+                                schema::users::year_of_birth.ge(start).and(
+                                    schema::users::year_of_birth
+                                        .lt(end)
+                                        .or(schema::users::year_of_birth.eq(end)),
+                                ),
+                            )
+                            .select(count_star!(diesel::sql_types::BigInt))
+                            .first::<i64>(conn)
+                    })
+                    .await?;
+
+                ranges.push((range, count));
+
+                start = end;
+                end = start + step;
+            }
+
+            Ok(ranges)
+        } else {
+            Ok(Vec::new())
+        }
     }
 
     pub async fn get_user_count_by_gender(&self) -> anyhow::Result<Vec<(models::Gender, i64)>> {

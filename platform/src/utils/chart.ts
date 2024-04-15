@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  BarElement
 } from "chart.js";
 import { CHART_COLOR_LIST } from "./constants";
 
@@ -20,7 +21,8 @@ export function initChart() {
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    BarElement
   );
 
   ChartJS.defaults.elements.point.pointStyle = false;

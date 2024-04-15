@@ -29,7 +29,8 @@ use utoipa::OpenApi;
         routes::admin::users::get_user_types,
         routes::admin::users::get_user_count_by_type,
         routes::admin::users::get_user_genders,
-        routes::admin::users::get_user_count_by_gender
+        routes::admin::users::get_user_count_by_gender,
+        routes::admin::users::get_user_count_by_age_range,
     ),
     components(schemas(
         routes::UserCredentials,
