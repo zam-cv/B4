@@ -112,3 +112,27 @@ impl Session {
         }
     }
 }
+
+#[derive(Clone, Serialize, ToSchema)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
+#[diesel(primary_key(id))]
+#[diesel(table_name = schema::tips)]
+pub struct Tip {
+    #[serde(skip_deserializing)]
+    #[diesel(deserialize_as = i32)]
+    pub id: Option<i32>,
+    pub content: String,
+}
+
+#[derive(Clone, Serialize)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, Associations)]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
+#[diesel(primary_key(player_id, tip_id))]
+#[diesel(belongs_to(Player))]
+#[diesel(belongs_to(Tip))]
+#[diesel(table_name = schema::player_tips)]
+pub struct PlayerTip {
+    pub player_id: i32,
+    pub tip_id: i32,
+}

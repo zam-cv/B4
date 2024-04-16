@@ -738,4 +738,26 @@ impl Database {
         })
         .await
     }
+
+    pub async fn create_tip(&self, new_tip: models::Tip) -> anyhow::Result<i32> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::tips::table)
+                    .values(&new_tip)
+                    .execute(pooled)?;
+
+                // Get the last inserted id
+                schema::tips::table
+                    .select(schema::tips::id)
+                    .order(schema::tips::id.desc())
+                    .first::<i32>(pooled)
+            })
+        })
+        .await
+    }
+
+    pub async fn get_tips(&self) -> anyhow::Result<Vec<models::Tip>> {
+        self.query_wrapper(move |conn| schema::tips::table.load::<models::Tip>(conn))
+            .await
+    }
 }

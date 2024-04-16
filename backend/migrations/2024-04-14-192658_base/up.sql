@@ -116,3 +116,16 @@ CREATE TABLE `sessions`(
 	PRIMARY KEY(`created_at`, `user_id`),
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
 );
+
+CREATE TABLE `tips`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`content` VARCHAR(500) NOT NULL
+);
+
+CREATE TABLE `player_tips`(
+	`player_id` INTEGER NOT NULL,
+	`tip_id` INTEGER NOT NULL,
+	PRIMARY KEY(`player_id`, `tip_id`),
+	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`),
+	FOREIGN KEY (`tip_id`) REFERENCES `tips`(`id`)
+);

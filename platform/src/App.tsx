@@ -60,6 +60,28 @@ export const pagePermissions = [
 function Pages() {
   const { permissions } = useAuth();
 
+  if (
+    permissions?.size === 1 &&
+    !permissions?.has(ADMIN_PERMISSIONS.VIEW_DASHBOARD)
+  ) {
+    let page = pagePermissions.find((page) =>
+      permissions?.has(page.permission)
+    );
+
+    if (page) {
+      return (
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index path="/" element={<page.component />} />
+              <Route index path={page.route} element={<page.component />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      );
+    }
+  }
+
   return (
     <BrowserRouter>
       <Routes>

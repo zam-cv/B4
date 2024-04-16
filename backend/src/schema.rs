@@ -176,6 +176,27 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::types::exports::*;
+
+    tips (id) {
+        id -> Integer,
+        #[max_length = 500]
+        content -> Varchar,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::types::exports::*;
+
+    player_tips (player_id, tip_id) {
+        player_id -> Integer,
+        tip_id -> Integer,
+    }
+}
+
 diesel::joinable!(users -> roles (role_id));
 diesel::joinable!(admins -> roles (role_id));
 diesel::joinable!(insurance -> loans (loan_id));
@@ -189,6 +210,8 @@ diesel::joinable!(admin_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> roles (role_id));
 diesel::joinable!(sessions -> users (user_id));
+diesel::joinable!(player_tips -> players (player_id));
+diesel::joinable!(player_tips -> tips (tip_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     admins,
@@ -204,4 +227,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     permissions,
     role_permissions,
     sessions,
+    tips,
+    player_tips,
 );

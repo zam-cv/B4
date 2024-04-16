@@ -23,8 +23,7 @@ pub struct RawSentence {
 pub struct RawSentences {
     pub positive: Vec<RawSentence>,
     pub negative: Vec<RawSentence>,
-    pub default: Vec<RawSentence>,
-    pub tips: Vec<&'static str>,
+    pub default: Vec<RawSentence>
 }
 
 #[derive(Debug)]
@@ -67,8 +66,7 @@ pub struct Sentence {
 pub struct Sentences {
     pub positive: Vec<Sentence>,
     pub negative: Vec<Sentence>,
-    pub default: Vec<Sentence>,
-    pub tips: Vec<&'static str>,
+    pub default: Vec<Sentence>
 }
 
 fn get_function(function: &'static str) -> Function {
@@ -154,8 +152,7 @@ pub fn raw_sentences_to_sentences(raw: RawSentences) -> Sentences {
     Sentences {
         positive,
         negative,
-        default,
-        tips: raw.tips,
+        default
     }
 }
 

@@ -1,6 +1,8 @@
 use crate::{config::CONFIG, database::Database, models, utils};
 use strum::IntoEnumIterator;
 
+const SENTENCES: &str = include_str!("../../assets/default_tips.json");
+
 const ADMIN_PERMISSIONS: [models::PermissionType; 8] = [
     models::PermissionType::ViewDocuments,
     models::PermissionType::ViewDashboard,
@@ -107,6 +109,21 @@ pub async fn associate_roles_permissions(database: &Database) -> anyhow::Result<
     Ok(())
 }
 
+pub async fn create_default_tips(database: &Database) -> anyhow::Result<()> {
+    let tips = serde_json::from_str::<Vec<String>>(SENTENCES)?;
+
+    for tip in tips.iter() {
+        database
+            .create_tip(models::Tip {
+                id: None,
+                content: tip.clone(),
+            })
+            .await?;
+    }
+
+    Ok(())
+}
+
 pub async fn setup(database: &Database) -> i32 {
     // Create the default roles
     create_default_roles(&database).await.unwrap();
@@ -121,5 +138,11 @@ pub async fn setup(database: &Database) -> i32 {
     log::info!("Roles associated with permissions");
 
     // Create the default admin
-    create_default_admin(&database).await.unwrap()
+    let id = create_default_admin(&database).await.unwrap();
+
+    // Create the default tips
+    create_default_tips(&database).await.unwrap();
+    log::info!("Default tips created");
+
+    id
 }

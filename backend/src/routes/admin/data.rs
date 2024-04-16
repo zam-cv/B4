@@ -1,5 +1,5 @@
 use crate::{database::Database, models};
-use actix_web::{error, post, web, HttpResponse, Responder, Result};
+use actix_web::{error, post, get, web, HttpResponse, Responder, Result};
 
 const CONTEXT_PATH: &str = "/api/admin/data";
 
@@ -21,4 +21,20 @@ pub async fn create_crop_type(
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(HttpResponse::Ok().finish())
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The tips were found", body = Vec<Tip>)
+  )
+)]
+#[get("/tips")]
+pub async fn get_tips(database: web::Data<Database>) -> Result<impl Responder> {
+    let tips = database
+        .get_tips()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().json(tips))
 }

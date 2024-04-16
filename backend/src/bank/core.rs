@@ -28,7 +28,7 @@ lazy_static! {
 #[derive(Serialize)]
 pub struct ResolveCycleData {
     events: Vec<String>,
-    tip: String
+    tip: Option<String>,
 }
 
 pub struct Bank {
@@ -167,8 +167,8 @@ impl Bank {
         }
 
         // choose a random tip
-        let tip_index = rand::thread_rng().gen_range(0..self.sentences.tips.len());
-        let tip = self.sentences.tips[tip_index].to_string();
+        // let tip_index = rand::thread_rng().gen_range(0..self.sentences.tips.len());
+        // let tip = self.sentences.tips[tip_index].to_string();
 
         let _diff_cash = context.player.balance_cash - initial_state_player.balance_cash;
         let _diff_bal_verqor = context.player.balance_verqor - initial_state_player.balance_verqor;
@@ -207,7 +207,7 @@ impl Bank {
 
         ResolveCycleData {
             events,
-            tip
+            tip: None
         }
     }
 }
