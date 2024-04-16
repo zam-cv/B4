@@ -81,7 +81,7 @@ impl Server {
     async fn disconnect(&mut self, id: &i32) {
         log::debug!("Disconnected: {}", id);
 
-        if let Some(state) = self.sessions.remove(id) {
+        if let Some(mut state) = self.sessions.remove(id) {
             // Save the state in the database at the end of the session
             let _ = state.save(&self.database).await;
         }

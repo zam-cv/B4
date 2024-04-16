@@ -1,14 +1,41 @@
 -- Your SQL goes here
+CREATE TABLE `roles`(
+	`name` VARCHAR(50) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE `permissions`(
+	`name` VARCHAR(50) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE `role_permissions`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`role_id` VARCHAR(150) NOT NULL,
+	`permission_id` VARCHAR(50) NOT NULL,
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`name`),
+	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`name`)
+);
+
 CREATE TABLE `admins`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`email` VARCHAR(50) NOT NULL,
-	`password` VARCHAR(150) NOT NULL
+	`password` VARCHAR(150) NOT NULL,
+	`role_id` VARCHAR(150) NOT NULL,
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`name`)
+);
+
+CREATE TABLE `admin_permissions`(
+	`admin_id` INTEGER NOT NULL,
+	`permission_id` VARCHAR(50) NOT NULL,
+	PRIMARY KEY(`admin_id`, `permission_id`),
+	FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`),
+	FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`name`)
 );
 
 CREATE TABLE `players`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`time_in_game` FLOAT4(30) NOT NULL,
 	`current_cycle` INTEGER NOT NULL,
-	`current_score` INTEGER NOT NULL,
+	`current_score` FLOAT4(30) NOT NULL,
 	`balance_cash` INTEGER NOT NULL,
 	`balance_verqor` INTEGER NOT NULL,
 	`balance_coyote` INTEGER NOT NULL,
@@ -17,7 +44,17 @@ CREATE TABLE `players`(
 
 CREATE TABLE `users`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	`user_type` ENUM('inversionista', 'agricultor') NOT NULL,
+	`user_type` ENUM(
+		'cliente',
+		'agricultor',
+		'fabricante_o_distribuidor_de_agroinsumos',
+		'proveedor_de_seguros',
+		'financiera',
+		'empresa_cpg',
+		'acopiador',
+		'inversionista',
+		'publico_en_general'
+	) NOT NULL,
 	`username` VARCHAR(50) NOT NULL,
 	`email` VARCHAR(255) NOT NULL,
 	`password` VARCHAR(150) NOT NULL,
@@ -27,7 +64,9 @@ CREATE TABLE `users`(
 	`longitude` FLOAT4(30),
 	`latitude` FLOAT4(30),
 	`year_of_birth` INTEGER NOT NULL,
-	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
+	`role_id` VARCHAR(150) NOT NULL,
+	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`),
+	FOREIGN KEY (`role_id`) REFERENCES `roles`(`name`)
 );
 
 CREATE TABLE `loans`(
@@ -58,7 +97,8 @@ CREATE TABLE `statistics`(
 
 CREATE TABLE `crop_types`(
 	`name` VARCHAR(50) NOT NULL PRIMARY KEY,
-	`price` INTEGER NOT NULL
+	`price` INTEGER NOT NULL,
+	`duration` INTEGER NOT NULL
 );
 
 CREATE TABLE `plots`(

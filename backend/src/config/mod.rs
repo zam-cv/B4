@@ -2,6 +2,9 @@ use dotenv::dotenv;
 use lazy_static::lazy_static;
 use std::env;
 
+pub mod database;
+pub mod ssl;
+
 pub struct Config {
     pub address: String,
     pub user_secret_key: String,
@@ -32,9 +35,13 @@ lazy_static! {
     };
 }
 
+// User constants
 pub const TOKEN_EXPIRATION_TIME: usize = 60 * 60 * 24 * 15; // 15 days
-// pub const MAX_UNITS_PER_PlOT: i32 = 100;
-pub const INITIAL_SCORE: i32 = 5;
+
+// Game constants
+pub const INITIAL_TIME: f64 = 0.0;
+pub const INITIAL_CYCLE: i32 = 0;
+pub const INITIAL_SCORE: f64 = 0.0;
 pub const INITIAL_BALANCE: i32 = 0;
 pub const INITIAL_BALANCE_CASH: i32 = 1000;
 pub const INITIAL_MAX_PLOTS: i32 = 4;

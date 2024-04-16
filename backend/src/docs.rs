@@ -12,13 +12,28 @@ use utoipa::OpenApi;
         routes::admin::auth::auth,
         routes::admin::auth::signin,
         routes::admin::auth::signout,
+        routes::admin::auth::register,
+        routes::admin::permissions::get_permissions,
+        routes::admin::permissions::get_permission_types,
+        routes::admin::permissions::get_permissions_by_admin_id,
+        routes::admin::permissions::add_permission,
+        routes::admin::permissions::delete_permission,
+        routes::admin::admins::delete_admin,
         routes::admin::admins::get_admins,
         routes::admin::data::create_crop_type,
         routes::admin::player::get_player,
         routes::admin::players::get_players_count,
+        routes::admin::players::get_average_time_in_game,
         routes::admin::user::get_user,
         routes::admin::user::get_user_statistics,
         routes::admin::users::get_users,
+        routes::admin::users::get_user_types,
+        routes::admin::users::get_user_count_by_type,
+        routes::admin::users::get_user_genders,
+        routes::admin::users::get_user_count_by_gender,
+        routes::admin::users::get_user_count_by_age_range,
+        routes::admin::users::get_user_locations_by_type,
+        routes::admin::users::get_average_age,
     ),
     components(schemas(
         routes::UserCredentials,
@@ -30,7 +45,9 @@ use utoipa::OpenApi;
         routes::AdminInfo,
         models::CropType,
         models::Player,
-        models::StatisticsSample
+        models::StatisticsSample,
+        models::PermissionType,
+        routes::admin::permissions::PermissionPayload
     ))
 )]
 pub struct ApiDoc;
