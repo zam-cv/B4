@@ -1,12 +1,8 @@
-import { API_URL } from "@/utils/constants";
-import { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
-import { getConfig } from "../utils/auth";
-import axios from "axios";
 
 export type Payment = {
-  id: string;
+  id: number;
   content: string;
 };
 
@@ -17,21 +13,7 @@ export const columns: ColumnDef<Payment>[] = [
   }
 ];
 
-async function getData(): Promise<Payment[]> {
-  let users = await axios.get(`${API_URL}/data/tips`, await getConfig());
-
-  return users.data;
-}
-
-export default function UsersTable() {
-  const [data, setData] = useState<Payment[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      setData(await getData());
-    })();
-  }, []);
-
+export default function UsersTable({ data }: { data: Payment[] }) {
   return (
     <DataTable
       columns={columns}

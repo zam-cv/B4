@@ -4,7 +4,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import Admins from "@/components/Admins";
-import TipsTable from "@/components/TipsTable";
+import Tips from "@/components/Tips";
 
 export default function Edition() {
   return (
@@ -15,13 +15,7 @@ export default function Edition() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
-          <div className="p-5 w-full h-full">
-            <div className="relative overflow-auto w-full h-full">
-              <div className="absolute w-full h-full">
-                <TipsTable />
-              </div>
-            </div>
-          </div>
+          <Tips />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

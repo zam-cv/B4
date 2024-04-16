@@ -756,6 +756,16 @@ impl Database {
         .await
     }
 
+    pub async fn get_tip_by_content(&self, content: String) -> anyhow::Result<Option<models::Tip>> {
+        self.query_wrapper(move |conn| {
+            schema::tips::table
+                .filter(schema::tips::content.eq(content))
+                .first::<models::Tip>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn get_tips(&self) -> anyhow::Result<Vec<models::Tip>> {
         self.query_wrapper(move |conn| schema::tips::table.load::<models::Tip>(conn))
             .await

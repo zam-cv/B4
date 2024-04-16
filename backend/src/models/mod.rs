@@ -113,7 +113,7 @@ impl Session {
     }
 }
 
-#[derive(Clone, Serialize, ToSchema)]
+#[derive(Clone, Serialize, Deserialize, ToSchema, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -122,6 +122,7 @@ pub struct Tip {
     #[serde(skip_deserializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    #[validate(length(min = 1, max = 500))]
     pub content: String,
 }
 

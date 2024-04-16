@@ -22,6 +22,7 @@ use utoipa::OpenApi;
         routes::admin::admins::get_admins,
         routes::admin::data::create_crop_type,
         routes::admin::data::get_tips,
+        routes::admin::data::create_tip,
         routes::admin::player::get_player,
         routes::admin::players::get_players_count,
         routes::admin::players::get_average_time_in_game,

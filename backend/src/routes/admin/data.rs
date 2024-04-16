@@ -1,5 +1,6 @@
 use crate::{database::Database, models};
 use actix_web::{error, post, get, web, HttpResponse, Responder, Result};
+use validator::Validate;
 
 const CONTEXT_PATH: &str = "/api/admin/data";
 
@@ -21,6 +22,30 @@ pub async fn create_crop_type(
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(HttpResponse::Ok().finish())
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The tip was created", body = String)
+  ),
+  request_body = Tip
+)]
+#[post("/tips")]
+pub async fn create_tip(
+    database: web::Data<Database>,
+    tip: web::Json<models::Tip>,
+) -> Result<impl Responder> {
+    if tip.validate().is_err() {
+        return Ok(HttpResponse::BadRequest().finish());
+    }
+
+    let id = database
+        .create_tip(tip.into_inner().clone())
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().body(id.to_string()))
 }
 
 #[utoipa::path(
