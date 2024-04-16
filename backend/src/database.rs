@@ -782,8 +782,35 @@ impl Database {
     }
 
     pub async fn delete_tip_by_id(&self, id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| diesel::delete(schema::tips::table.find(id)).execute(conn))
+            .await?;
+
+        Ok(())
+    }
+
+    pub async fn get_random_tip(&self, player_id: i32) -> anyhow::Result<Option<models::Tip>> {
         self.query_wrapper(move |conn| {
-            diesel::delete(schema::tips::table.find(id)).execute(conn)
+            // TODO: make it more efficient
+            schema::tips::table
+                .filter(
+                    schema::tips::id.ne_all(
+                        schema::player_tips::table
+                            .select(schema::player_tips::tip_id)
+                            .filter(schema::player_tips::player_id.eq(player_id)),
+                    ),
+                )
+                .order(diesel::dsl::sql::<diesel::sql_types::Text>("RAND()"))
+                .first::<models::Tip>(conn)
+                .optional()
+        })
+        .await
+    }
+
+    pub async fn register_tip(&self, tip_id: i32, player_id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::insert_into(schema::player_tips::table)
+                .values(models::PlayerTip { player_id, tip_id })
+                .execute(conn)
         })
         .await?;
 

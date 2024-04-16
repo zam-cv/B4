@@ -63,6 +63,7 @@ pub struct Player {
     #[serde(skip_deserializing, skip_serializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    #[serde(skip_deserializing, skip_serializing)]
     pub time_in_game: f64,
     pub current_cycle: i32,
     pub current_score: f64,

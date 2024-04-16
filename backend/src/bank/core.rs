@@ -12,8 +12,8 @@ use anyhow::Result;
 use lazy_static::lazy_static;
 use rand::Rng;
 use regex::Regex;
-use std::collections::HashMap;
 use serde::Serialize;
+use std::collections::HashMap;
 
 type Getter = fn(&mut Context, Vec<String>) -> Result<String>;
 type Handler = fn(&mut Context, Vec<String>) -> Result<()>;
@@ -104,18 +104,16 @@ impl Bank {
                 let args: Vec<String> = handler
                     .args
                     .iter()
-                    .map(|arg| {
-                        match arg {
-                            Argument::Ident(ident) => {
-                                if let Some(Ok(value)) = variables.get(ident) {
-                                    value.clone()
-                                } else {
-                                    "".to_string()
-                                }
+                    .map(|arg| match arg {
+                        Argument::Ident(ident) => {
+                            if let Some(Ok(value)) = variables.get(ident) {
+                                value.clone()
+                            } else {
+                                "".to_string()
                             }
-                            Argument::Number(number) => number.to_string(),
-                            Argument::String(string) => string.to_string(),
                         }
+                        Argument::Number(number) => number.to_string(),
+                        Argument::String(string) => string.to_string(),
                     })
                     .collect();
 
@@ -142,7 +140,11 @@ impl Bank {
         message
     }
 
-    pub fn handle_cycle<'a>(&self, _: &'a CycleData, mut context: Context<'a>) -> ResolveCycleData {
+    pub async fn handle_cycle<'a>(
+        &self,
+        _: &'a CycleData,
+        mut context: Context<'a>,
+    ) -> ResolveCycleData {
         let initial_state_player = context.player.clone();
         let mut events = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
         let random_events = [&self.sentences.positive, &self.sentences.negative];
@@ -167,20 +169,31 @@ impl Bank {
         }
 
         // choose a random tip
-        // let tip_index = rand::thread_rng().gen_range(0..self.sentences.tips.len());
-        // let tip = self.sentences.tips[tip_index].to_string();
+        let tip = if let Some(player_id) = context.player.id {
+            if let Ok(Some(tip)) = context.database.get_random_tip(player_id).await {
+                if let Some(tip_id) = tip.id {
+                    let _ = context.database.register_tip(tip_id, player_id).await;
+                }
+
+                Some(tip.content)
+            } else {
+                None
+            }
+        } else {
+            None
+        };
 
         let _diff_cash = context.player.balance_cash - initial_state_player.balance_cash;
         let _diff_bal_verqor = context.player.balance_verqor - initial_state_player.balance_verqor;
         let _diff_bal_coyote = context.player.balance_coyote - initial_state_player.balance_coyote;
-        
+
         let w_cash = 0.6;
         let w_verqor = 0.3;
         let w_coyote = 0.1;
 
         // context.player.current_score = {
-        //     ((context.player.balance_cash as f64 / max_possible_cash * w_cash + 
-        //     context.player.balance_verqor as f64 / max_possible_verqor * w_verqor + 
+        //     ((context.player.balance_cash as f64 / max_possible_cash * w_cash +
+        //     context.player.balance_verqor as f64 / max_possible_verqor * w_verqor +
         //     context.player.balance_coyote as f64 / max_possible_coyote * w_coyote)) as i32
         // };
         context.player.current_score = {
@@ -205,9 +218,6 @@ impl Bank {
 
         let _diff_score = context.player.current_score - initial_state_player.current_score;
 
-        ResolveCycleData {
-            events,
-            tip: None
-        }
+        ResolveCycleData { events, tip }
     }
 }

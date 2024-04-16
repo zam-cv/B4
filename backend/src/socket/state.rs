@@ -92,7 +92,7 @@ impl State {
             session: &self.session,
         };
 
-        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context);
+        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context).await;
         self.player.current_cycle += 1;
         self.send(Response::CycleResolved(resolve_cycle_data))?;
 
