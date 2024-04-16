@@ -1,5 +1,5 @@
 use crate::{database::Database, models};
-use actix_web::{error, post, get, put, web, HttpResponse, Responder, Result};
+use actix_web::{delete, error, get, post, put, web, HttpResponse, Responder, Result};
 use validator::Validate;
 
 const CONTEXT_PATH: &str = "/api/admin/data";
@@ -71,7 +71,7 @@ pub async fn get_tips(database: web::Data<Database>) -> Result<impl Responder> {
   ),
   request_body = Tip
 )]
-#[put("/tips/update/{id}")]
+#[put("/tips/{id}")]
 pub async fn update_tip(
     database: web::Data<Database>,
     path: web::Path<i32>,
@@ -82,6 +82,27 @@ pub async fn update_tip(
 
     database
         .update_tip(tip.into_inner())
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().finish())
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The tip was deleted")
+  )
+)]
+#[delete("/tips/{id}")]
+pub async fn delete_tip(
+    database: web::Data<Database>,
+    path: web::Path<i32>,
+) -> Result<impl Responder> {
+    let id = path.into_inner();
+
+    database
+        .delete_tip_by_id(id)
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 

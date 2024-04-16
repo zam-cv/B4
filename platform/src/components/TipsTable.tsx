@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { API_URL } from "@/utils/constants";
 import { DataTable } from "./DataTable";
 import { getConfig } from "@/utils/auth";
+import Delete from "./Delete";
 import axios from "axios";
 
 export type Payment = {
@@ -21,9 +22,13 @@ export const columns: ColumnDef<Payment>[] = [
         const config = await getConfig();
 
         axios
-          .put(`${API_URL}/data/tips/update/${row.row.original.id}`, {
-            content: textareaRef.current?.textContent,
-          }, config)
+          .put(
+            `${API_URL}/data/tips/${row.row.original.id}`,
+            {
+              content: textareaRef.current?.textContent,
+            },
+            config
+          )
           .catch((error) => {
             console.error(error);
           });
@@ -49,8 +54,42 @@ export const columns: ColumnDef<Payment>[] = [
       );
     },
   },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const payment = row.original;
+
+      async function deleteTip() {
+        const config = await getConfig();
+
+        axios.delete(`${API_URL}/data/tips/${payment.id}`, config).then(() => {
+          // @ts-ignore
+          payment.deleteTip(payment.id);
+        });
+      }
+
+      return <Delete onClick={deleteTip} />;
+    },
+  },
 ];
 
-export default function UsersTable({ data }: { data: Payment[] }) {
-  return <DataTable columns={columns} data={data} />;
+export default function TipsTable({
+  data,
+  setData,
+}: {
+  data: Payment[];
+  setData: React.Dispatch<React.SetStateAction<Payment[]>>;
+}) {
+  function deleteTip(id: number) {
+    let newData = data.filter((tip) => tip.id !== id);
+    setData(newData);
+  }
+
+  return (
+    <DataTable
+      columns={columns}
+      data={data.map((tip) => ({ ...tip, deleteTip }))}
+    />
+  );
 }

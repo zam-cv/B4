@@ -68,7 +68,7 @@ export default function Tips() {
       <h1 className="text-2xl font-bold">Lista de Tips</h1>
       <div className="relative overflow-auto w-full h-full">
         <div className="absolute w-full h-full">
-          <TipsTable data={data} />
+          <TipsTable data={data} setData={setData} />
         </div>
       </div>
     </div>
