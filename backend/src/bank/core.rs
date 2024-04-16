@@ -143,6 +143,7 @@ impl Bank {
     }
 
     pub fn handle_cycle<'a>(&self, _: &'a CycleData, mut context: Context<'a>) -> ResolveCycleData {
+        let initial_state_player = context.player.clone();
         let mut events = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
         let random_events = [&self.sentences.positive, &self.sentences.negative];
         let mut variables = HashMap::new();
@@ -168,6 +169,41 @@ impl Bank {
         // choose a random tip
         let tip_index = rand::thread_rng().gen_range(0..self.sentences.tips.len());
         let tip = self.sentences.tips[tip_index].to_string();
+
+        let _diff_cash = context.player.balance_cash - initial_state_player.balance_cash;
+        let _diff_bal_verqor = context.player.balance_verqor - initial_state_player.balance_verqor;
+        let _diff_bal_coyote = context.player.balance_coyote - initial_state_player.balance_coyote;
+        
+        let w_cash = 0.6;
+        let w_verqor = 0.3;
+        let w_coyote = 0.1;
+
+        // context.player.current_score = {
+        //     ((context.player.balance_cash as f64 / max_possible_cash * w_cash + 
+        //     context.player.balance_verqor as f64 / max_possible_verqor * w_verqor + 
+        //     context.player.balance_coyote as f64 / max_possible_coyote * w_coyote)) as i32
+        // };
+        context.player.current_score = {
+            let a_c = initial_state_player.balance_cash;
+            let a_v = initial_state_player.balance_verqor;
+            let a_co = initial_state_player.balance_coyote;
+
+            let b_c = context.player.balance_cash;
+            let b_v = context.player.balance_verqor;
+            let b_co = context.player.balance_coyote;
+
+            let c_1 = (b_c as f32) * w_cash;
+            let v_1 = (b_v as f32) * w_verqor;
+            let co_1 = (b_co as f32) * w_coyote;
+
+            let c_2 = (a_c as f32) * w_cash;
+            let v_2 = (a_v as f32) * w_verqor;
+            let co_2 = (a_co as f32) * w_coyote;
+
+            (((c_1 - c_2) + (v_1 - v_2) + (co_1 - co_2)) / 2.0) as i32
+        };
+
+        let _diff_score = context.player.current_score - initial_state_player.current_score;
 
         ResolveCycleData {
             events,
