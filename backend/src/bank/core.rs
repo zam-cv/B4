@@ -200,7 +200,7 @@ impl Bank {
             let v_2 = (a_v as f32) * w_verqor;
             let co_2 = (a_co as f32) * w_coyote;
 
-            (((c_1 - c_2) + (v_1 - v_2) + (co_1 - co_2)) / 2.0) as i32
+            (((c_1 - c_2) + (v_1 - v_2) + (co_1 - co_2)) / 2.0) as f64
         };
 
         let _diff_score = context.player.current_score - initial_state_player.current_score;
