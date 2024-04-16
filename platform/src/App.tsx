@@ -44,7 +44,7 @@ export const pagePermissions = [
     component: Emails,
   },
   {
-    title: "Edition",
+    title: "Edición",
     route: "/edition",
     permission: ADMIN_PERMISSIONS.VIEW_EDITION,
     component: Edition,

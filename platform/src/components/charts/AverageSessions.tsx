@@ -8,13 +8,13 @@ import { getConfig } from "../../utils/auth";
 import axios from "axios";
 
 const DAYS = [
+  "Domingo",
   "Lunes",
   "Martes",
   "Miercoles",
   "Jueves",
   "Viernes",
   "Sabado",
-  "Domingo",
 ];
 
 export default function AverageSessions() {
@@ -27,7 +27,7 @@ export default function AverageSessions() {
       const config = await getConfig();
       axios
         .get(`${API_URL}/users/average-sessions`, config)
-        .then(({ data }) => {
+        .then(({ data }: { data: any }) => {
           setAverageSessions(data);
         });
     })();
