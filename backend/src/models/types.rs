@@ -47,7 +47,7 @@ pub enum PermissionType {
     ViewDashboard,
     ViewDistribution,
     ViewUsers,
-    ViewAccounts,
+    ViewEdition,
     AddAccounts,
     EditAccounts,
     SendEmails,

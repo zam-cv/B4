@@ -34,6 +34,7 @@ use utoipa::OpenApi;
         routes::admin::users::get_user_count_by_age_range,
         routes::admin::users::get_user_locations_by_type,
         routes::admin::users::get_average_age,
+        routes::admin::users::get_average_sessions
     ),
     components(schemas(
         routes::UserCredentials,

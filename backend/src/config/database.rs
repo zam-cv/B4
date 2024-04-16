@@ -6,7 +6,7 @@ const ADMIN_PERMISSIONS: [models::PermissionType; 8] = [
     models::PermissionType::ViewDashboard,
     models::PermissionType::ViewDistribution,
     models::PermissionType::ViewUsers,
-    models::PermissionType::ViewAccounts,
+    models::PermissionType::ViewEdition,
     models::PermissionType::AddAccounts,
     models::PermissionType::EditAccounts,
     models::PermissionType::SendEmails,

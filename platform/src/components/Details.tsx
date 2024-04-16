@@ -13,8 +13,8 @@ function Detail({ title, value }: { title: string; value: string }) {
 }
 
 export default function Details() {
-  const [averageTime, setAverageTime] = useState(0);
-  const [averageAge, setAverageAge] = useState(0);
+  const [averageTime, setAverageTime] = useState<number | null>(0);
+  const [averageAge, setAverageAge] = useState<number | null>(0);
 
   useEffect(() => {
     (async () => {
@@ -34,11 +34,11 @@ export default function Details() {
     <div className="flex flex-col p-5 gap-5">
       <Detail
         title="Tiempo promedio que se esta en el juego"
-        value={`${averageTime.toFixed(2)} minutos`}
+        value={`${averageTime ? averageTime.toFixed(2) : 0} minutos`}
       />
       <Detail
         title="Edad promedio de los jugadores"
-        value={`${averageAge.toFixed(0)} años`}
+        value={`${averageAge ? averageAge.toFixed(0) : 0} años`}
       />
     </div>
   );

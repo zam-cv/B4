@@ -165,6 +165,17 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::types::exports::*;
+
+    sessions (created_at, user_id) {
+        created_at -> Timestamp,
+        user_id -> Integer,
+        times -> Integer,
+    }
+}
+
 diesel::joinable!(users -> roles (role_id));
 diesel::joinable!(admins -> roles (role_id));
 diesel::joinable!(insurance -> loans (loan_id));
@@ -177,6 +188,7 @@ diesel::joinable!(admin_permissions -> admins (admin_id));
 diesel::joinable!(admin_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> permissions (permission_id));
 diesel::joinable!(role_permissions -> roles (role_id));
+diesel::joinable!(sessions -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     admins,
@@ -191,4 +203,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     admin_permissions,
     permissions,
     role_permissions,
+    sessions,
 );

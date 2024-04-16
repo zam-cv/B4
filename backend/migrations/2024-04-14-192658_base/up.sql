@@ -108,3 +108,11 @@ CREATE TABLE `plots`(
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
+
+CREATE TABLE `sessions`(
+	`created_at` TIMESTAMP NOT NULL,
+	`user_id` INTEGER NOT NULL,
+	`times` INTEGER NOT NULL,
+	PRIMARY KEY(`created_at`, `user_id`),
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+);

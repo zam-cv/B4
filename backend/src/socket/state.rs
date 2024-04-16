@@ -47,6 +47,8 @@ impl State {
         session: Addr<Session>,
         database: &Database,
     ) -> anyhow::Result<State> {
+        database.upsert_session(models::Session::new(id)).await?;
+
         if let Some(player) = database.get_player_by_user_id(id).await? {
             let state = State {
                 id,

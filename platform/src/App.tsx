@@ -15,7 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Distribution from "./pages/Distribution";
 import Users from "./pages/Users";
 import Emails from "./pages/Emails";
-import Accounts from "./pages/Accounts";
+import Edition from "./pages/Edition";
 import Docs from "./pages/Docs";
 
 export const pagePermissions = [
@@ -44,10 +44,10 @@ export const pagePermissions = [
     component: Emails,
   },
   {
-    title: "Cuentas",
-    route: "/accounts",
-    permission: ADMIN_PERMISSIONS.VIEW_ACCOUNTS,
-    component: Accounts,
+    title: "Edition",
+    route: "/edition",
+    permission: ADMIN_PERMISSIONS.VIEW_EDITION,
+    component: Edition,
   },
   {
     title: "Documentación",

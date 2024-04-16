@@ -10,7 +10,7 @@ export const ADMIN_PERMISSIONS = {
   VIEW_DASHBOARD: "ViewDashboard",
   VIEW_DISTRIBUTION: "ViewDistribution",
   VIEW_USERS: "ViewUsers",
-  VIEW_ACCOUNTS: "ViewAccounts",
+  VIEW_EDITION: "ViewEdition",
   ADD_ACCOUNTS: "AddAccounts",
   EDIT_ACCOUNTS: "EditAccounts",
   SEND_EMAILS: "SendEmails",

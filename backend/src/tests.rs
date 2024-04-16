@@ -41,7 +41,13 @@ async fn create_users() {
                 role_id: models::RoleType::User.to_string(),
             };
 
-            database.create_user(user).await.unwrap();
+            let user_id = database.create_user(user).await.unwrap();
+
+            for _ in 0..(0..=20).fake() {
+                let mut session = models::Session::new(user_id);
+                session.created_at = session.created_at - chrono::Duration::days((0..=30).fake());
+                database.upsert_session(session).await.unwrap();
+            }
         });
     }
 

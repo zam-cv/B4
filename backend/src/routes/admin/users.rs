@@ -134,3 +134,19 @@ pub async fn get_average_age(database: web::Data<Database>) -> Result<impl Respo
 
     Ok(HttpResponse::Ok().body(average_age.unwrap_or(0.0).to_string()))
 }
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The average sessions were found", body = Vec<(i32, Option<f64>)>)
+  )
+)]
+#[get("/average-sessions")]
+pub async fn get_average_sessions(database: web::Data<Database>) -> Result<impl Responder> {
+    let average_sessions = database
+        .get_average_sessions_by_day_of_week()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().json(average_sessions))
+}

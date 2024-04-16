@@ -675,4 +675,54 @@ impl Database {
 
         Ok(())
     }
+
+    pub async fn upsert_session(&self, new_session: models::Session) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                let existing = schema::sessions::table
+                    .filter(schema::sessions::user_id.eq(new_session.user_id))
+                    .filter(schema::sessions::created_at.eq(new_session.created_at))
+                    .first::<models::Session>(pooled)
+                    .optional()?;
+
+                match existing {
+                    Some(mut existing) => {
+                        existing.times += 1;
+                        diesel::update(
+                            schema::sessions::table.find((existing.created_at, existing.user_id)),
+                        )
+                        .set(&existing)
+                        .execute(pooled)?;
+                    }
+                    None => {
+                        diesel::insert_into(schema::sessions::table)
+                            .values(&new_session)
+                            .execute(pooled)?;
+                    }
+                };
+
+                Ok(())
+            })
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn get_average_sessions_by_day_of_week(
+        &self,
+    ) -> anyhow::Result<Vec<(i32, Option<f64>)>> {
+        self.query_wrapper(move |conn| {
+            schema::sessions::table
+                .select((
+                    diesel::dsl::sql::<diesel::sql_types::Integer>("DAYOFWEEK(created_at)"),
+                    avg!("times"),
+                ))
+                .group_by(diesel::dsl::sql::<diesel::sql_types::Integer>(
+                    "DAYOFWEEK(created_at)",
+                ))
+                .load::<(i32, Option<f64>)>(conn)
+        })
+        .await
+    }
 }

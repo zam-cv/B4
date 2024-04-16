@@ -110,7 +110,7 @@ function Permissions({ userInfo }: { userInfo: Payment | null }) {
   );
 }
 
-export default function Accounts() {
+export default function Edition() {
   const user = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<Payment | null>(null);
   const [data, setData] = useState<Payment[]>([]);
