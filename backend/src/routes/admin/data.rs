@@ -1,5 +1,5 @@
 use crate::{database::Database, models};
-use actix_web::{error, post, get, web, HttpResponse, Responder, Result};
+use actix_web::{error, post, get, put, web, HttpResponse, Responder, Result};
 use validator::Validate;
 
 const CONTEXT_PATH: &str = "/api/admin/data";
@@ -41,7 +41,7 @@ pub async fn create_tip(
     }
 
     let id = database
-        .create_tip(tip.into_inner().clone())
+        .create_tip(tip.into_inner())
         .await
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
@@ -62,4 +62,28 @@ pub async fn get_tips(database: web::Data<Database>) -> Result<impl Responder> {
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(HttpResponse::Ok().json(tips))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The tip was updated")
+  ),
+  request_body = Tip
+)]
+#[put("/tips/update/{id}")]
+pub async fn update_tip(
+    database: web::Data<Database>,
+    path: web::Path<i32>,
+    mut tip: web::Json<models::Tip>,
+) -> Result<impl Responder> {
+    let id = path.into_inner();
+    tip.id = Some(id);
+
+    database
+        .update_tip(tip.into_inner())
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().finish())
 }

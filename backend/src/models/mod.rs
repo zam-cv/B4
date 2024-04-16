@@ -113,7 +113,7 @@ impl Session {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, ToSchema, Validate)]
+#[derive(Clone, Debug, Serialize, Deserialize, ToSchema, Validate)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]

@@ -756,18 +756,28 @@ impl Database {
         .await
     }
 
-    pub async fn get_tip_by_content(&self, content: String) -> anyhow::Result<Option<models::Tip>> {
-        self.query_wrapper(move |conn| {
-            schema::tips::table
-                .filter(schema::tips::content.eq(content))
-                .first::<models::Tip>(conn)
-                .optional()
-        })
-        .await
-    }
-
     pub async fn get_tips(&self) -> anyhow::Result<Vec<models::Tip>> {
         self.query_wrapper(move |conn| schema::tips::table.load::<models::Tip>(conn))
+            .await
+    }
+
+    pub async fn update_tip(&self, tip: models::Tip) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            if let Some(id) = &tip.id {
+                diesel::update(schema::tips::table.find(id))
+                    .set(&tip)
+                    .execute(conn)
+            } else {
+                Err(diesel::result::Error::NotFound)
+            }
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn get_tips_count(&self) -> anyhow::Result<i64> {
+        self.query_wrapper(move |conn| schema::tips::table.count().get_result::<i64>(conn))
             .await
     }
 }
