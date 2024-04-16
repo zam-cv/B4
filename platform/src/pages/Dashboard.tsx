@@ -3,6 +3,7 @@ import UsersByGender from "@/components/charts/UsersByGender";
 import UsersByAgeRange from "@/components/charts/UsersByAgeRange";
 import Details from "@/components/Details";
 import AverageSessions from "@/components/charts/AverageSessions";
+import AverageTimeInGame from "@/components/charts/AverageTimeInGame";
 
 export default function Dashboard() {
   return (
@@ -12,7 +13,7 @@ export default function Dashboard() {
       <UsersByGender />
       <Details />
       <AverageSessions />
-      <div className="bg-gray-300"></div>
+      <AverageTimeInGame />
     </div>
   );
 }

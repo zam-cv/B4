@@ -150,3 +150,19 @@ pub async fn get_average_sessions(database: web::Data<Database>) -> Result<impl 
 
     Ok(HttpResponse::Ok().json(average_sessions))
 }
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The average time in game was found", body = Vec<(UserType, Option<f64>)>)
+  )
+)]
+#[get("/average-time-in-game")]
+pub async fn get_average_time_in_game(database: web::Data<Database>) -> Result<impl Responder> {
+    let average_time_in_game = database
+        .get_average_time_in_game_by_user_type()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().json(average_time_in_game))
+}

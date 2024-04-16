@@ -398,6 +398,19 @@ impl Database {
         })
     }
 
+    pub async fn get_average_time_in_game_by_user_type(
+        &self,
+    ) -> anyhow::Result<Vec<(models::UserType, Option<f64>)>> {
+        self.query_wrapper(move |conn| {
+            schema::players::table
+                .inner_join(schema::users::table)
+                .select((schema::users::user_type, avg!("time_in_game")))
+                .group_by(schema::users::user_type)
+                .load::<(models::UserType, Option<f64>)>(conn)
+        })
+        .await
+    }
+
     pub async fn get_statistics(
         &self,
         player_id: i32,

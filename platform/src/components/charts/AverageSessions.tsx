@@ -28,14 +28,13 @@ export default function AverageSessions() {
       axios
         .get(`${API_URL}/users/average-sessions`, config)
         .then(({ data }) => {
-          console.log(data);
           setAverageSessions(data);
         });
     })();
   }, []);
 
   return (
-    <Chart title="Trafico de usuarios en las semanas">
+    <Chart title="Trafico de usuarios en los dias de la semana">
       <Bar
         data={{
           labels: averageSessions.map(([index]) => DAYS[index - 1]),
