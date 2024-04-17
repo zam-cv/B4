@@ -34,6 +34,7 @@ pub enum Response {
 
 pub struct State {
     pub id: i32,
+    pub connected_at: std::time::Instant,
     pub session: Addr<Session>,
     pub player: models::Player,
     pub plots: Vec<models::Plot>,
@@ -46,9 +47,12 @@ impl State {
         session: Addr<Session>,
         database: &Database,
     ) -> anyhow::Result<State> {
+        database.upsert_session(models::Session::new(id)).await?;
+
         if let Some(player) = database.get_player_by_user_id(id).await? {
             let state = State {
                 id,
+                connected_at: std::time::Instant::now(),
                 player,
                 session,
                 plots: database.get_plots_by_player_id(id).await?,
@@ -88,7 +92,7 @@ impl State {
             session: &self.session,
         };
 
-        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context);
+        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context).await;
         self.player.current_cycle += 1;
         self.send(Response::CycleResolved(resolve_cycle_data))?;
 
@@ -133,7 +137,8 @@ impl State {
     }
 
     // At the end of the session, the state is saved in the database
-    pub async fn save(&self, database: &Database) -> anyhow::Result<()> {
+    pub async fn save(&mut self, database: &Database) -> anyhow::Result<()> {
+        self.player.time_in_game += (self.connected_at.elapsed().as_secs() as f64 / 60.0) as f64;
         database.update_player(self.player.clone()).await?;
         database.upsert_plots(self.plots.clone()).await?;
         Ok(())

@@ -48,8 +48,7 @@ public class Login : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.Success && request.responseCode == 200)
         {
-            // Token es válido
-            Debug.Log("Token validado con éxito: " + request.downloadHandler.text);
+            Context.Instance.AuthToken = token;
             SceneManager.LoadScene("Game");
         }
         else
@@ -81,13 +80,12 @@ public class Login : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string token = request.downloadHandler.text;
-                // Context.Instance.AuthToken = token;
+                Context.Instance.AuthToken = token;
 
                 PlayerPrefs.SetString("token", token);
                 PlayerPrefs.Save();
 
                 SceneManager.LoadScene("Game");
-
             }
             else
             {

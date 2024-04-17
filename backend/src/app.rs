@@ -39,20 +39,8 @@ pub async fn app() -> std::io::Result<()> {
     let database = Database::new();
     log::info!("Database connected");
 
-    // Create the default roles
-    config::database::create_default_roles(&database)
-        .await
-        .unwrap();
-
-    // Create the default permissions
-    config::database::create_default_permissions(&database)
-        .await
-        .unwrap();
-
-    // Create the default admin
-    let default_admin_id = config::database::create_default_admin(&database)
-        .await
-        .unwrap();
+    // Setup the database
+    let default_admin_id = config::database::setup(&database).await;
 
     // Create the socket server
     let (mut socket_server, server_tx) = Server::new(bank, database.clone());
@@ -136,7 +124,16 @@ pub async fn app() -> std::io::Result<()> {
                                     )
                                     .service(
                                         web::scope("/users")
-                                            .service(routes::admin::users::get_users),
+                                            .service(routes::admin::users::get_users)
+                                            .service(routes::admin::users::get_user_types)
+                                            .service(routes::admin::users::get_user_count_by_type)
+                                            .service(routes::admin::users::get_user_genders)
+                                            .service(routes::admin::users::get_user_count_by_gender)
+                                            .service(routes::admin::users::get_user_count_by_age_range)
+                                            .service(routes::admin::users::get_user_locations_by_type)
+                                            .service(routes::admin::users::get_average_age)
+                                            .service(routes::admin::users::get_average_sessions)
+                                            .service(routes::admin::users::get_average_time_in_game),
                                     )
                                     .service(
                                         web::scope("/player")
@@ -144,11 +141,26 @@ pub async fn app() -> std::io::Result<()> {
                                     )
                                     .service(
                                         web::scope("/players")
-                                            .service(routes::admin::players::get_players_count),
+                                            .service(routes::admin::players::get_players_count)
+                                            .service(routes::admin::players::get_average_time_in_game),
                                     )
                                     .service(
                                         web::scope("/data")
-                                            .service(routes::admin::data::create_crop_type),
+                                            .service(routes::admin::data::create_crop_type)
+                                            .service(routes::admin::data::get_tips)
+                                            .service(routes::admin::data::create_tip)
+                                            .service(routes::admin::data::update_tip)
+                                            .service(routes::admin::data::delete_tip)
+                                    )
+                                    .service(
+                                        web::scope("/permissions")
+                                            .service(routes::admin::permissions::get_permissions)
+                                            .service(routes::admin::permissions::get_permission_types)
+                                            .service(
+                                                routes::admin::permissions::get_permissions_by_admin_id,
+                                            )
+                                            .service(routes::admin::permissions::add_permission)
+                                            .service(routes::admin::permissions::delete_permission),
                                     ),
                             ),
                     ),

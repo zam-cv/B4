@@ -1,10 +1,10 @@
-use crate::{schema, utils, models::types::*};
+use crate::{schema, utils, models::types::*, config};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Serialize, Deserialize, Validate, ToSchema, Clone)]
 #[derive(Queryable, Selectable, Identifiable, Insertable)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -17,6 +17,7 @@ pub struct Admin {
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
+    #[serde(skip_deserializing)]
     pub role_id: String,
 }
 
@@ -48,6 +49,7 @@ pub struct User {
     pub longitude: Option<f64>,
     #[validate(range(min = 1920, max = 3000))]
     pub year_of_birth: i32,
+    #[serde(skip_deserializing)]
     pub role_id: String,
 }
 
@@ -61,10 +63,27 @@ pub struct Player {
     #[serde(skip_deserializing, skip_serializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
+    #[serde(skip_deserializing, skip_serializing)]
+    pub time_in_game: f64,
     pub current_cycle: i32,
     pub current_score: f64,
     pub balance_cash: i32,
     pub balance_verqor: i32,
     pub balance_coyote: i32,
     pub max_plots: i32,
+}
+
+impl Player {
+    pub fn default() -> Self {
+        Player {
+            id: None,
+            time_in_game: config::INITIAL_TIME,
+            current_cycle: config::INITIAL_CYCLE,
+            current_score: config::INITIAL_SCORE,
+            balance_cash: config::INITIAL_BALANCE_CASH,
+            balance_verqor: config::INITIAL_BALANCE,
+            balance_coyote: config::INITIAL_BALANCE,
+            max_plots: config::INITIAL_MAX_PLOTS,
+        }
+    }
 }

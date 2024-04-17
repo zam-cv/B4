@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
-using UnityEditor.Build.Content;
-using UnityEditor.XR;
 using System;
 
 public class Registro : MonoBehaviour
@@ -74,7 +72,7 @@ public void Start(){
         if (request.result == UnityWebRequest.Result.Success)
         {
             string token = request.downloadHandler.text;
-            // Context.Instance.AuthToken = token;
+            Context.Instance.AuthToken = token;
             SceneManager.LoadScene("Login");
         }
         else

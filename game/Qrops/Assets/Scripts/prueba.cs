@@ -1,24 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-
 
 public class prueba : MonoBehaviour
 {
-    public Sprite[] etapasCrecimiento; // Array de sprites que representan las diferentes etapas de crecimiento
+    public Sprite[] etapasCrecimiento;
     private SpriteRenderer spriteRenderer;
-    private int etapaActual = 0; // Índice de la etapa de crecimiento actual
-    private bool crecimientoIniciado = false; // Variable para controlar si el crecimiento ha sido iniciado
-    private float tiempoInicio; // Tiempo en el que se inició el crecimiento
-
-    //Referencia al componente de texto mensaje
-    public TMP_Text  mensaje;
+    private int etapaActual = 0;
+    private bool crecimientoIniciado = false;
+    private float tiempoInicio;
+    public GameObject panelMensaje;
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = null; // Ocultar el maíz al inicio
+        spriteRenderer.sprite = null;
+        panelMensaje.SetActive(false);
     }
 
     void Update()
@@ -29,17 +24,15 @@ public class prueba : MonoBehaviour
             int indiceEtapa = Mathf.FloorToInt(tiempoTranscurrido / 5f * etapasCrecimiento.Length);
             indiceEtapa = Mathf.Clamp(indiceEtapa, 0, etapasCrecimiento.Length - 1);
             spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
-            if (indiceEtapa == etapasCrecimiento.Length - 1)
+            if (indiceEtapa == etapasCrecimiento.Length - 1 && !panelMensaje.activeSelf)
             {
-                crecimientoIniciado = false; // Detener el crecimiento
-                //activar objeto mensaje
-
-                mensaje.gameObject.SetActive(true);
+                crecimientoIniciado = false;
+                panelMensaje.SetActive(true);
             }
         }
     }
 
-    // Método para iniciar el crecimiento del maíz
+
     public void IniciarCrecimiento()
     {
         if (!crecimientoIniciado)
@@ -47,7 +40,20 @@ public class prueba : MonoBehaviour
             tiempoInicio = Time.time;
             etapaActual = 0;
             spriteRenderer.sprite = etapasCrecimiento[0];
-            crecimientoIniciado = true;   
+            crecimientoIniciado = true;
+            panelMensaje.SetActive(false);
         }
+    }
+
+    // Métodos públicos para manipular el estado desde otros scripts
+    public void ResetCrecimiento()
+    {
+        spriteRenderer.sprite = null;
+        crecimientoIniciado = false;
+    }
+
+    public bool EstaCreciendo()
+    {
+        return crecimientoIniciado;
     }
 }

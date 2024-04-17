@@ -6,7 +6,7 @@ use utoipa::ToSchema;
 use strum_macros::{EnumIter, EnumString, Display};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
-#[derive(DbEnum, Serialize, Deserialize)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
 #[random_enum]
 pub enum Gender {
     M,
@@ -14,18 +14,22 @@ pub enum Gender {
     X
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
-#[derive(DbEnum, Serialize, Deserialize)]
+#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
 #[random_enum]
 pub enum UserType {
     Cliente,
     Agricultor,
+    #[serde(alias = "Fabricante o Distribuidor de Agroinsumos", rename = "Fabricante o Distribuidor de Agroinsumos")]
     FabricanteODistribuidorDeAgroinsumos,
-    ProverdorDeSeguros,
+    #[serde(alias = "Proveedor de Seguros", rename = "Proveedor de Seguros")]
+    ProveedorDeSeguros,
     Financiera,
-    EmpresaCPG,
+    #[serde(alias = "Empresa CPG", rename = "Empresa CPG")]
+    EmpresaCpg,
     Acopiador,
     Inversionista,
+    #[serde(alias = "Publico en General", rename = "Publico en General")]
     PublicoEnGeneral
 }
 
@@ -36,12 +40,14 @@ pub enum RoleType {
     User
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(Serialize, Deserialize, EnumIter, EnumString, Display)]
 pub enum PermissionType {
     ViewDocuments,
     ViewDashboard,
     ViewDistribution,
+    ViewUsers,
+    ViewEdition,
     AddAccounts,
     EditAccounts,
     SendEmails,

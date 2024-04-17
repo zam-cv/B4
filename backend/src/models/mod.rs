@@ -61,9 +61,8 @@ pub struct StatisticsSample {
     pub player_id: i32,
 }
 
-#[derive(
-    Deserialize, Validate, ToSchema, Queryable, Selectable, Identifiable, Insertable, AsChangeset,
-)]
+#[derive(Deserialize, Validate, ToSchema)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(name))]
 #[diesel(table_name = schema::crop_types)]
@@ -76,9 +75,8 @@ pub struct CropType {
     pub duration: i32,
 }
 
-#[derive(
-    Clone, Serialize, Queryable, Selectable, Identifiable, Insertable, Associations, AsChangeset,
-)]
+#[derive(Clone, Serialize)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, Associations, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
 #[diesel(belongs_to(Player))]
@@ -91,4 +89,51 @@ pub struct Plot {
     pub crop_type_id: Option<String>,
     #[serde(skip_serializing)]
     pub player_id: i32,
+}
+
+#[derive(Clone, Serialize)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, Associations, AsChangeset)]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
+#[diesel(primary_key(created_at, user_id))]
+#[diesel(belongs_to(User))]
+#[diesel(table_name = schema::sessions)]
+pub struct Session {
+    pub created_at: chrono::NaiveDateTime,
+    pub user_id: i32,
+    pub times: i32,
+}
+
+impl Session {
+    pub fn new(user_id: i32) -> Self {
+        Self {
+            created_at: chrono::Utc::now().naive_utc().date().into(),
+            user_id,
+            times: 1,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, ToSchema, Validate)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
+#[diesel(primary_key(id))]
+#[diesel(table_name = schema::tips)]
+pub struct Tip {
+    #[serde(skip_deserializing)]
+    #[diesel(deserialize_as = i32)]
+    pub id: Option<i32>,
+    #[validate(length(min = 1, max = 500))]
+    pub content: String,
+}
+
+#[derive(Clone, Serialize)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, Associations)]
+#[diesel(check_for_backend(diesel::mysql::Mysql))]
+#[diesel(primary_key(player_id, tip_id))]
+#[diesel(belongs_to(Player))]
+#[diesel(belongs_to(Tip))]
+#[diesel(table_name = schema::player_tips)]
+pub struct PlayerTip {
+    pub player_id: i32,
+    pub tip_id: i32,
 }
