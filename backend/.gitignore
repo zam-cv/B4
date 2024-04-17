@@ -1,5 +1,0 @@
-/target
-/.env
-/Cargo.lock
-cert/cert.pem
-cert/key.pem
