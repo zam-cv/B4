@@ -113,16 +113,12 @@ pub async fn create_default_tips(database: &Database) -> anyhow::Result<()> {
     let tips = serde_json::from_str::<Vec<String>>(SENTENCES)?;
 
     for tip in tips.iter() {
-        if let Ok(count) = database.get_tips_count().await {
-            if count == 0 {
-                database
-                    .create_tip(models::Tip {
-                        id: None,
-                        content: tip.clone(),
-                    })
-                    .await?;
-            }
-        }
+        database
+            .create_tip(models::Tip {
+                id: None,
+                content: tip.clone(),
+            })
+            .await?;
     }
 
     Ok(())
