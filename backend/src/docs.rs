@@ -21,6 +21,7 @@ use utoipa::OpenApi;
         routes::admin::admins::delete_admin,
         routes::admin::admins::get_admins,
         routes::admin::data::create_crop_type,
+        routes::admin::data::get_crop_type,
         routes::admin::data::get_tips,
         routes::admin::data::create_tip,
         routes::admin::data::update_tip,

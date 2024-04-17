@@ -29,6 +29,7 @@ public class Login : MonoBehaviour
 
         username = GameObject.Find("Username").GetComponent<TMP_InputField>();
         password = GameObject.Find("Password").GetComponent<TMP_InputField>();
+        password.contentType = TMP_InputField.ContentType.Password;
     }
 
 
@@ -48,7 +49,8 @@ public class Login : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.Success && request.responseCode == 200)
         {
-            Context.Instance.AuthToken = token;
+            // Token es válido
+            Debug.Log("Token validado con éxito: " + request.downloadHandler.text);
             SceneManager.LoadScene("Game");
         }
         else
@@ -80,12 +82,13 @@ public class Login : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string token = request.downloadHandler.text;
-                Context.Instance.AuthToken = token;
+                // Context.Instance.AuthToken = token;
 
                 PlayerPrefs.SetString("token", token);
                 PlayerPrefs.Save();
 
                 SceneManager.LoadScene("Game");
+
             }
             else
             {

@@ -451,6 +451,16 @@ impl Database {
         Ok(())
     }
 
+    pub async fn get_crop_type_by_name(&self, name: String) -> anyhow::Result<Option<models::CropType>> {
+        self.query_wrapper(move |conn| {
+            schema::crop_types::table
+                .filter(schema::crop_types::name.eq(name))
+                .first::<models::CropType>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn upsert_plots(&self, new_plots: Vec<models::Plot>) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {

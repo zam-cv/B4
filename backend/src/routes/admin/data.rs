@@ -27,6 +27,26 @@ pub async fn create_crop_type(
 #[utoipa::path(
   context_path = CONTEXT_PATH,
   responses(
+    (status = 200, description = "The crop types were found", body = Vec<CropType>)
+  )
+)]
+#[get("/crops/{name}")]
+pub async fn get_crop_type(
+    database: web::Data<Database>,
+    path: web::Path<String>,
+) -> Result<impl Responder> {
+    let name = path.into_inner();
+    let crop_type = database
+        .get_crop_type_by_name(name)
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(HttpResponse::Ok().json(crop_type))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
     (status = 200, description = "The tip was created", body = String)
   ),
   request_body = Tip
