@@ -451,7 +451,15 @@ impl Database {
         Ok(())
     }
 
-    pub async fn get_crop_type_by_name(&self, name: String) -> anyhow::Result<Option<models::CropType>> {
+    pub async fn get_crop_types(&self) -> anyhow::Result<Vec<models::CropType>> {
+        self.query_wrapper(move |conn| schema::crop_types::table.load::<models::CropType>(conn))
+            .await
+    }
+
+    pub async fn get_crop_type_by_name(
+        &self,
+        name: String,
+    ) -> anyhow::Result<Option<models::CropType>> {
         self.query_wrapper(move |conn| {
             schema::crop_types::table
                 .filter(schema::crop_types::name.eq(name))
@@ -459,6 +467,47 @@ impl Database {
                 .optional()
         })
         .await
+    }
+
+    pub async fn update_crop_type_description(
+        &self,
+        name: String,
+        description: String,
+    ) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::update(schema::crop_types::table.filter(schema::crop_types::name.eq(name)))
+                .set(schema::crop_types::description.eq(description))
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn update_crop_type_price(&self, name: String, price: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::update(schema::crop_types::table.filter(schema::crop_types::name.eq(name)))
+                .set(schema::crop_types::price.eq(price))
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn update_crop_type_duration(
+        &self,
+        name: String,
+        duration: i32,
+    ) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::update(schema::crop_types::table.filter(schema::crop_types::name.eq(name)))
+                .set(schema::crop_types::duration.eq(duration))
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
     }
 
     pub async fn upsert_plots(&self, new_plots: Vec<models::Plot>) -> anyhow::Result<()> {
@@ -787,6 +836,12 @@ impl Database {
     }
 
     pub async fn delete_tip_by_id(&self, id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::delete(schema::player_tips::table.filter(schema::player_tips::tip_id.eq(id)))
+                .execute(conn)
+        })
+        .await?;
+
         self.query_wrapper(move |conn| diesel::delete(schema::tips::table.find(id)).execute(conn))
             .await?;
 

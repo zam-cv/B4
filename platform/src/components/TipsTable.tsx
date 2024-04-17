@@ -5,6 +5,7 @@ import { DataTable } from "./DataTable";
 import { getConfig } from "@/utils/auth";
 import Delete from "./Delete";
 import axios from "axios";
+import ContentEdit from "./contentEdit";
 
 export type Payment = {
   id: number;
@@ -16,16 +17,14 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "content",
     header: "Tips",
     cell: (row) => {
-      const textareaRef = useRef<HTMLParagraphElement>(null);
-
-      async function handleContentChange() {
+      async function handleContentChange(ref: HTMLParagraphElement | null) {
         const config = await getConfig();
 
         axios
           .put(
             `${API_URL}/data/tips/${row.row.original.id}`,
             {
-              content: textareaRef.current?.textContent,
+              content: ref?.textContent,
             },
             config
           )
@@ -34,23 +33,11 @@ export const columns: ColumnDef<Payment>[] = [
           });
       }
 
-      // Prevent the user from creating a new line when pressing enter
-      function handleKeyDown(event: React.KeyboardEvent<HTMLParagraphElement>) {
-        if (event.key === "Enter") {
-          event.preventDefault();
-        }
-      }
-
       return (
-        <p
-          ref={textareaRef}
-          contentEditable
-          className="outline-none"
+        <ContentEdit
+          value={row.row.original.content}
           onInput={handleContentChange}
-          onKeyDown={handleKeyDown}
-        >
-          {row.row.original.content}
-        </p>
+        />
       );
     },
   },

@@ -98,7 +98,8 @@ CREATE TABLE `statistics`(
 CREATE TABLE `crop_types`(
 	`name` VARCHAR(50) NOT NULL PRIMARY KEY,
 	`price` INTEGER NOT NULL,
-	`duration` INTEGER NOT NULL
+	`duration` INTEGER NOT NULL,
+	`description` VARCHAR(500) NOT NULL
 );
 
 CREATE TABLE `plots`(

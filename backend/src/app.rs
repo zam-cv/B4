@@ -152,6 +152,10 @@ pub async fn app() -> std::io::Result<()> {
                                             .service(routes::admin::data::create_tip)
                                             .service(routes::admin::data::update_tip)
                                             .service(routes::admin::data::delete_tip)
+                                            .service(routes::admin::data::get_crop_types)
+                                            .service(routes::admin::data::update_crop_type_description)
+                                            .service(routes::admin::data::update_crop_type_price)
+                                            .service(routes::admin::data::update_crop_type_duration)
                                     )
                                     .service(
                                         web::scope("/permissions")

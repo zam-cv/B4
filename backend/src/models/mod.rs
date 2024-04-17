@@ -73,6 +73,8 @@ pub struct CropType {
     pub price: i32,
     #[validate(range(min = 1))]
     pub duration: i32,
+    #[validate(length(min = 1, max = 500))]
+    pub description: String,
 }
 
 #[derive(Clone, Serialize)]

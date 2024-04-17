@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/resizable";
 import Admins from "@/components/Admins";
 import Tips from "@/components/Tips";
+import CropsTypes from "@/components/CropsTypes";
 
 export default function Edition() {
   return (
@@ -15,7 +16,17 @@ export default function Edition() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
-          <Tips />
+          <ResizablePanelGroup
+            direction="vertical"
+          >
+            <ResizablePanel defaultSize={40}>
+              <CropsTypes />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={60}>
+              <Tips />
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

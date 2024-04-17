@@ -2,7 +2,7 @@ use crate::{config::CONFIG, database::Database, models, utils};
 use strum::IntoEnumIterator;
 
 const SENTENCES: &str = include_str!("../../assets/default_tips.json");
-const DEFAULT_CROPS_TYPES: &str = include_str!("../../assets/default_crops_types.json");
+const DEFAULT_CROPS_TYPES: &str = include_str!("../../assets/default_crop_types.json");
 
 const ADMIN_PERMISSIONS: [models::PermissionType; 8] = [
     models::PermissionType::ViewDocuments,

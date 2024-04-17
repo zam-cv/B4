@@ -1,0 +1,26 @@
+[
+  {
+    "name": "tomate",
+    "price": 15,
+    "duration": 30,
+    "description": "Tomate de la huerta"
+  },
+  {
+    "name": "cana",
+    "price": 10,
+    "duration": 20,
+    "description": "Caña de azucar"
+  },
+  {
+    "name": "maiz",
+    "price": 20,
+    "duration": 40,
+    "description": "Maiz de la huerta"
+  },
+  {
+    "name": "cebada",
+    "price": 25,
+    "duration": 50,
+    "description": "Cebada de la huerta"
+  }
+]

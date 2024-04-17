@@ -24,6 +24,8 @@ diesel::table! {
         name -> Varchar,
         price -> Integer,
         duration -> Integer,
+        #[max_length = 500]
+        description -> Varchar,
     }
 }
 
