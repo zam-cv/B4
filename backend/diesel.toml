@@ -1,0 +1,11 @@
+# For documentation on how to configure this file,
+# see https://diesel.rs/guides/configuring-diesel-cli
+
+[print_schema]
+file = "src/schema.rs"
+generate_missing_sql_type_definitions = false
+custom_type_derives = ["diesel::query_builder::QueryId"]
+import_types = ["diesel::sql_types::*", "crate::models::types::exports::*"]
+
+[migrations_directory]
+dir = "migrations"
