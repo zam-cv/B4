@@ -1,0 +1,22 @@
+[
+  {
+    "name": "tomate",
+    "price": 15,
+    "duration": 30
+  },
+  {
+    "name": "cana",
+    "price": 10,
+    "duration": 20
+  },
+  {
+    "name": "maiz",
+    "price": 20,
+    "duration": 40
+  },
+  {
+    "name": "cebada",
+    "price": 25,
+    "duration": 50
+  }
+]

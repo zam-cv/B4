@@ -61,7 +61,7 @@ pub struct StatisticsSample {
     pub player_id: i32,
 }
 
-#[derive(Deserialize, Validate, ToSchema, Serialize)]
+#[derive(Deserialize, Validate, ToSchema, Serialize, Clone)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(name))]

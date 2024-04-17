@@ -2,6 +2,7 @@ use crate::{config::CONFIG, database::Database, models, utils};
 use strum::IntoEnumIterator;
 
 const SENTENCES: &str = include_str!("../../assets/default_tips.json");
+const DEFAULT_CROPS_TYPES: &str = include_str!("../../assets/default_crops_types.json");
 
 const ADMIN_PERMISSIONS: [models::PermissionType; 8] = [
     models::PermissionType::ViewDocuments,
@@ -124,6 +125,18 @@ pub async fn create_default_tips(database: &Database) -> anyhow::Result<()> {
     Ok(())
 }
 
+pub async fn create_default_crop_types(database: &Database) -> anyhow::Result<()> {
+    let crop_types = serde_json::from_str::<Vec<models::CropType>>(DEFAULT_CROPS_TYPES)?;
+
+    for crop_type in crop_types.iter() {
+        database
+            .unsert_crop_types(crop_type.clone())
+            .await?;
+    }
+
+    Ok(())
+}
+
 pub async fn setup(database: &Database) -> i32 {
     // Create the default roles
     create_default_roles(&database).await.unwrap();
@@ -143,6 +156,10 @@ pub async fn setup(database: &Database) -> i32 {
     // Create the default tips
     create_default_tips(&database).await.unwrap();
     log::info!("Default tips created");
+
+    // Create the default crop types
+    create_default_crop_types(&database).await.unwrap();
+    log::info!("Default crop types created");
 
     id
 }
