@@ -776,11 +776,6 @@ impl Database {
         Ok(())
     }
 
-    pub async fn get_tips_count(&self) -> anyhow::Result<i64> {
-        self.query_wrapper(move |conn| schema::tips::table.count().get_result::<i64>(conn))
-            .await
-    }
-
     pub async fn delete_tip_by_id(&self, id: i32) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| diesel::delete(schema::tips::table.find(id)).execute(conn))
             .await?;
