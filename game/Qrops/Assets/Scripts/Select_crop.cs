@@ -1,13 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class Select_crop : MonoBehaviour
 {
-    //Reference to info panel
     public GameObject info_panel;
     public GameObject tomate;
     public GameObject cana;
@@ -15,7 +16,14 @@ public class Select_crop : MonoBehaviour
     public GameObject cebada;
     public GameObject crop;
 
-    [SerializeField] private string cropType;
+    public struct CropData
+    {
+        public string name;
+        public string price;
+        public string duration;
+    }
+
+     private string cropType;
 
     // Start is called before the first frame update
     void Start()
@@ -32,10 +40,9 @@ public class Select_crop : MonoBehaviour
         Hide_all();
     }
 
-    // Update is called once per frame
-    void Update()
+    void AttemptCropRequest()
     {
-        
+        StartCoroutine(RequestCropType());
     }
 
     public void Show_info()
@@ -57,19 +64,27 @@ public class Select_crop : MonoBehaviour
         Hide_all();
         crop.SetActive(true);
         Show_info();
+        AttemptCropRequest();
     }
 
     public void View_tomate()
     {
-        crop = tomate;
-        View_crop(crop);
+        View_crop(tomate);
     }
     public void View_cana()
     {
         View_crop(cana);
     }
+    public void View_maiz()
+    {
+        View_crop(maiz);
+    }
+    public void View_cebada()
+    {
+        View_crop(cebada);
+    }
 
-    IEnumerator RequesCropType()
+    IEnumerator RequestCropType()
     {
         string token = Context.Instance.AuthToken;
         UnityWebRequest request = UnityWebRequest.Get("http://localhost:8080/api/admin/data/crops/" + cropType);
@@ -81,6 +96,8 @@ public class Select_crop : MonoBehaviour
         {
             // Token es válido
             Debug.Log(request.downloadHandler.text);
+            CropData cropData = JsonConvert.DeserializeObject<CropData>(request.downloadHandler.text);
+            Debug.Log("Crop data: " + cropData.name + " " + cropData.price + " " + cropData.duration);
         }
 
     }
