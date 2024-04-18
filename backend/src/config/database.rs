@@ -114,12 +114,14 @@ pub async fn create_default_tips(database: &Database) -> anyhow::Result<()> {
     let tips = serde_json::from_str::<Vec<String>>(SENTENCES)?;
 
     for tip in tips.iter() {
-        database
-            .create_tip(models::Tip {
-                id: None,
-                content: tip.clone(),
-            })
-            .await?;
+        if let None = database.get_tip_by_content(tip.clone()).await? {
+            database
+                .create_tip(models::Tip {
+                    id: None,
+                    content: tip.clone(),
+                })
+                .await?;
+        }
     }
 
     Ok(())
@@ -129,9 +131,7 @@ pub async fn create_default_crop_types(database: &Database) -> anyhow::Result<()
     let crop_types = serde_json::from_str::<Vec<models::CropType>>(DEFAULT_CROPS_TYPES)?;
 
     for crop_type in crop_types.iter() {
-        database
-            .unsert_crop_types(crop_type.clone())
-            .await?;
+        database.unsert_crop_types(crop_type.clone()).await?;
     }
 
     Ok(())

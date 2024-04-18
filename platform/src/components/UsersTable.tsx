@@ -1,8 +1,10 @@
 import { API_URL } from "@/utils/constants";
 import { useEffect, useState } from "react";
-import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
 import { getConfig } from "../utils/auth";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
 
 export type Payment = {
@@ -24,7 +26,19 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "user_type",
-    header: "Tipo de usuario",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() =>
+            column.toggleSorting(column.getIsSorted() === "asc", true)
+          }
+        >
+          Tipo de usuario
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "email",
@@ -32,11 +46,31 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "gender",
-    header: "Genero",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Género
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "age",
-    header: "Edad",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc", true)}
+        >
+          Edad
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "os",

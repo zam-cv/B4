@@ -877,6 +877,16 @@ impl Database {
         Ok(())
     }
 
+    pub async fn get_tip_by_content(&self, content: String) -> anyhow::Result<Option<models::Tip>> {
+        self.query_wrapper(move |conn| {
+            schema::tips::table
+                .filter(schema::tips::content.eq(content))
+                .first::<models::Tip>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn get_random_tip(&self, player_id: i32) -> anyhow::Result<Option<models::Tip>> {
         self.query_wrapper(move |conn| {
             // TODO: make it more efficient
