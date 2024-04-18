@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json;
-
+using UnityEngine.SceneManagement;
 public class Select_crop : MonoBehaviour
 {
     public GameObject info_panel;
@@ -100,5 +100,10 @@ public class Select_crop : MonoBehaviour
             Debug.Log("Crop data: " + cropData.name + " " + cropData.price + " " + cropData.duration);
         }
 
+    }
+
+    public void BackToGame(){
+        //load the game scene
+        SceneManager.LoadScene("Game");
     }
 }

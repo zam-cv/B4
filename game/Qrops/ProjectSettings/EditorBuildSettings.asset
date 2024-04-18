@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Registro.unity
     guid: 8310d0d4d03ce084fb1d5df87b7c81e3
+  - enabled: 1
+    path: Assets/Scenes/Tienda.unity
+    guid: 473a508518087964ba2cb8446a4add1a
   m_configObjects: {}
