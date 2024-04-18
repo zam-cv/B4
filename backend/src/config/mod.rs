@@ -13,11 +13,16 @@ pub struct Config {
     pub ipinfo_token: String,
     pub admin_default_email: String,
     pub admin_default_password: String,
+    pub smtp_host: String,
+    pub smtp_username: String,
+    pub smtp_password: String,
+    pub sender: String,
 }
 
 lazy_static! {
     pub static ref CONFIG: Config = {
         dotenv().ok();
+        let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set");
 
         Config {
             address: format!(
@@ -29,8 +34,14 @@ lazy_static! {
             admin_secret_key: env::var("ADMIN_SECRET_KEY").expect("ADMIN_SECRET_KEY must be set"),
             database_url: env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
             ipinfo_token: env::var("IPINFO_TOKEN").expect("IPINFO_TOKEN must be set"),
-            admin_default_email: env::var("ADMIN_DEFAULT_EMAIL").expect("ADMIN_DEFAULT_EMAIL must be set"),
-            admin_default_password: env::var("ADMIN_DEFAULT_PASSWORD").expect("ADMIN_DEFAULT_PASSWORD must be set"),
+            admin_default_email: env::var("ADMIN_DEFAULT_EMAIL")
+                .expect("ADMIN_DEFAULT_EMAIL must be set"),
+            admin_default_password: env::var("ADMIN_DEFAULT_PASSWORD")
+                .expect("ADMIN_DEFAULT_PASSWORD must be set"),
+            smtp_host: env::var("SMTP_HOST").expect("SMTP_HOST must be set"),
+            smtp_username: smtp_username.clone(),
+            smtp_password: env::var("SMTP_PASSWORD").expect("SMTP_PASSWORD must be set"),
+            sender: format!("Verqor <{}>", smtp_username),
         }
     };
 }

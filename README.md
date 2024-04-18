@@ -104,6 +104,9 @@ DATABASE_URL=mysql://root:root@127.0.0.1:3307/game
 IPINFO_TOKEN=d343be3bf5b846
 ADMIN_DEFAULT_EMAIL=test@test.com
 ADMIN_DEFAULT_PASSWORD=test
+SMTP_HOST=smtp-mail.outlook.com
+SMTP_USERNAME=test@outlook.com
+SMTP_PASSWORD=test
 ```
 
 Example of variables in the platform:

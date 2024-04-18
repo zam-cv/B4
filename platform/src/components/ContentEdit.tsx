@@ -20,6 +20,7 @@ export default function ContentEdit({
     <p
       ref={ref}
       contentEditable
+      suppressContentEditableWarning={true}
       className="outline-none"
       onInput={() => onInput(ref.current)}
       onKeyDown={handleKeyDown}

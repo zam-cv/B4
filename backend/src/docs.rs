@@ -30,6 +30,8 @@ use utoipa::OpenApi;
         routes::admin::data::update_crop_type_description,
         routes::admin::data::update_crop_type_price,
         routes::admin::data::update_crop_type_duration,
+        routes::admin::mail::send_emails,
+        routes::admin::mail::get_user_count_by_user_filter,
         routes::admin::player::get_player,
         routes::admin::players::get_players_count,
         routes::admin::players::get_average_time_in_game,
@@ -59,7 +61,9 @@ use utoipa::OpenApi;
         models::StatisticsSample,
         models::PermissionType,
         models::Tip,
-        routes::admin::permissions::PermissionPayload
+        routes::admin::permissions::PermissionPayload,
+        routes::admin::mail::EmailPayload,
+        routes::admin::mail::Filters
     ))
 )]
 pub struct ApiDoc;

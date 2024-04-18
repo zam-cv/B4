@@ -3,7 +3,7 @@ import { DataTable } from "./DataTable";
 import { API_URL } from "@/utils/constants";
 import { ColumnDef } from "@tanstack/react-table";
 import { getConfig } from "../utils/auth";
-import ContentEdit from "./contentEdit";
+import ContentEdit from "./ContentEdit";
 import axios from "axios";
 
 export type Payment = {

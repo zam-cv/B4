@@ -1,4 +1,4 @@
-use crate::{config::CONFIG, models, schema};
+use crate::{config::CONFIG, models, routes::admin::mail::Filters, schema};
 use actix_web::web;
 use chrono::Datelike;
 use diesel::prelude::*;
@@ -15,6 +15,35 @@ macro_rules! avg {
         diesel::dsl::sql::<diesel::sql_types::Nullable<diesel::sql_types::Double>>(concat!(
             "AVG(", $column, ")"
         ))
+    };
+}
+
+macro_rules! apply_filters {
+    ($box:expr, $filters:expr) => {
+        if let Some((min, max)) = $filters.by_age_range {
+            // get the minimum and maximum years by ages
+            let current_year = chrono::Utc::now().year();
+            let min_year = current_year - max;
+            let max_year = current_year - min;
+
+            $box = $box.filter(
+                schema::users::year_of_birth
+                    .ge(min_year)
+                    .and(schema::users::year_of_birth.lt(max_year)),
+            );
+        }
+
+        if let Some(user_type) = $filters.by_user_type {
+            $box = $box.filter(schema::users::user_type.eq(user_type));
+        }
+
+        if let Some(gender) = $filters.by_gender {
+            $box = $box.filter(schema::users::gender.eq(gender));
+        }
+
+        if let Some(extension) = $filters.by_extension {
+            $box = $box.filter(schema::users::email.like(format!("%{}%", extension)));
+        }
     };
 }
 
@@ -875,5 +904,23 @@ impl Database {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn get_user_count_by_user_filter(&self, filters: Filters) -> anyhow::Result<i64> {
+        self.query_wrapper(move |conn| {
+            let mut query = schema::users::table.into_boxed();
+            apply_filters!(query, filters);
+            query.count().get_result::<i64>(conn)
+        })
+        .await
+    }
+
+    pub async fn get_emails_by_user_filter(&self, filters: Filters) -> anyhow::Result<Vec<String>> {
+        self.query_wrapper(move |conn| {
+            let mut query = schema::users::table.into_boxed();
+            apply_filters!(query, filters);
+            query.select(schema::users::email).load::<String>(conn)
+        })
+        .await
     }
 }

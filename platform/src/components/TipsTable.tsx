@@ -1,11 +1,10 @@
-import { useRef } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { API_URL } from "@/utils/constants";
 import { DataTable } from "./DataTable";
 import { getConfig } from "@/utils/auth";
 import Delete from "./Delete";
 import axios from "axios";
-import ContentEdit from "./contentEdit";
+import ContentEdit from "./ContentEdit";
 
 export type Payment = {
   id: number;
