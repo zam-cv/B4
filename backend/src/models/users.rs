@@ -71,6 +71,7 @@ pub struct Player {
     pub balance_verqor: i32,
     pub balance_coyote: i32,
     pub max_plots: i32,
+    pub max_change: i32,
 }
 
 impl Player {
@@ -84,6 +85,7 @@ impl Player {
             balance_verqor: config::INITIAL_BALANCE,
             balance_coyote: config::INITIAL_BALANCE,
             max_plots: config::INITIAL_MAX_PLOTS,
+            max_change: config::INITIAL_MAX_CHANGE,
         }
     }
 }
