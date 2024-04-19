@@ -26,3 +26,6 @@ dist-ssr
 
 package-lock.json
 yarn.lock
+
+src-tauri/gen/*
+src-tauri/gen/schemas/desktop-schema.json
