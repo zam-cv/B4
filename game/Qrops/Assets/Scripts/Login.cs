@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
-
+/*
+ * Clase que se encarga de manejar el login del jugador
+ */
 public class Login : MonoBehaviour
 {
     [SerializeField] private TMP_InputField username;
@@ -17,6 +19,9 @@ public class Login : MonoBehaviour
         public string username;
         public string password;
     }
+    // Fncion que se ejecuta al iniciar el juego
+    // Se encarga de verificar si el jugador ya tiene un token de sesión
+    // Si lo tiene, se intenta autenticar al jugador sin necesidad de que se loguee
 
     void Start()
     {
@@ -34,12 +39,13 @@ public class Login : MonoBehaviour
     }
 
 
-
+    // Funcion que intenta autenticar al jugador
     public void AttemptAuth()
     {
         StartCoroutine(RequestAuth());
     }
 
+    // Funcion que realiza la petición de autenticación al servidor
     IEnumerator RequestAuth()
     {
         string token = PlayerPrefs.GetString("token");
@@ -61,12 +67,14 @@ public class Login : MonoBehaviour
             SceneManager.LoadScene("Login");
         }
     }
-
+    
+    // Funcion que se ejecuta al presionar el boton de login
     public void AttemptLogin()
     {
         StartCoroutine(RequestLogin());
     }
 
+    // Funcion que realiza la petición de login al servidor
     IEnumerator RequestLogin()
     {
         UserData user = new UserData();
@@ -98,6 +106,7 @@ public class Login : MonoBehaviour
         }
     }
 
+    // Funcion que se ejecuta al presionar el boton de registro
     public void GoToSignUp()
     {
         SceneManager.LoadScene("Registro");
