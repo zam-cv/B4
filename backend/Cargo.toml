@@ -41,6 +41,7 @@ strum = "0.26.2"
 strum_macros = "0.26.2"
 rust-argon2 = "2.1.0"
 lettre = "0.11.6"
+itertools = "0.12.1"
 
 [dev-dependencies]
 actix-rt = "2.4.0"
