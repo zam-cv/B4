@@ -58,7 +58,7 @@ use utoipa::OpenApi;
         routes::AdminInfo,
         models::CropType,
         models::Player,
-        models::StatisticsSample,
+        models::Statistic,
         models::PermissionType,
         models::Tip,
         routes::admin::permissions::PermissionPayload,

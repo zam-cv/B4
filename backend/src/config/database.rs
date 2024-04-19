@@ -1,8 +1,14 @@
-use crate::{config::CONFIG, database::Database, models, utils};
+use crate::{
+    bank::sentences::{RawSentence, RawSentences},
+    config::CONFIG,
+    database::Database,
+    models, utils,
+};
 use strum::IntoEnumIterator;
 
 const SENTENCES: &str = include_str!("../../assets/default_tips.json");
 const DEFAULT_CROPS_TYPES: &str = include_str!("../../assets/default_crop_types.json");
+const DEFAULT_SENTENCES: &str = include_str!("../../assets/default_sentences.json");
 
 const ADMIN_PERMISSIONS: [models::PermissionType; 8] = [
     models::PermissionType::ViewDocuments,
@@ -137,6 +143,65 @@ pub async fn create_default_crop_types(database: &Database) -> anyhow::Result<()
     Ok(())
 }
 
+pub async fn set_sentences(
+    database: &Database,
+    event_type: models::EventType,
+    raw_sentence: Vec<RawSentence>,
+) -> anyhow::Result<()> {
+    for sentence in raw_sentence {
+        let content = sentence.value.to_string();
+
+        if let Ok(false) = database.exists_event_by_type_and_content(event_type, content.clone()).await {
+            let event = models::Event {
+                id: None,
+                event_type,
+                content,
+            };
+    
+            let event_id = database.create_event(event).await?;
+    
+            // getters
+            for (key, val) in sentence.getters.iter() {
+                database
+                    .create_function(models::Function {
+                        id: None,
+                        function_type: models::FunctionType::Getter,
+                        event_id,
+                        key: key.to_string(),
+                        function: Some(val.to_string()),
+                    })
+                    .await?;
+            }
+    
+            // handlers
+            for handler in sentence.handlers.iter() {
+                database
+                    .create_function(models::Function {
+                        id: None,
+                        function_type: models::FunctionType::Handler,
+                        event_id,
+                        key: handler.to_string(),
+                        function: None,
+                    })
+                    .await?;
+            }
+        }
+    }
+
+    Ok(())
+}
+
+pub async fn create_default_sentences(database: &Database) -> anyhow::Result<()> {
+    let sentences = serde_json::from_str::<RawSentences>(DEFAULT_SENTENCES)?;
+
+    // Different types of events
+    set_sentences(database, models::EventType::Positive, sentences.positive).await.unwrap();
+    set_sentences(database, models::EventType::Negative, sentences.negative).await.unwrap();
+    set_sentences(database, models::EventType::Default, sentences.default).await.unwrap();
+
+    Ok(())
+}
+
 pub async fn setup(database: &Database) -> i32 {
     // Create the default roles
     create_default_roles(&database).await.unwrap();
@@ -160,6 +225,9 @@ pub async fn setup(database: &Database) -> i32 {
     // Create the default crop types
     create_default_crop_types(&database).await.unwrap();
     log::info!("Default crop types created");
+
+    // Create the default sentences
+    create_default_sentences(&database).await.unwrap();
 
     id
 }

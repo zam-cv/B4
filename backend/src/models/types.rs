@@ -53,7 +53,24 @@ pub enum PermissionType {
     SendEmails,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
+pub enum EventType {
+    Positive,
+    Negative,
+    Default
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
+pub enum FunctionType {
+    Getter,
+    Handler,
+}
+
 pub(crate) mod exports {
   pub use super::GenderMapping as Gender;
   pub use super::UserTypeMapping as UserType;
+  pub use super::EventTypeMapping as EventType;
+  pub use super::FunctionTypeMapping as FunctionType;
 }
