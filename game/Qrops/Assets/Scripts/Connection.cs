@@ -17,6 +17,7 @@ public class Connection : MonoBehaviour
 {
     WebSocket websocket;
 
+    public GameObject loading_logo, loading_background;
 
     struct CycleResolved
     {
@@ -43,6 +44,8 @@ public class Connection : MonoBehaviour
         websocket.OnOpen += () =>
         {
             Debug.Log("Connection open!");
+            loading_logo.SetActive(false);
+            loading_background.SetActive(false);
         };
 
         websocket.OnError += (e) =>
