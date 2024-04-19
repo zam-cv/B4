@@ -8,11 +8,13 @@ pub mod roles;
 pub mod types;
 pub mod users;
 pub mod permissions;
+pub mod events;
 
 pub use roles::*;
 pub use permissions::*;
 pub use types::*;
 pub use users::*;
+pub use events::*;
 
 #[derive(Clone, Deserialize, Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -51,7 +53,7 @@ pub struct Insurance {
 #[diesel(primary_key(id))]
 #[diesel(belongs_to(Player))]
 #[diesel(table_name = schema::statistics)]
-pub struct StatisticsSample {
+pub struct Statistic {
     #[serde(skip_deserializing, skip_serializing)]
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,

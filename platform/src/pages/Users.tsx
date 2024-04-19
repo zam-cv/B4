@@ -67,7 +67,7 @@ export default function Users() {
           direction="horizontal"
           className="rounded-lg border"
         >
-          <ResizablePanel defaultSize={50}>
+          <ResizablePanel defaultSize={55}>
             <div className="p-5 h-full">
               <div className="h-full w-full relative">
                 <div className="absolute h-full w-full overflow-auto">
@@ -77,7 +77,7 @@ export default function Users() {
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={50}>
+          <ResizablePanel defaultSize={45}>
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={40}>
                 <div className="relative w-full h-full flex justify-center items-center">

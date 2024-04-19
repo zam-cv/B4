@@ -97,7 +97,7 @@ impl State {
         self.send(Response::CycleResolved(resolve_cycle_data))?;
 
         database
-            .create_statistics(models::StatisticsSample {
+            .create_statistics(models::Statistic {
                 id: None,
                 cycle: self.player.current_cycle,
                 score: 5,

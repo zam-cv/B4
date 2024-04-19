@@ -130,3 +130,27 @@ CREATE TABLE `player_tips`(
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`),
 	FOREIGN KEY (`tip_id`) REFERENCES `tips`(`id`)
 );
+
+CREATE TABLE `events`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`event_type` ENUM('positive', 'negative', 'default') NOT NULL,
+	`content` VARCHAR(500) NOT NULL
+);
+
+CREATE TABLE `functions`(
+	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	`function_type` ENUM('getter', 'handler') NOT NULL,
+	`event_id` INTEGER NOT NULL,
+	`key` VARCHAR(50) NOT NULL,
+	`function` VARCHAR(50),
+	FOREIGN KEY (`event_id`) REFERENCES `events`(`id`)
+);
+
+CREATE TABLE `values`(
+	`statistic_id` INTEGER NOT NULL,
+	`function_id` INTEGER NOT NULL,
+	`content` VARCHAR(200) NOT NULL,
+	PRIMARY KEY(`statistic_id`, `function_id`),
+	FOREIGN KEY (`statistic_id`) REFERENCES `statistics`(`id`),
+	FOREIGN KEY (`function_id`) REFERENCES `functions`(`id`)
+);

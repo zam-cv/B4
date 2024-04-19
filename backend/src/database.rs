@@ -440,22 +440,16 @@ impl Database {
         .await
     }
 
-    pub async fn get_statistics(
-        &self,
-        player_id: i32,
-    ) -> anyhow::Result<Vec<models::StatisticsSample>> {
+    pub async fn get_statistics(&self, player_id: i32) -> anyhow::Result<Vec<models::Statistic>> {
         self.query_wrapper(move |conn| {
             schema::statistics::table
                 .filter(schema::statistics::player_id.eq(player_id))
-                .load::<models::StatisticsSample>(conn)
+                .load::<models::Statistic>(conn)
         })
         .await
     }
 
-    pub async fn create_statistics(
-        &self,
-        new_statistics: models::StatisticsSample,
-    ) -> anyhow::Result<()> {
+    pub async fn create_statistics(&self, new_statistics: models::Statistic) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::statistics::table)
                 .values(&new_statistics)
@@ -889,8 +883,7 @@ impl Database {
 
     pub async fn get_random_tip(&self, player_id: i32) -> anyhow::Result<Option<models::Tip>> {
         self.query_wrapper(move |conn| {
-            // TODO: make it more efficient
-            schema::tips::table
+            let count: i64 = schema::tips::table
                 .filter(
                     schema::tips::id.ne_all(
                         schema::player_tips::table
@@ -898,9 +891,29 @@ impl Database {
                             .filter(schema::player_tips::player_id.eq(player_id)),
                     ),
                 )
-                .order(diesel::dsl::sql::<diesel::sql_types::Text>("RAND()"))
-                .first::<models::Tip>(conn)
-                .optional()
+                .select(diesel::dsl::count_star())
+                .first(conn)?;
+
+            if count > 0 {
+                let random_offset = rand::random::<usize>() % count as usize;
+
+                let result = schema::tips::table
+                    .filter(
+                        schema::tips::id.ne_all(
+                            schema::player_tips::table
+                                .select(schema::player_tips::tip_id)
+                                .filter(schema::player_tips::player_id.eq(player_id)),
+                        ),
+                    )
+                    .offset(random_offset as i64)
+                    .limit(1)
+                    .first::<models::Tip>(conn)
+                    .optional()?;
+
+                return Ok(result);
+            }
+
+            Ok(None)
         })
         .await
     }
@@ -930,6 +943,57 @@ impl Database {
             let mut query = schema::users::table.into_boxed();
             apply_filters!(query, filters);
             query.select(schema::users::email).load::<String>(conn)
+        })
+        .await
+    }
+
+    pub async fn create_event(&self, new_event: models::Event) -> anyhow::Result<i32> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::events::table)
+                    .values(&new_event)
+                    .execute(pooled)?;
+
+                // Get the last inserted id
+                schema::events::table
+                    .select(schema::events::id)
+                    .order(schema::events::id.desc())
+                    .first::<i32>(pooled)
+            })
+        })
+        .await
+    }
+
+    pub async fn exists_event_by_type_and_content(
+        &self,
+        event_type: models::EventType,
+        content: String,
+    ) -> anyhow::Result<bool> {
+        self.query_wrapper(move |conn| {
+            let count = schema::events::table
+                .filter(schema::events::event_type.eq(event_type))
+                .filter(schema::events::content.eq(content))
+                .count()
+                .get_result::<i64>(conn)?;
+
+            Ok(count > 0)
+        })
+        .await
+    }
+
+    pub async fn create_function(&self, new_function: models::Function) -> anyhow::Result<i32> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::functions::table)
+                    .values(&new_function)
+                    .execute(pooled)?;
+
+                // Get the last inserted id
+                schema::functions::table
+                    .select(schema::functions::id)
+                    .order(schema::functions::id.desc())
+                    .first::<i32>(pooled)
+            })
         })
         .await
     }

@@ -199,6 +199,45 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::types::exports::*;
+
+    events (id) {
+        id -> Integer,
+        event_type -> EventType,
+        #[max_length = 500]
+        content -> Varchar,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::types::exports::*;
+
+    functions (id) {
+        id -> Integer,
+        function_type -> FunctionType,
+        event_id -> Integer,
+        #[max_length = 50]
+        key -> Varchar,
+        #[max_length = 50]
+        function -> Nullable<Varchar>,
+    }
+}
+
+diesel::table! {
+    use diesel::sql_types::*;
+    use crate::models::types::exports::*;
+
+    values (statistic_id, function_id) {
+        statistic_id -> Integer,
+        function_id -> Integer,
+        #[max_length = 200]
+        content -> Varchar,
+    }
+}
+
 diesel::joinable!(users -> roles (role_id));
 diesel::joinable!(admins -> roles (role_id));
 diesel::joinable!(insurance -> loans (loan_id));
@@ -214,6 +253,9 @@ diesel::joinable!(role_permissions -> roles (role_id));
 diesel::joinable!(sessions -> users (user_id));
 diesel::joinable!(player_tips -> players (player_id));
 diesel::joinable!(player_tips -> tips (tip_id));
+diesel::joinable!(functions -> events (event_id));
+diesel::joinable!(values -> functions (function_id));
+diesel::joinable!(values -> statistics (statistic_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     admins,
@@ -231,4 +273,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     sessions,
     tips,
     player_tips,
+    functions,
+    events,
+    values,
 );
