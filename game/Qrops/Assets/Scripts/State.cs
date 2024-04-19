@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+/*
+ * Clase que se encarga de actualizar el estado del jugador en la interfaz
+ */
 public class State : MonoBehaviour
 {
     [SerializeField]
@@ -19,6 +21,7 @@ public class State : MonoBehaviour
 
     public static State Instance { get; private set; }
 
+    // Funcion que hace que el objeto sea unico
     void Awake()
     {
         if (Instance == null)
@@ -30,7 +33,8 @@ public class State : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    
+    // Funcion que actualiza el estado del jugador
     public void SetState(Player player)
     {
         Instance.scoreText.text = player.current_score.ToString();
