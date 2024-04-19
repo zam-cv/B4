@@ -3,6 +3,7 @@ use actix_web::web;
 use chrono::Datelike;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager, PooledConnection};
+use std::collections::HashMap;
 
 macro_rules! count_star {
     ($type:ty) => {
@@ -994,6 +995,65 @@ impl Database {
                     .order(schema::functions::id.desc())
                     .first::<i32>(pooled)
             })
+        })
+        .await
+    }
+
+    pub async fn get_history_by_player_id(
+        &self,
+        player_id: i32,
+    ) -> anyhow::Result<
+        Vec<(
+            models::Statistic,
+            Vec<(models::Event, Vec<(models::Function, models::Value)>)>,
+        )>,
+    > {
+        self.query_wrapper(move |conn| {
+            let data: Vec<(
+                models::Statistic,
+                models::Event,
+                models::Function,
+                models::Value,
+            )> = schema::values::table
+                .inner_join(schema::functions::table.inner_join(schema::events::table))
+                .inner_join(schema::statistics::table)
+                .filter(schema::statistics::player_id.eq(player_id))
+                .select((
+                    schema::statistics::all_columns,
+                    schema::events::all_columns,
+                    schema::functions::all_columns,
+                    schema::values::all_columns,
+                ))
+                .load::<(
+                    models::Statistic,
+                    models::Event,
+                    models::Function,
+                    models::Value,
+                )>(conn)?;
+            
+            let mut statistics = HashMap::new();
+
+            for (statistic, event, function, value) in data {
+                statistics.entry(statistic)
+                    .or_insert_with(Vec::new)
+                    .push((event, function, value));
+            }
+
+            let mut result = Vec::new();
+
+            for (statistic, data) in statistics {
+                let mut events = HashMap::new();
+
+                for (event, function, value) in data {
+                    events.entry(event)
+                        .or_insert_with(Vec::new)
+                        .push((function, value));
+                }
+
+                result.push((statistic, events.into_iter().collect()));
+            }
+
+            Ok(result)
         })
         .await
     }

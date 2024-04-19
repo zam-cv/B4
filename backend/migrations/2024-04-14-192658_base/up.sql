@@ -39,7 +39,8 @@ CREATE TABLE `players`(
 	`balance_cash` INTEGER NOT NULL,
 	`balance_verqor` INTEGER NOT NULL,
 	`balance_coyote` INTEGER NOT NULL,
-	`max_plots` INTEGER NOT NULL
+	`max_plots` INTEGER NOT NULL,
+	`max_change` INTEGER NOT NULL
 );
 
 CREATE TABLE `users`(

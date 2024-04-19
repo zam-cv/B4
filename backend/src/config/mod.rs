@@ -49,6 +49,11 @@ lazy_static! {
 // User constants
 pub const TOKEN_EXPIRATION_TIME: usize = 60 * 60 * 24 * 15; // 15 days
 
+// Valores para ponderar max change
+pub const CASH_WEIGHT: i32 = 60;
+pub const VERQOR_WEIGHT: i32 = 30;
+pub const COYOTE_WEIGHT: i32 = 10;
+
 // Game constants
 pub const INITIAL_TIME: f64 = 0.0;
 pub const INITIAL_CYCLE: i32 = 0;
@@ -56,3 +61,6 @@ pub const INITIAL_SCORE: f64 = 0.0;
 pub const INITIAL_BALANCE: i32 = 0;
 pub const INITIAL_BALANCE_CASH: i32 = 1000;
 pub const INITIAL_MAX_PLOTS: i32 = 4;
+pub const INITIAL_MAX_CHANGE: i32 = CASH_WEIGHT * INITIAL_BALANCE_CASH
+    + VERQOR_WEIGHT * INITIAL_BALANCE
+    + COYOTE_WEIGHT * INITIAL_BALANCE;

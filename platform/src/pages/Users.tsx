@@ -13,6 +13,8 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import History from "@/components/History";
 
 interface Captacion {
   visitor_count: number;
@@ -78,31 +80,51 @@ export default function Users() {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={45}>
-            <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={40}>
-                <div className="relative w-full h-full flex justify-center items-center">
-                  <div className="absolute w-full h-full flex justify-center items-center">
-                    <Map userInfo={userInfo} />
-                  </div>
-                </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={30}>
-                <div className="p-5 h-full w-full">
-                  <div className="h-full w-full relative">
-                    <div className="h-full w-full absolute">
-                      <Statistics />
-                    </div>
-                  </div>
-                </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={30}>
-                <div>
-                  <PlayerInfo userId={userId} userInfo={userInfo} />
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+            <Tabs defaultValue="info" className="w-full h-full">
+              <div className="p-3 w-full">
+                <TabsList className="grid grid-cols-2">
+                  <TabsTrigger value="info">
+                    Información del usuario
+                  </TabsTrigger>
+                  <TabsTrigger value="cycles">Recuento de ciclos</TabsTrigger>
+                </TabsList>
+              </div>
+              <div className="h-full w-full">
+                <TabsContent className="w-full h-full" value="info">
+                  <ResizablePanelGroup
+                    className="w-full h-full"
+                    direction="vertical"
+                  >
+                    <ResizablePanel defaultSize={35}>
+                      <div className="relative w-full h-full flex justify-center items-center">
+                        <div className="absolute w-full h-full flex justify-center items-center">
+                          <Map userInfo={userInfo} />
+                        </div>
+                      </div>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={30}>
+                      <div className="p-5 h-full w-full">
+                        <div className="h-full w-full relative">
+                          <div className="h-full w-full absolute">
+                            <Statistics />
+                          </div>
+                        </div>
+                      </div>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={35}>
+                      <div>
+                        <PlayerInfo userId={userId} userInfo={userInfo} />
+                      </div>
+                    </ResizablePanel>
+                  </ResizablePanelGroup>
+                </TabsContent>
+                <TabsContent className="w-full h-full" value="cycles">
+                  <History id={userId} />
+                </TabsContent>
+              </div>
+            </Tabs>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

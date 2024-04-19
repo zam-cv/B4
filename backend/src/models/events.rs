@@ -1,6 +1,9 @@
+use std::hash::Hash;
+
 use crate::{models::{types::*, Statistic}, schema};
 use diesel::prelude::*;
 
+#[derive(Eq, PartialEq, Debug)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -12,6 +15,13 @@ pub struct Event {
     pub content: String,
 }
 
+impl Hash for Event {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+    }
+}
+
+#[derive(Debug)]
 #[derive(Queryable, Selectable, Associations, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -26,6 +36,7 @@ pub struct Function {
     pub function: Option<String>,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable, Associations, Identifiable, Insertable, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(statistic_id, function_id))]

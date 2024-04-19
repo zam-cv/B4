@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use crate::schema;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -48,6 +50,7 @@ pub struct Insurance {
     pub loan_id: i32,
 }
 
+#[derive(Eq, PartialEq, Clone, Debug)]
 #[derive(Serialize, ToSchema, Queryable, Selectable, Identifiable, Insertable, Associations)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -61,6 +64,12 @@ pub struct Statistic {
     pub score: i32,
     #[serde(skip_serializing)]
     pub player_id: i32,
+}
+
+impl Hash for Statistic {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+    }
 }
 
 #[derive(Deserialize, Validate, ToSchema, Serialize, Clone)]

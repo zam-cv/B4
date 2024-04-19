@@ -71,6 +71,7 @@ diesel::table! {
         balance_verqor -> Integer,
         balance_coyote -> Integer,
         max_plots -> Integer,
+        max_change -> Integer,
     }
 }
 

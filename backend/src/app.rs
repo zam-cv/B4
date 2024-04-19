@@ -137,7 +137,8 @@ pub async fn app() -> std::io::Result<()> {
                                     )
                                     .service(
                                         web::scope("/player")
-                                            .service(routes::admin::player::get_player),
+                                            .service(routes::admin::player::get_player)
+                                            .service(routes::admin::player::get_player_history),
                                     )
                                     .service(
                                         web::scope("/mail")
