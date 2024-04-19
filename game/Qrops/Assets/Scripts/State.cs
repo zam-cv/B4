@@ -30,4 +30,12 @@ public class State : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void SetState(Player player)
+    {
+        Instance.scoreText.text = player.current_score.ToString();
+        Instance.verqorText.text = player.balance_verqor.ToString();
+        Instance.coyoteText.text = player.balance_coyote.ToString();
+        Instance.cashText.text = player.balance_cash.ToString();
+    }
 }
