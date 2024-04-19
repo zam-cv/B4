@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { pagePermissions } from "../App";
 
 export function Sub({ title, route }: { title: string; route: string }) {
   return (
@@ -12,7 +13,7 @@ export function Sub({ title, route }: { title: string; route: string }) {
 }
 
 export default function Header() {
-  const { signout, admin } = useAuth();
+  const { signout, admin, permissions } = useAuth();
 
   return (
     <div className="grid grid-cols-[1fr_auto] p-1 shadow-lg px-5">
@@ -20,10 +21,12 @@ export default function Header() {
         <div className="p-4 px-4 font-bold hover:underline cursor-pointer">
           Verqor
         </div>
-        <Sub title="Dashboard" route="/dashboard" />
-        <Sub title="Distribución" route="/distribution" />
-        <Sub title="Correos" route="/emails" />
-        <Sub title="Documentación" route="/docs" />
+        {pagePermissions.map((page) => {
+          if (permissions?.has(page.permission)) {
+            return <Sub key={page.title} title={page.title} route={page.route} />;
+          }
+          return null;
+        })}
       </div>
       <div className="flex items-center">
         <span

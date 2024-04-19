@@ -33,6 +33,12 @@ nix-env -iA nixpkgs.diesel-cli
 ```
 Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar el repositorio en la carpeta de tu elección dentro de la ruta /mnt/c/Users/TuNombreDeUsuario/
 
+##### SQL Install
+
+´´´bash
+sudo apt install mysql-server
+sudo apt-get install libmysqlclient-dev # Opcional si hay problemas con SQL al ejecutar el backend
+´´´
 
 ### Running the game
 
@@ -98,6 +104,9 @@ DATABASE_URL=mysql://root:root@127.0.0.1:3307/game
 IPINFO_TOKEN=d343be3bf5b846
 ADMIN_DEFAULT_EMAIL=test@test.com
 ADMIN_DEFAULT_PASSWORD=test
+SMTP_HOST=smtp-mail.outlook.com
+SMTP_USERNAME=test@outlook.com
+SMTP_PASSWORD=test
 ```
 
 Example of variables in the platform:

@@ -1,12 +1,10 @@
 use crate::config;
 use actix_web::cookie::{self, Cookie};
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
-    Argon2,
-};
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 use woothee::parser::Parser;
+use argon2::Config;
+use rand::Rng;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -14,20 +12,16 @@ pub struct Claims {
     pub exp: usize,
 }
 
-macro_rules! get_hash {
-    ($password:expr) => {
-        Argon2::default().hash_password($password.as_bytes(), &SaltString::generate(&mut OsRng))
-    };
+pub fn hash_password(password: &str) -> anyhow::Result<String> {
+    let salt = rand::thread_rng().gen::<[u8; 32]>();
+    let config = Config::default();
+    argon2::hash_encoded(password.as_bytes(), &salt, &config)
+        .map_err(|_| anyhow::anyhow!("Failed to hash the password"))
 }
 
-pub(crate) use get_hash;
-
-pub fn get_hash_in_string(password: &str) -> anyhow::Result<String> {
-    if let Ok(hash) = get_hash!(password) {
-        Ok(hash.to_string())
-    } else {
-        Err(anyhow::anyhow!("Failed to hash the password"))
-    }
+pub fn verify_password(password: &str, hash: &str) -> anyhow::Result<bool> {
+    argon2::verify_encoded(hash, password.as_bytes())
+        .map_err(|_| anyhow::anyhow!("Failed to verify the password"))
 }
 
 pub fn create_token(secret_key: &String, id: i32) -> anyhow::Result<String> {

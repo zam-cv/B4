@@ -22,8 +22,6 @@ const statistics = {
 
 export default function Statistics() {
   return (
-    <div className="h-full">
-      <GraphicView options={options} values={statistics} />
-    </div>
+    <GraphicView options={options} values={statistics} />
   );
 }

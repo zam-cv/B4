@@ -81,7 +81,7 @@ impl Server {
     async fn disconnect(&mut self, id: &i32) {
         log::debug!("Disconnected: {}", id);
 
-        if let Some(state) = self.sessions.remove(id) {
+        if let Some(mut state) = self.sessions.remove(id) {
             // Save the state in the database at the end of the session
             let _ = state.save(&self.database).await;
         }
@@ -91,7 +91,9 @@ impl Server {
         log::debug!("Message from {}: {}", id, text);
 
         if let Some(state) = self.sessions.get_mut(id) {
-            let _ = state.handle_message(text, &self.database, &self.bank).await;
+            if let Err(err) = state.handle_message(text, &self.database, &self.bank).await {
+                log::error!("Failed to handle message: {}", err);
+            }
         }
     }
 

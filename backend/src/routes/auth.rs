@@ -1,14 +1,34 @@
 use crate::{config::CONFIG, database::Database, models, utils, routes};
-use actix_web::{delete, error, post, web, HttpRequest, HttpResponse, Responder, Result};
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
-    Argon2, PasswordHash, PasswordVerifier,
-};
+use actix_web::{delete, error, post, get, web, HttpRequest, HttpResponse, HttpMessage, Responder, Result};
 use ipinfo::{IpInfo, IpInfoConfig};
 use std::sync::{Arc, Mutex};
 use validator::Validate;
 
 const CONTEXT_PATH: &str = "/api/auth";
+
+#[utoipa::path(
+    context_path = CONTEXT_PATH,
+    responses(
+      (status = 200, description = "The admin was found"),
+      (status = 401, description = "The admin was not found")
+    )
+  )]
+  #[get("")]
+  pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<impl Responder> {
+      if let Some(id) = req.extensions().get::<i32>() {
+          let user = database
+              .get_user_by_id(*id)
+              .await
+              .map_err(|_| error::ErrorBadRequest("Failed"))?;
+  
+          return match user {
+              Some(_) => Ok(HttpResponse::Ok().finish()),
+              None => Ok(HttpResponse::NotFound().finish()),
+          };
+      }
+  
+      Ok(HttpResponse::Unauthorized().finish())
+  }
 
 #[utoipa::path(
     context_path = CONTEXT_PATH,
@@ -24,16 +44,11 @@ pub async fn signin(
     profile: web::Json<routes::UserCredentials>,
 ) -> impl Responder {
     if let Ok(Some(user)) = database.get_user_by_username(profile.username.clone()).await {
-        if let Ok(password) = PasswordHash::new(&user.password) {
-            if Argon2::default()
-                .verify_password(profile.password.as_bytes(), &password)
-                .is_ok()
-            {
-                if let Some(id) = user.id {
-                    if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
-                        let cookie = utils::get_cookie_with_token(&token);
-                        return HttpResponse::Ok().cookie(cookie).body(token);
-                    }
+        if let Ok(true) = utils::verify_password(&profile.password, &user.password) {
+            if let Some(id) = user.id {
+                if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
+                    let cookie = utils::get_cookie_with_token(&token);
+                    return HttpResponse::Ok().cookie(cookie).body(token);
                 }
             }
         }
@@ -61,7 +76,7 @@ pub async fn register(
         return Ok(HttpResponse::Unauthorized().body("Invalid"));
     }
 
-    if let Ok(hash) = utils::get_hash!(user.password) {
+    if let Ok(hash) = utils::hash_password(&user.password) {
         if let Ok(None) = database.get_user_by_email(user.email.clone()).await {
             let ip = req.peer_addr().map(|addr| addr.ip());
             log::debug!("IP: {:?}", ip);
@@ -75,7 +90,7 @@ pub async fn register(
                 .flatten();
 
             let player_id = database
-                .create_player()
+                .create_player(models::Player::default())
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
@@ -83,6 +98,7 @@ pub async fn register(
             user.password = hash.to_string();
             user.os = os;
             user.player_id = player_id;
+            user.role_id = models::RoleType::User.to_string();
 
             let config = IpInfoConfig {
                 token: Some(CONFIG.ipinfo_token.clone()),

@@ -1,9 +1,12 @@
+import * as React from "react"
 import {
   ColumnDef,
+  SortingState,
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+  getSortedRowModel
+} from "@tanstack/react-table"
 
 import {
   Table,
@@ -17,8 +20,8 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  setUserId: React.Dispatch<React.SetStateAction<string | null>>;
-  setUserInfo: React.Dispatch<React.SetStateAction<TValue | null>>;
+  setUserId?: React.Dispatch<React.SetStateAction<string | null>>;
+  setUserInfo?: React.Dispatch<React.SetStateAction<TValue | null>>;
 }
 
 export function DataTable<TData, TValue>({
@@ -27,15 +30,26 @@ export function DataTable<TData, TValue>({
   setUserId,
   setUserInfo
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([])
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    enableMultiSort: true,
+    enableSortingRemoval: false,
+    state: {
+      sorting,
+    },
   });
 
   function getInfo(data: TData) {
-    setUserId((data as any).id);
-    setUserInfo(data as any);
+    if (setUserId && setUserInfo) {
+      setUserId((data as any).id);
+      setUserInfo(data as any);
+    }
   }
 
   return (

@@ -1,8 +1,4 @@
 use crate::{database::Database, models, utils};
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
-    Argon2,
-};
 use fake::{
     faker::{address, internet},
     Fake,
@@ -16,10 +12,12 @@ async fn create_users() {
     let mut futures = Vec::new();
     let database = Database::new();
 
-    for _ in 0..10 {
+    for _ in 0..100 {
         let database = database.clone();
         futures.push(async move {
-            let player_id = database.create_player().await.unwrap();
+            let mut new_player = models::Player::default();
+            new_player.time_in_game = (0.0..=1000.0).fake();
+            let player_id = database.create_player(new_player).await.unwrap();
             let password: String = internet::en::Password(Range { start: 8, end: 16 }).fake();
 
             let mut rng = rand::thread_rng();
@@ -33,16 +31,23 @@ async fn create_users() {
                 user_type,
                 username: internet::en::Username().fake(),
                 email: internet::en::SafeEmail().fake(),
-                password: utils::get_hash!(password).unwrap().to_string(),
+                password: utils::hash_password(&password).unwrap().to_string(),
                 gender,
                 os: utils::get_os(internet::en::UserAgent().fake()),
                 player_id,
                 latitude: address::en::Latitude().fake(),
                 longitude: address::en::Longitude().fake(),
                 year_of_birth: (1920..=2003).fake(),
+                role_id: models::RoleType::User.to_string(),
             };
 
-            database.create_user(user).await.unwrap();
+            let user_id = database.create_user(user).await.unwrap();
+
+            for _ in 0..(0..=20).fake() {
+                let mut session = models::Session::new(user_id);
+                session.created_at = session.created_at - chrono::Duration::days((0..=30).fake());
+                database.upsert_session(session).await.unwrap();
+            }
         });
     }
 

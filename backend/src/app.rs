@@ -1,44 +1,21 @@
 use crate::{
-    bank, config::CONFIG, database::Database, docs::ApiDoc, middlewares, models, routes, socket,
-    socket::server::Server, utils,
+    bank,
+    config::{self, CONFIG},
+    database::Database,
+    docs::ApiDoc,
+    middlewares, routes, socket,
+    socket::server::Server,
 };
 use actix_cors::Cors;
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
 use ip2location::DB;
-use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
 use std::sync::{atomic::AtomicUsize, Arc, Mutex};
 use tokio::sync::broadcast;
 use utoipa::OpenApi;
 
 const IPV6BIN: &str = "assets/IP2LOCATION-LITE-DB5.IPV6.BIN";
-
-fn get_ssl_acceptor() -> anyhow::Result<SslAcceptorBuilder> {
-    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls())?;
-    builder.set_private_key_file("cert/key.pem", SslFiletype::PEM)?;
-    builder.set_certificate_chain_file("cert/cert.pem")?;
-    Ok(builder)
-}
-
-async fn create_default_admin(database: &Database) {
-    if let Ok(None) = database
-        .get_admin_by_email(CONFIG.admin_default_email.clone())
-        .await
-    {
-        if let Ok(password) = utils::get_hash_in_string(&CONFIG.admin_default_password) {
-            let admin = models::Admin {
-                id: None,
-                email: CONFIG.admin_default_email.clone(),
-                password
-            };
-
-            if let Ok(_) = database.create_admin(admin).await {
-                log::info!("Default admin created");
-            }
-        }
-    }
-}
 
 pub async fn app() -> std::io::Result<()> {
     // Create a channel for the viewer
@@ -62,8 +39,8 @@ pub async fn app() -> std::io::Result<()> {
     let database = Database::new();
     log::info!("Database connected");
 
-    // Create the default admin
-    create_default_admin(&database).await;
+    // Setup the database
+    let default_admin_id = config::database::setup(&database).await;
 
     // Create the socket server
     let (mut socket_server, server_tx) = Server::new(bank, database.clone());
@@ -85,6 +62,7 @@ pub async fn app() -> std::io::Result<()> {
 
         App::new()
             .wrap(cors)
+            .app_data(web::Data::new(default_admin_id))
             .app_data(web::Data::new(location_db.clone()))
             .app_data(web::Data::new(database.clone()))
             .app_data(web::Data::new(server_tx.clone()))
@@ -110,7 +88,12 @@ pub async fn app() -> std::io::Result<()> {
                         web::scope("/auth")
                             .service(routes::auth::signin)
                             .service(routes::auth::register)
-                            .service(routes::auth::signout),
+                            .service(routes::auth::signout)
+                            .service(
+                                web::scope("")
+                                    .wrap(from_fn(middlewares::user_auth))
+                                    .service(routes::auth::auth),
+                            ),
                     )
                     .service(
                         web::scope("/admin")
@@ -121,6 +104,7 @@ pub async fn app() -> std::io::Result<()> {
                                     .service(
                                         web::scope("")
                                             .wrap(from_fn(middlewares::admin_auth))
+                                            .service(routes::admin::auth::register)
                                             .service(routes::admin::auth::auth),
                                     ),
                             )
@@ -129,25 +113,64 @@ pub async fn app() -> std::io::Result<()> {
                                     .wrap(from_fn(middlewares::admin_auth))
                                     .service(routes::admin::docs::api)
                                     .service(
+                                        web::scope("/admins")
+                                            .service(routes::admin::admins::delete_admin)
+                                            .service(routes::admin::admins::get_admins),
+                                    )
+                                    .service(
                                         web::scope("/user")
                                             .service(routes::admin::user::get_user_statistics)
                                             .service(routes::admin::user::get_user),
                                     )
                                     .service(
                                         web::scope("/users")
-                                            .service(routes::admin::users::get_users),
+                                            .service(routes::admin::users::get_users)
+                                            .service(routes::admin::users::get_user_types)
+                                            .service(routes::admin::users::get_user_count_by_type)
+                                            .service(routes::admin::users::get_user_genders)
+                                            .service(routes::admin::users::get_user_count_by_gender)
+                                            .service(routes::admin::users::get_user_count_by_age_range)
+                                            .service(routes::admin::users::get_user_locations_by_type)
+                                            .service(routes::admin::users::get_average_age)
+                                            .service(routes::admin::users::get_average_sessions)
+                                            .service(routes::admin::users::get_average_time_in_game),
                                     )
                                     .service(
                                         web::scope("/player")
                                             .service(routes::admin::player::get_player),
                                     )
                                     .service(
+                                        web::scope("/mail")
+                                            .service(routes::admin::mail::send_emails)
+                                            .service(routes::admin::mail::get_user_count_by_user_filter),
+                                    )
+                                    .service(
                                         web::scope("/players")
-                                            .service(routes::admin::players::get_players_count),
+                                            .service(routes::admin::players::get_players_count)
+                                            .service(routes::admin::players::get_average_time_in_game),
                                     )
                                     .service(
                                         web::scope("/data")
-                                            .service(routes::admin::data::create_crop_type),
+                                            .service(routes::admin::data::create_crop_type)
+                                            .service(routes::admin::data::get_crop_type)
+                                            .service(routes::admin::data::get_tips)
+                                            .service(routes::admin::data::create_tip)
+                                            .service(routes::admin::data::update_tip)
+                                            .service(routes::admin::data::delete_tip)
+                                            .service(routes::admin::data::get_crop_types)
+                                            .service(routes::admin::data::update_crop_type_description)
+                                            .service(routes::admin::data::update_crop_type_price)
+                                            .service(routes::admin::data::update_crop_type_duration)
+                                    )
+                                    .service(
+                                        web::scope("/permissions")
+                                            .service(routes::admin::permissions::get_permissions)
+                                            .service(routes::admin::permissions::get_permission_types)
+                                            .service(
+                                                routes::admin::permissions::get_permissions_by_admin_id,
+                                            )
+                                            .service(routes::admin::permissions::add_permission)
+                                            .service(routes::admin::permissions::delete_permission),
                                     ),
                             ),
                     ),
@@ -161,7 +184,7 @@ pub async fn app() -> std::io::Result<()> {
     });
 
     // SSL configuration
-    let server = if let Ok(builder) = get_ssl_acceptor() {
+    let server = if let Ok(builder) = config::ssl::get_ssl_acceptor() {
         log::info!("SSL configuration loaded");
         log::info!("Server running at https://{}", &CONFIG.address);
         server.bind_openssl(&CONFIG.address, builder)?

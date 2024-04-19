@@ -13,6 +13,7 @@ public class Connection : MonoBehaviour
     async void Start()
     {
         string token = Context.Instance.AuthToken;
+        Debug.Log("Token: " + token);
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("token", token);
         websocket = new WebSocket("ws://localhost:8080/ws/", headers);
@@ -41,11 +42,11 @@ public class Connection : MonoBehaviour
             {
                 case "Init":
                     State.Instance.scoreText.text = data["current_score"].ToString();
-                    State.Instance.cashText.text = data["balance_cash"].ToString();
                     State.Instance.verqorText.text = data["balance_verqor"].ToString();
                     State.Instance.coyoteText.text = data["balance_coyote"].ToString();
+                    State.Instance.cashText.text = data["balance_cash"].ToString();
                     break;
-                    // Add more cases hereb
+                    // Add more cases here
             }
         };
 
