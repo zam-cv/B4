@@ -6,11 +6,33 @@ using Newtonsoft.Json;
 
 using NativeWebSocket;
 
+public struct Player
+{
+    public float current_score;
+    public int balance_verqor;
+    public int balance_coyote;
+    public int balance_cash;
+}
 public class Connection : MonoBehaviour
 {
     WebSocket websocket;
 
-    async void Start()
+
+    struct CycleResolved
+    {
+        public string type;
+        public List<string> events;
+        public Player player;
+        public string tip;
+    }
+
+
+    void Start()
+    {
+        StartAsync();
+    }
+
+    async void StartAsync()
     {
         string token = Context.Instance.AuthToken;
         Debug.Log("Token: " + token);
@@ -30,7 +52,7 @@ public class Connection : MonoBehaviour
 
         websocket.OnClose += (e) =>
         {
-            Debug.Log("Connection closed!");
+            Debug.Log("Connection closed!" + e);
         };
 
         websocket.OnMessage += (bytes) =>
@@ -41,10 +63,18 @@ public class Connection : MonoBehaviour
             switch (data["type"].ToString())
             {
                 case "Init":
-                    State.Instance.scoreText.text = data["current_score"].ToString();
-                    State.Instance.verqorText.text = data["balance_verqor"].ToString();
-                    State.Instance.coyoteText.text = data["balance_coyote"].ToString();
-                    State.Instance.cashText.text = data["balance_cash"].ToString();
+                    Player player = JsonConvert.DeserializeObject<Player>(message);
+                    
+                    gameObject.GetComponent<State>().SetState(player);
+
+                    break;
+                case "CycleResolved":
+                    Debug.Log(message);
+                    CycleResolved cycleResolved = JsonConvert.DeserializeObject<CycleResolved>(message);
+                    Debug.Log(cycleResolved.events[0]);
+                    gameObject.GetComponent<State>().SetState(cycleResolved.player);
+
+
                     break;
                     // Add more cases here
             }
@@ -80,4 +110,30 @@ public class Connection : MonoBehaviour
     {
         await websocket.Close();
     }
+
+
+    // Crear una funcion asincrona para hacer un ciclo
+    // La funcion envia un json al socket y recibe otro json
+    public async void HacerCiclo()
+    {
+        // Verifica que la conexión esté abierta antes de enviar el mensaje
+        if (websocket.State == WebSocketState.Open)
+        {
+            // Crear el mensaje JSON para enviar
+            var messageData = new Dictionary<string, object>
+            {
+                {"type", "Cycle"},
+                {"duration", 12}
+            };
+            string jsonMessage = JsonConvert.SerializeObject(messageData);
+
+            // Enviar el mensaje JSON
+            await websocket.SendText(jsonMessage);
+        }
+        else
+        {
+            Debug.Log("WebSocket no está conectado.");
+        }
+    }
+
 }
