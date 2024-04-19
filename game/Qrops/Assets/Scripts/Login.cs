@@ -11,7 +11,8 @@ public class Login : MonoBehaviour
 
     [SerializeField] private TMP_InputField password;
 
-    [System.Serializable] public struct UserData
+    [System.Serializable]
+    public struct UserData
     {
         public string username;
         public string password;
@@ -20,7 +21,7 @@ public class Login : MonoBehaviour
     void Start()
     {
         // Para borrar el token de la sesión para probar login
-        // PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
 
         if (PlayerPrefs.HasKey("token"))
         {
@@ -51,6 +52,7 @@ public class Login : MonoBehaviour
         {
             // Token es válido
             Debug.Log("Token validado con éxito: " + request.downloadHandler.text);
+            Context.Instance.AuthToken = token;
             SceneManager.LoadScene("Game");
         }
         else
@@ -72,28 +74,28 @@ public class Login : MonoBehaviour
         user.password = password.text.ToString();
 
         string json = JsonUtility.ToJson(user);
-        
-            UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
 
-            yield return request.SendWebRequest();
+        UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
 
-            print(json);
-            
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                string token = request.downloadHandler.text;
-                // Context.Instance.AuthToken = token;
+        yield return request.SendWebRequest();
 
-                PlayerPrefs.SetString("token", token);
-                PlayerPrefs.Save();
+        print(json);
 
-                SceneManager.LoadScene("Game");
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            string token = request.downloadHandler.text;
+            Context.Instance.AuthToken = token;
 
-            }
-            else
-            {
-                print("ERROR: " + request.error);
-            }
+            PlayerPrefs.SetString("token", token);
+            PlayerPrefs.Save();
+
+            SceneManager.LoadScene("Game");
+
+        }
+        else
+        {
+            print("ERROR: " + request.error);
+        }
     }
 
     public void GoToSignUp()
