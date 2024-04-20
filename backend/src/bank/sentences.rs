@@ -1,3 +1,4 @@
+use crate::models;
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
@@ -8,7 +9,8 @@ lazy_static! {
     static ref VARIABLES_REGEX: Regex = Regex::new(r"\$\{.*?\}").unwrap();
     static ref IDENT_REGEX: Regex = Regex::new(r"^[a-zA-Z_][a-zA-Z0-9_]*$").unwrap();
     static ref NUMBER_REGEX: Regex = Regex::new(r"^-?\d+(\.\d+)?$").unwrap();
-    static ref STRING_REGEX: Regex = Regex::new(r#"^"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'$"#).unwrap();
+    static ref STRING_REGEX: Regex =
+        Regex::new(r#"^"([^"\\]*(\\.[^"\\]*)*)"|'([^'\\]*(\\.[^'\\]*)*)'$"#).unwrap();
 }
 
 #[derive(Deserialize)]
@@ -23,17 +25,17 @@ pub struct RawSentence {
 pub struct RawSentences {
     pub positive: Vec<RawSentence>,
     pub negative: Vec<RawSentence>,
-    pub default: Vec<RawSentence>
+    pub default: Vec<RawSentence>,
 }
 
 #[derive(Debug)]
-pub enum Argument {
-    Number(&'static str),
-    String(&'static str),
-    Ident(&'static str),
+pub enum Argument<'a> {
+    Number(&'a str),
+    String(&'a str),
+    Ident(&'a str),
 }
 
-impl Argument {
+impl<'a> Argument<'a> {
     pub fn to_string(&self) -> String {
         match self {
             Argument::Number(n) => n.to_string(),
@@ -44,32 +46,25 @@ impl Argument {
 }
 
 #[derive(Debug)]
-pub struct Function {
-    pub name: &'static str,
-    pub args: Vec<Argument>,
+pub struct Function<'a> {
+    pub name: &'a str,
+    pub args: Vec<Argument<'a>>,
 }
 
 #[derive(Debug)]
-pub enum SentenceFragment {
-    Variable(&'static str),
-    Text(&'static str),
+pub enum SentenceFragment<'a> {
+    Variable(&'a str),
+    Text(&'a str),
 }
 
 #[derive(Debug)]
 pub struct Sentence {
-    pub getters: HashMap<&'static str, Function>,
-    pub value: Vec<SentenceFragment>,
-    pub handlers: Vec<Function>,
+    pub getters: Vec<models::Function>,
+    pub event: models::Event,
+    pub handlers: Vec<models::Function>,
 }
 
-#[derive(Debug)]
-pub struct Sentences {
-    pub positive: Vec<Sentence>,
-    pub negative: Vec<Sentence>,
-    pub default: Vec<Sentence>
-}
-
-fn get_function(function: &'static str) -> Function {
+pub fn get_function<'a>(function: &'a str) -> Function<'a> {
     let captures = FUNCTION_REGEX.captures(function).unwrap();
     let name = captures.get(1).map_or("", |m| m.as_str());
 
@@ -83,7 +78,7 @@ fn get_function(function: &'static str) -> Function {
             if NUMBER_REGEX.is_match(arg) {
                 Argument::Number(arg)
             } else if STRING_REGEX.is_match(arg) {
-                Argument::String(&arg[1..arg.len()-1])
+                Argument::String(&arg[1..arg.len() - 1])
             } else if IDENT_REGEX.is_match(arg) {
                 Argument::Ident(arg)
             } else {
@@ -95,65 +90,29 @@ fn get_function(function: &'static str) -> Function {
     Function { name, args }
 }
 
-fn raw_sentence_to_sentence(raw: RawSentence) -> Sentence {
-    let getters = raw
-        .getters
-        .into_iter()
-        .map(|(key, value)| (key, get_function(value)))
-        .collect();
-
-    let handlers = raw.handlers.into_iter().map(get_function).collect();
-    let mut value = Vec::new();
-
-    // finds the positions of the variables and cuts the text
+pub fn get_fragments<'a>(value: &'a str) -> Vec<SentenceFragment> {
+    let mut fragments = Vec::new();
     let mut last = 0;
-    for captures in VARIABLES_REGEX.captures_iter(raw.value) {
-        let start = captures.get(0).unwrap().start();
-        let end = captures.get(0).unwrap().end();
 
-        if start > last {
-            value.push(SentenceFragment::Text(&raw.value[last..start]));
+    for captures in VARIABLES_REGEX.captures_iter(value) {
+        if let (Some(start), Some(end)) = (captures.get(0), captures.get(0)) {
+            let start = start.start();
+            let end = end.end();
+
+            if start > last {
+                fragments.push(SentenceFragment::Text(&value[last..start]));
+            }
+
+            fragments.push(SentenceFragment::Variable(&value[start + 2..end - 1]));
+            last = end;
         }
-
-        value.push(SentenceFragment::Variable(&raw.value[start + 2..end - 1]));
-        last = end;
     }
 
-    if last < raw.value.len() {
-        value.push(SentenceFragment::Text(&raw.value[last..]));
+    if last < value.len() {
+        fragments.push(SentenceFragment::Text(&value[last..]));
     }
 
-    Sentence {
-        getters,
-        value,
-        handlers,
-    }
-}
-
-pub fn raw_sentences_to_sentences(raw: RawSentences) -> Sentences {
-    let positive: Vec<Sentence> = raw
-        .positive
-        .into_iter()
-        .map(raw_sentence_to_sentence)
-        .collect();
-
-    let negative: Vec<Sentence> = raw
-        .negative
-        .into_iter()
-        .map(raw_sentence_to_sentence)
-        .collect();
-
-    let default: Vec<Sentence> = raw
-        .default
-        .into_iter()
-        .map(raw_sentence_to_sentence)
-        .collect();
-
-    Sentences {
-        positive,
-        negative,
-        default
-    }
+    fragments
 }
 
 macro_rules! build_function_map {

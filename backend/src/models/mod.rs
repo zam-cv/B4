@@ -50,7 +50,7 @@ pub struct Insurance {
     pub loan_id: i32,
 }
 
-#[derive(Eq, PartialEq, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[derive(Serialize, ToSchema, Queryable, Selectable, Identifiable, Insertable, Associations)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -61,7 +61,7 @@ pub struct Statistic {
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
     pub cycle: i32,
-    pub score: i32,
+    pub score: f64,
     #[serde(skip_serializing)]
     pub player_id: i32,
 }
@@ -71,6 +71,17 @@ impl Hash for Statistic {
         self.id.hash(state);
     }
 }
+
+impl PartialEq for Statistic {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id &&
+        self.cycle == other.cycle &&
+        (self.score - other.score).abs() < 0.00001 &&
+        self.player_id == other.player_id
+    }
+}
+
+impl Eq for Statistic {}
 
 #[derive(Deserialize, Validate, ToSchema, Serialize, Clone)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, AsChangeset)]

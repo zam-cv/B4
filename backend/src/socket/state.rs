@@ -1,5 +1,5 @@
 use crate::{
-    bank::{Bank, core::ResolveCycleData},
+    bank::{core::ResolveCycleData, Bank},
     database::Database,
     models,
     socket::{
@@ -92,18 +92,21 @@ impl State {
             session: &self.session,
         };
 
-        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context).await;
+        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context).await?;
+        let new_player = resolve_cycle_data.player.clone();
         self.player.current_cycle += 1;
         self.send(Response::CycleResolved(resolve_cycle_data))?;
 
-        database
-            .create_statistics(models::Statistic {
-                id: None,
-                cycle: self.player.current_cycle,
-                score: 5,
-                player_id: self.player.id.unwrap_or_default(),
-            })
-            .await?;
+        if let Some(player_id) = self.player.id {
+            database
+                .create_statistics(models::Statistic {
+                    id: None,
+                    cycle: self.player.current_cycle,
+                    score: new_player.current_score,
+                    player_id,
+                })
+                .await?;
+        }
 
         Ok(())
     }

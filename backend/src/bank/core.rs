@@ -2,14 +2,14 @@ use crate::{
     bank::{
         getters, handlers,
         sentences::{
-            build_function_map, raw_sentences_to_sentences, Argument, Function, RawSentences,
-            Sentence, SentenceFragment, Sentences,
+            build_function_map, get_fragments, get_function, Argument, Sentence, SentenceFragment,
         },
-    }, config, models, socket::{context::Context, state::CycleData}
+    },
+    config, models,
+    socket::{context::Context, state::CycleData},
 };
 use anyhow::Result;
 use lazy_static::lazy_static;
-use rand::Rng;
 use regex::Regex;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -18,7 +18,6 @@ type Getter = fn(&mut Context, Vec<String>) -> Result<String>;
 type Handler = fn(&mut Context, Vec<String>) -> Result<()>;
 
 const NUMBER_OF_RANDOM_EVENTS: usize = 1;
-const SENTENCES: &str = include_str!("../../assets/sentences.json");
 
 lazy_static! {
     static ref IDENT_REGEX: Regex = Regex::new(r"^[a-zA-Z_][a-zA-Z0-9_]*$").unwrap();
@@ -26,62 +25,56 @@ lazy_static! {
 
 #[derive(Serialize)]
 pub struct ResolveCycleData {
-    events: Vec<String>,
-    player: models::Player,
-    tip: Option<String>,
+    pub events: Vec<String>,
+    pub player: models::Player,
+    pub tip: Option<String>,
 }
 
 pub struct Bank {
     pub getters: HashMap<&'static str, Getter>,
     pub handlers: HashMap<&'static str, Handler>,
-    pub sentences: Sentences,
 }
 
 impl Bank {
     pub fn new() -> Self {
-        let sentences: RawSentences = serde_json::from_str(SENTENCES).unwrap();
-        let sentences = raw_sentences_to_sentences(sentences);
         let getters = build_function_map!(Getter, getters, get_money, get_value_random);
         let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money);
 
-        Bank {
-            sentences,
-            getters,
-            handlers,
-        }
+        Bank { getters, handlers }
     }
 
     fn get_variables_from_getters(
         &self,
         context: &mut Context,
-        map: &mut HashMap<&'static str, Result<String>>,
-        methods: &HashMap<&'static str, Function>,
+        variables: &mut HashMap<String, Result<String>>,
+        methods: &Vec<models::Function>,
     ) {
-        map.clear();
-        for (variable_name, function) in methods {
-            if let Some(callback) = self.getters.get(function.name) {
-                map.insert(
-                    variable_name,
-                    callback(
-                        context,
-                        function.args.iter().map(|s| s.to_string()).collect(),
-                    ),
-                );
+        variables.clear();
+        for function in methods {
+            let func = get_function(&function.function.as_str());
+
+            if let Some(callback) = self.getters.get(func.name) {
+                if let Some(key) = &function.key {
+                    variables.insert(
+                        key.clone(),
+                        callback(context, func.args.iter().map(|s| s.to_string()).collect()),
+                    );
+                }
             }
         }
     }
 
     fn get_message_from_sentence(
         sentence: &Sentence,
-        variables: &HashMap<&str, Result<String>>,
+        variables: &HashMap<String, Result<String>>,
     ) -> String {
         let mut message = String::new();
 
-        for fragment in &sentence.value {
+        for fragment in &get_fragments(&sentence.event.content) {
             match fragment {
                 SentenceFragment::Text(text) => message.push_str(text),
                 SentenceFragment::Variable(variable) => {
-                    if let Some(Ok(value)) = variables.get(variable) {
+                    if let Some(Ok(value)) = variables.get(&variable.to_string()) {
                         message.push_str(value);
                     } else {
                         message.push_str(variable);
@@ -96,17 +89,19 @@ impl Bank {
     fn handle_event(
         &self,
         context: &mut Context,
-        sentence: &Sentence,
-        variables: &HashMap<&str, Result<String>>,
+        methods: &Vec<models::Function>,
+        variables: &HashMap<String, Result<String>>,
     ) {
-        for handler in &sentence.handlers {
-            if let Some(callback) = self.handlers.get(handler.name) {
-                let args: Vec<String> = handler
+        for handler in methods {
+            let func = get_function(&handler.function.as_str());
+
+            if let Some(callback) = self.handlers.get(func.name) {
+                let args = func
                     .args
                     .iter()
                     .map(|arg| match arg {
                         Argument::Ident(ident) => {
-                            if let Some(Ok(value)) = variables.get(ident) {
+                            if let Some(Ok(value)) = variables.get(&ident.to_string()) {
                                 value.clone()
                             } else {
                                 "".to_string()
@@ -124,9 +119,9 @@ impl Bank {
 
     fn handle_sentence<'a>(
         &self,
-        sentence: &Sentence,
-        context: &mut Context<'a>,
-        variables: &mut HashMap<&'static str, Result<String>>,
+        sentence: Sentence,
+        context: &mut Context,
+        variables: &mut HashMap<String, Result<String>>,
     ) -> String {
         // obtains the values ​​of the variables for getters
         self.get_variables_from_getters(context, variables, &sentence.getters);
@@ -135,37 +130,76 @@ impl Bank {
         let message = Bank::get_message_from_sentence(&sentence, &variables);
 
         // handle the event
-        self.handle_event(context, &sentence, &variables);
+        self.handle_event(context, &sentence.handlers, &variables);
 
         message
+    }
+
+    async fn get_message<'a>(
+        &self,
+        context: &mut Context<'a>,
+        event: models::Event,
+        variables: &mut HashMap<String, Result<String>>,
+    ) -> Result<Option<String>> {
+        if let Some(id) = event.id {
+            let getters = context
+                .database
+                .get_getter_functions_by_event_id(id)
+                .await?;
+
+            let handlers = context
+                .database
+                .get_handler_functions_by_event_id(id)
+                .await?;
+
+            let message = self.handle_sentence(
+                Sentence {
+                    getters,
+                    event,
+                    handlers,
+                },
+                context,
+                variables,
+            );
+
+            return Ok(Some(message));
+        }
+
+        anyhow::bail!("Event not found")
     }
 
     pub async fn handle_cycle<'a>(
         &self,
         _: &'a CycleData,
         mut context: Context<'a>,
-    ) -> ResolveCycleData {
-        // let initial_state_player = context.player.clone();
+    ) -> anyhow::Result<ResolveCycleData> {
         let mut events = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
-        let random_events = [&self.sentences.positive, &self.sentences.negative];
         let mut variables = HashMap::new();
 
-        for _ in 0..NUMBER_OF_RANDOM_EVENTS {
-            // choose a positive or negative event
-            let index = rand::thread_rng().gen_range(0..=1);
-            let event: &Vec<Sentence> = random_events[index];
+        let random_events = context
+            .database
+            .get_random_events(NUMBER_OF_RANDOM_EVENTS as i64)
+            .await?;
 
-            // choose a random sentence
-            let sentence = &event[rand::thread_rng().gen_range(0..event.len())];
-
-            let message = self.handle_sentence(&sentence, &mut context, &mut variables);
-            events.push(message);
+        for event in random_events {
+            if let Some(message) = self
+                .get_message(&mut context, event, &mut variables)
+                .await?
+            {
+                events.push(message);
+            }
         }
 
-        // default event
-        for sentence in &self.sentences.default {
-            let message = self.handle_sentence(&sentence, &mut context, &mut variables);
-            events.push(message);
+        // default events
+        let default_events = context.database.get_default_events().await?;
+
+        for event in default_events {
+            if let Some(message) = self
+                .get_message(&mut context, event, &mut variables)
+                .await?
+            {
+                events.push(message);
+            }
         }
 
         // choose a random tip
@@ -183,7 +217,6 @@ impl Bank {
             None
         };
 
-        
         let max_change = context.player.max_change;
         let change = context.player.balance_cash * config::CASH_WEIGHT
             + context.player.balance_verqor * config::VERQOR_WEIGHT
@@ -195,11 +228,11 @@ impl Bank {
         } else {
             context.player.current_score = change as f64 / max_change as f64;
         }
-        
-        ResolveCycleData {
+
+        Ok(ResolveCycleData {
             events,
             player: context.player.clone(),
             tip,
-        }
+        })
     }
 }

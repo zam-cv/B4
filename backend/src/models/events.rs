@@ -32,8 +32,8 @@ pub struct Function {
     pub id: Option<i32>,
     pub function_type: FunctionType,
     pub event_id: i32,
-    pub key: String,
-    pub function: Option<String>,
+    pub key: Option<String>,
+    pub function: String,
 }
 
 #[derive(Debug)]

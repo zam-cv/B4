@@ -965,6 +965,56 @@ impl Database {
         .await
     }
 
+    pub async fn get_random_events(&self, count: i64) -> anyhow::Result<Vec<models::Event>> {
+        // TODO: make more efficient
+        self.query_wrapper(move |conn| {
+            let result = schema::events::table
+                // not get default events
+                .filter(schema::events::event_type.ne(models::EventType::Default))
+                .order(diesel::dsl::sql::<diesel::sql_types::Text>("RAND()"))
+                .limit(count)
+                .load::<models::Event>(conn)?;
+
+            Ok(result)
+        })
+        .await
+    }
+
+    pub async fn get_default_events(&self) -> anyhow::Result<Vec<models::Event>> {
+        self.query_wrapper(move |conn| {
+            schema::events::table
+                .filter(schema::events::event_type.eq(models::EventType::Default))
+                .load::<models::Event>(conn)
+        })
+        .await
+    }
+
+    pub async fn get_getter_functions_by_event_id(
+        &self,
+        event_id: i32,
+    ) -> anyhow::Result<Vec<models::Function>> {
+        self.query_wrapper(move |conn| {
+            schema::functions::table
+                .filter(schema::functions::event_id.eq(event_id))
+                .filter(schema::functions::function_type.eq(models::FunctionType::Getter))
+                .load::<models::Function>(conn)
+        })
+        .await
+    }
+
+    pub async fn get_handler_functions_by_event_id(
+        &self,
+        event_id: i32,
+    ) -> anyhow::Result<Vec<models::Function>> {
+        self.query_wrapper(move |conn| {
+            schema::functions::table
+                .filter(schema::functions::event_id.eq(event_id))
+                .filter(schema::functions::function_type.eq(models::FunctionType::Handler))
+                .load::<models::Function>(conn)
+        })
+        .await
+    }
+
     pub async fn exists_event_by_type_and_content(
         &self,
         event_type: models::EventType,
@@ -1030,11 +1080,12 @@ impl Database {
                     models::Function,
                     models::Value,
                 )>(conn)?;
-            
+
             let mut statistics = HashMap::new();
 
             for (statistic, event, function, value) in data {
-                statistics.entry(statistic)
+                statistics
+                    .entry(statistic)
                     .or_insert_with(Vec::new)
                     .push((event, function, value));
             }
@@ -1045,7 +1096,8 @@ impl Database {
                 let mut events = HashMap::new();
 
                 for (event, function, value) in data {
-                    events.entry(event)
+                    events
+                        .entry(event)
                         .or_insert_with(Vec::new)
                         .push((function, value));
                 }

@@ -91,7 +91,7 @@ CREATE TABLE `insurance`(
 CREATE TABLE `statistics`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`cycle` INTEGER NOT NULL,
-	`score` INTEGER NOT NULL,
+	`score` FLOAT4(30) NOT NULL,
 	`player_id` INTEGER NOT NULL,
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
 );
@@ -142,8 +142,8 @@ CREATE TABLE `functions`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`function_type` ENUM('getter', 'handler') NOT NULL,
 	`event_id` INTEGER NOT NULL,
-	`key` VARCHAR(50) NOT NULL,
-	`function` VARCHAR(50),
+	`key` VARCHAR(50),
+	`function` VARCHAR(50) NOT NULL,
 	FOREIGN KEY (`event_id`) REFERENCES `events`(`id`)
 );
 

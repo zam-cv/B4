@@ -167,8 +167,8 @@ pub async fn set_sentences(
                         id: None,
                         function_type: models::FunctionType::Getter,
                         event_id,
-                        key: key.to_string(),
-                        function: Some(val.to_string()),
+                        key: Some(key.to_string()),
+                        function: val.to_string(),
                     })
                     .await?;
             }
@@ -180,8 +180,8 @@ pub async fn set_sentences(
                         id: None,
                         function_type: models::FunctionType::Handler,
                         event_id,
-                        key: handler.to_string(),
-                        function: None,
+                        key: None,
+                        function: handler.to_string(),
                     })
                     .await?;
             }

@@ -94,7 +94,7 @@ diesel::table! {
     statistics (id) {
         id -> Integer,
         cycle -> Integer,
-        score -> Integer,
+        score -> Double,
         player_id -> Integer,
     }
 }
@@ -221,9 +221,9 @@ diesel::table! {
         function_type -> FunctionType,
         event_id -> Integer,
         #[max_length = 50]
-        key -> Varchar,
+        key -> Nullable<Varchar>,
         #[max_length = 50]
-        function -> Nullable<Varchar>,
+        function -> Varchar,
     }
 }
 
