@@ -3,6 +3,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Admins from "@/components/Admins";
 import Tips from "@/components/Tips";
 import CropsTypes from "@/components/CropsTypes";
@@ -16,17 +17,25 @@ export default function Edition() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50}>
-          <ResizablePanelGroup
-            direction="vertical"
+          <Tabs
+            defaultValue="tips"
+            className="w-full h-full grid grid-rows-[auto_1fr]"
           >
-            <ResizablePanel defaultSize={40}>
-              <CropsTypes />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={60}>
-              <Tips />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+            <div className="p-3">
+              <TabsList className="grid grid-cols-2">
+                <TabsTrigger value="tips">Tips</TabsTrigger>
+                <TabsTrigger value="crops">Cultivos</TabsTrigger>
+              </TabsList>
+            </div>
+            <div>
+              <TabsContent className="w-full h-full" value="tips">
+                <Tips />
+              </TabsContent>
+              <TabsContent className="w-full h-full" value="crops">
+                <CropsTypes />
+              </TabsContent>
+            </div>
+          </Tabs>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

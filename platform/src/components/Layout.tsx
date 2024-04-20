@@ -11,12 +11,12 @@ export default function Layout() {
   const { platform } = useContext(PlatformContext);
 
   return (
-    <div className="h-screen grid grid-rows-[auto_auto_1fr] overflow-hidden">
-      <div>{platform === "macos" && <Titlebar />}</div>
-      {isAuthenticated ? <Header /> : <div></div>}
-      <div className="overflow-y-scroll no-scrollbar h-full p-5">
-        {isAuthenticated ? <Outlet /> : <Login />}
+    <div className="h-full grid grid-rows-[auto_1fr] overflow-hidden">
+      <div>
+        <div>{platform === "macos" && <Titlebar />}</div>
+        {isAuthenticated ? <Header /> : <div></div>}
       </div>
+      <div className="p-5 overflow-auto">{isAuthenticated ? <Outlet /> : <Login />}</div>
     </div>
   );
 }

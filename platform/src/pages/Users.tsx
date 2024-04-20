@@ -64,7 +64,7 @@ export default function Users() {
           <div className="text-gray-500 font-bold text-lg">inactivos</div>
         </div>
       </div>
-      <div className="p-5">
+      <div className="pt-5">
         <ResizablePanelGroup
           direction="horizontal"
           className="rounded-lg border"

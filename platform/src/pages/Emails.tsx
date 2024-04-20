@@ -157,7 +157,7 @@ export default function Emails() {
 
   return (
     <div className="h-full">
-      <div className="p-5 flex flex-col gap-5 w-full h-full">
+      <div className="flex flex-col gap-5 w-full h-full">
         <div>
           <h1 className="text-2xl font-bold">
             Redacción de correo electrónico
