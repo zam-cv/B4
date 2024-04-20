@@ -450,15 +450,21 @@ impl Database {
         .await
     }
 
-    pub async fn create_statistics(&self, new_statistics: models::Statistic) -> anyhow::Result<()> {
+    pub async fn create_statistics(&self, new_statistics: models::Statistic) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
-            diesel::insert_into(schema::statistics::table)
-                .values(&new_statistics)
-                .execute(conn)
-        })
-        .await?;
+            conn.transaction(|pooled| {
+                diesel::insert_into(schema::statistics::table)
+                    .values(&new_statistics)
+                    .execute(pooled)?;
 
-        Ok(())
+                // Get the last inserted id
+                schema::statistics::table
+                    .select(schema::statistics::id)
+                    .order(schema::statistics::id.desc())
+                    .first::<i32>(pooled)
+            })
+        })
+        .await
     }
 
     pub async fn unsert_crop_types(&self, crop_type: models::CropType) -> anyhow::Result<()> {
@@ -1108,5 +1114,16 @@ impl Database {
             Ok(result)
         })
         .await
+    }
+
+    pub async fn add_value(&self, new_value: models::Value) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::insert_into(schema::values::table)
+                .values(&new_value)
+                .execute(conn)
+        })
+        .await?;
+
+        Ok(())
     }
 }

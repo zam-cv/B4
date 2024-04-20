@@ -14,6 +14,8 @@ use regex::Regex;
 use serde::Serialize;
 use std::collections::HashMap;
 
+pub type Functions = Vec<(Vec<models::Function>, HashMap<String, Result<String>>)>;
+
 type Getter = fn(&mut Context, Vec<String>) -> Result<String>;
 type Handler = fn(&mut Context, Vec<String>) -> Result<()>;
 
@@ -49,7 +51,6 @@ impl Bank {
         variables: &mut HashMap<String, Result<String>>,
         methods: &Vec<models::Function>,
     ) {
-        variables.clear();
         for function in methods {
             let func = get_function(&function.function.as_str());
 
@@ -119,7 +120,7 @@ impl Bank {
 
     fn handle_sentence<'a>(
         &self,
-        sentence: Sentence,
+        sentence: &Sentence,
         context: &mut Context,
         variables: &mut HashMap<String, Result<String>>,
     ) -> String {
@@ -139,9 +140,14 @@ impl Bank {
         &self,
         context: &mut Context<'a>,
         event: models::Event,
-        variables: &mut HashMap<String, Result<String>>,
-    ) -> Result<Option<String>> {
+    ) -> Result<(
+        String,
+        Vec<models::Function>,
+        HashMap<String, Result<String>>,
+    )> {
         if let Some(id) = event.id {
+            let mut variables = HashMap::new();
+
             let getters = context
                 .database
                 .get_getter_functions_by_event_id(id)
@@ -152,17 +158,14 @@ impl Bank {
                 .get_handler_functions_by_event_id(id)
                 .await?;
 
-            let message = self.handle_sentence(
-                Sentence {
-                    getters,
-                    event,
-                    handlers,
-                },
-                context,
-                variables,
-            );
+            let sentence = Sentence {
+                getters,
+                event,
+                handlers,
+            };
 
-            return Ok(Some(message));
+            let message = self.handle_sentence(&sentence, context, &mut variables);
+            return Ok((message, sentence.getters, variables));
         }
 
         anyhow::bail!("Event not found")
@@ -172,9 +175,9 @@ impl Bank {
         &self,
         _: &'a CycleData,
         mut context: Context<'a>,
-    ) -> anyhow::Result<ResolveCycleData> {
+    ) -> anyhow::Result<(ResolveCycleData, Functions)> {
         let mut events = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
-        let mut variables = HashMap::new();
+        let mut functions = Vec::new();
 
         let random_events = context
             .database
@@ -182,24 +185,18 @@ impl Bank {
             .await?;
 
         for event in random_events {
-            if let Some(message) = self
-                .get_message(&mut context, event, &mut variables)
-                .await?
-            {
-                events.push(message);
-            }
+            let message = self.get_message(&mut context, event).await?;
+            events.push(message.0);
+            functions.push((message.1, message.2));
         }
 
         // default events
         let default_events = context.database.get_default_events().await?;
 
         for event in default_events {
-            if let Some(message) = self
-                .get_message(&mut context, event, &mut variables)
-                .await?
-            {
-                events.push(message);
-            }
+            let message = self.get_message(&mut context, event).await?;
+            events.push(message.0);
+            functions.push((message.1, message.2))
         }
 
         // choose a random tip
@@ -229,10 +226,13 @@ impl Bank {
             context.player.current_score = change as f64 / max_change as f64;
         }
 
-        Ok(ResolveCycleData {
-            events,
-            player: context.player.clone(),
-            tip,
-        })
+        Ok((
+            ResolveCycleData {
+                events,
+                player: context.player.clone(),
+                tip,
+            },
+            functions,
+        ))
     }
 }

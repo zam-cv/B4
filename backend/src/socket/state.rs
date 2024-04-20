@@ -92,13 +92,13 @@ impl State {
             session: &self.session,
         };
 
-        let resolve_cycle_data = bank.handle_cycle(&cycle_data, context).await?;
-        let new_player = resolve_cycle_data.player.clone();
+        let data = bank.handle_cycle(&cycle_data, context).await?;
+        let new_player = data.0.player.clone();
         self.player.current_cycle += 1;
-        self.send(Response::CycleResolved(resolve_cycle_data))?;
+        self.send(Response::CycleResolved(data.0))?;
 
         if let Some(player_id) = self.player.id {
-            database
+            let id = database
                 .create_statistics(models::Statistic {
                     id: None,
                     cycle: self.player.current_cycle,
@@ -106,6 +106,24 @@ impl State {
                     player_id,
                 })
                 .await?;
+
+            for functions in data.1 {
+                for function in functions.0 {
+                    if let Some(function_id) = function.id {
+                        if let Some(key) = &function.key {
+                            if let Some(Ok(value)) = functions.1.get(key) {
+                                database
+                                    .add_value(models::Value {
+                                        statistic_id: id,
+                                        function_id,
+                                        content: value.clone(),
+                                    })
+                                    .await?;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         Ok(())
