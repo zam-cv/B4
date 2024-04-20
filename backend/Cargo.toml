@@ -5,6 +5,8 @@ name = "backend"
 version = "0.1.0"
 edition = "2021"
 
+build = "build.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -47,3 +49,6 @@ itertools = "0.12.1"
 actix-rt = "2.4.0"
 fake = { version = "2.9.2", features = ["derive"] }
 futures = "0.3.30"
+
+[build-dependencies]
+dotenv = "0.15.0"

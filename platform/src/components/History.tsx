@@ -43,7 +43,7 @@ export default function History({ id }: { id: string | null }) {
             .map(([stat, actions], index) => (
               <div
                 key={index}
-                className="bg-slate-200 p-3 rounded-lg flex flex-col gap-3"
+                className="bg-slate-100 p-3 rounded-lg flex flex-col gap-3"
               >
                 <div className="text-lg font-bold">Ciclo {stat.cycle}</div>
                 <div className="text-slate-700">

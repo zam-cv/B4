@@ -11,7 +11,7 @@ export default function Map({ userInfo }: { userInfo: Payment | null }) {
   if (!userInfo) return <div></div>;
 
   return (
-    <ComposableMap>
+    <ComposableMap className="w-full h-full">
       <ZoomableGroup center={[0, 0]} zoom={1}>
         <Geographies geography="/features.json">
           {({ geographies }) =>

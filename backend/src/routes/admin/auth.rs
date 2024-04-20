@@ -72,6 +72,7 @@ pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<imp
         };
     }
 
+    log::error!("No id found in request");
     Ok(HttpResponse::Unauthorized().finish())
 }
 

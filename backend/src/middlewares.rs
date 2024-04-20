@@ -18,6 +18,7 @@ macro_rules! auth {
             let token = match req.headers().get(AUTH_HEADER) {
                 Some(token) => token.to_str().ok().map(|s| s.to_string()),
                 None => {
+                    log::info!("No token in header");
                     req
                         .cookie(AUTH_COOKIE)
                         .map(|cookie| cookie.value().to_string())
@@ -37,6 +38,7 @@ macro_rules! auth {
                 }
             }
 
+            log::error!("Unauthorized");
             let response = HttpResponse::Unauthorized().finish();
             Ok(req.into_response(response).map_into_right_body())
         }

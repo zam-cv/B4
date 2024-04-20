@@ -1,3 +1,5 @@
+use dotenv::dotenv;
+
 mod app;
 mod bank;
 mod config;
@@ -15,6 +17,7 @@ mod tests;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
+    dotenv().ok();
+    env_logger::init();
     app::app().await
 }

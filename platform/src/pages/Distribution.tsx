@@ -67,9 +67,9 @@ export default function Distribution() {
     <div className="w-full h-full">
       <div className="col-span-3 row-span-4 w-full h-full overflow-hidden">
         <div className="grid grid-rows-[1fr_auto] grid-cols-1 w-full h-full">
-          <div className="w-full h-full relative flex justify-center items-center overflow-hidden">
+          <div className="w-full h-full relative flex justify-center items-center">
             <div className="w-full h-full absolute flex justify-center items-center">
-              <ComposableMap>
+              <ComposableMap className="w-full h-full">
                 <ZoomableGroup center={[0, 0]} zoom={1}>
                   <Geographies geography="/features.json">
                     {({ geographies }) =>

@@ -5,8 +5,8 @@ use crate::{
     docs::ApiDoc,
     middlewares, routes, socket,
     socket::server::Server,
+    utils,
 };
-use actix_cors::Cors;
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use actix_web_lab::middleware::from_fn;
@@ -58,7 +58,7 @@ pub async fn app() -> std::io::Result<()> {
     // Create the server
     let server = HttpServer::new(move || {
         // Create the CORS middleware
-        let cors = Cors::permissive().supports_credentials();
+        let cors = utils::get_cors();
 
         App::new()
             .wrap(cors)

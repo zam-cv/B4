@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -35,7 +30,9 @@ export default function Emails() {
 
   const [selectedUsers, setSelectedUsers] = useState<number>(0);
 
-  const [title, setTitle] = useState<string>("¡Explora lo Nuevo en Qrops y Aprovecha Exclusivas Ventajas!");
+  const [title, setTitle] = useState<string>(
+    "¡Explora lo Nuevo en Qrops y Aprovecha Exclusivas Ventajas!"
+  );
   const [value, setValue] = useState<any>(EMAIL_EXAMPLE);
 
   const [filters] = useState<Filters>({});
@@ -160,141 +157,129 @@ export default function Emails() {
 
   return (
     <div className="h-full">
-      <ResizablePanelGroup direction="vertical" className="rounded-lg border">
-        <ResizablePanel defaultSize={65}>
-          <div className="p-5 flex flex-col gap-5 w-full h-full">
-            <h1 className="text-2xl font-bold">
-              Redacción de correo electrónico
-            </h1>
-            <div className="flex justify-start">
-              <div className="mr-auto w-[500px]">
+      <div className="p-5 flex flex-col gap-5 w-full h-full">
+        <div>
+          <h1 className="text-2xl font-bold">
+            Redacción de correo electrónico
+          </h1>
+          <h2 className="text-sm text-muted-foreground">
+            Cantidad de usuarios seleccionados: {selectedUsers}
+          </h2>
+        </div>
+        <div className="flex justify-start">
+          <div className="mr-auto w-[500px] gap-5 flex">
+            <Input
+              placeholder="Asunto"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <Button className="px-10" onClick={sendEmail}>
+              Enviar
+            </Button>
+          </div>
+        </div>
+        <div className="flex flex-col gap-5">
+          <div className="flex gap-5 flex-wrap">
+            <div className="flex gap-5 items-center">
+              <h2 className="text-base font-semibold">Edad</h2>
+              <div className="flex gap-5">
                 <Input
-                  placeholder="Asunto"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  type="number"
+                  placeholder="Desde"
+                  onChange={(e) =>
+                    setValueInFilter(
+                      (f) =>
+                        (f.by_age_range = [
+                          parseInt(e.target.value),
+                          f.by_age_range ? f.by_age_range[1] : null,
+                        ])
+                    )
+                  }
+                />
+                <Input
+                  type="number"
+                  placeholder="Hasta"
+                  onChange={(e) =>
+                    setValueInFilter(
+                      (f) =>
+                        (f.by_age_range = [
+                          f.by_age_range ? f.by_age_range[0] : null,
+                          parseInt(e.target.value),
+                        ])
+                    )
+                  }
                 />
               </div>
             </div>
-            <div className="relative w-full h-full overflow-auto">
-              <div className="absolute w-full h-full p-1">
-                <MDEditor value={value} onChange={setValue} height="100%" />
+            <div className="flex gap-5 items-center">
+              <h2 className="text-base font-semibold">Tipo de usuario</h2>
+              <div>
+                <Select
+                  onValueChange={(v) => {
+                    setValueInFilter((f) => (f.by_user_type = v));
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un tipo de usuario" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Usuarios</SelectLabel>
+                      {typesUsers.map((type, i) => (
+                        <SelectItem key={i} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="all">Todos</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex gap-5 items-center">
+              <h2 className="text-base font-semibold">Género</h2>
+              <div>
+                <Select
+                  onValueChange={(v) => {
+                    setValueInFilter((f) => (f.by_gender = v));
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un genero" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Generos</SelectLabel>
+                      {genders.map((gender, i) => (
+                        <SelectItem key={i} value={gender}>
+                          {gender}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="all">Todos</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex gap-5 items-center">
+              <h2 className="text-base font-semibold">Extensión</h2>
+              <div>
+                <Input
+                  placeholder="@outlook.com"
+                  onChange={(e) => {
+                    setValueInFilter((f) => (f.by_extension = e.target.value));
+                  }}
+                />
               </div>
             </div>
           </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={35}>
-          <div className="p-5 flex flex-col gap-5">
-            <h1 className="text-2xl font-bold">Filtros</h1>
-            <div className="flex items-center gap-5">
-              <h2 className="text-lg font-medium">
-                Cantidad de usuarios seleccionados: {selectedUsers}
-              </h2>
-            </div>
-            <div className="flex gap-5 flex-wrap">
-              <div className="flex gap-5 items-center">
-                <h2 className="text-lg font-semibold">Edad</h2>
-                <div className="flex gap-5 mr-10">
-                  <Input
-                    type="number"
-                    placeholder="Desde"
-                    onChange={(e) =>
-                      setValueInFilter(
-                        (f) =>
-                          (f.by_age_range = [
-                            parseInt(e.target.value),
-                            f.by_age_range ? f.by_age_range[1] : null,
-                          ])
-                      )
-                    }
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Hasta"
-                    onChange={(e) =>
-                      setValueInFilter(
-                        (f) =>
-                          (f.by_age_range = [
-                            f.by_age_range ? f.by_age_range[0] : null,
-                            parseInt(e.target.value),
-                          ])
-                      )
-                    }
-                  />
-                </div>
-              </div>
-              <div className="flex gap-5 items-center">
-                <h2 className="text-lg font-semibold">Tipo de usuario</h2>
-                <div className="mr-10">
-                  <Select
-                    onValueChange={(v) => {
-                      setValueInFilter((f) => (f.by_user_type = v));
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un tipo de usuario" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Usuarios</SelectLabel>
-                        {typesUsers.map((type, i) => (
-                          <SelectItem key={i} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="all">Todos</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex gap-5 items-center">
-                <h2 className="text-lg font-semibold">Género</h2>
-                <div className="mr-10">
-                  <Select
-                    onValueChange={(v) => {
-                      setValueInFilter((f) => (f.by_gender = v));
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un genero" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Generos</SelectLabel>
-                        {genders.map((gender, i) => (
-                          <SelectItem key={i} value={gender}>
-                            {gender}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="all">Todos</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="flex gap-5 items-center">
-                <h2 className="text-lg font-semibold">Extensión</h2>
-                <div className="mr-10">
-                  <Input
-                    placeholder="@outlook.com"
-                    onChange={(e) => {
-                      setValueInFilter(
-                        (f) => (f.by_extension = e.target.value)
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end">
-              <Button className="px-10" onClick={sendEmail}>
-                Enviar
-              </Button>
-            </div>
+        </div>
+        <div className="relative w-full h-full overflow-auto">
+          <div className="absolute w-full h-full p-1">
+            <MDEditor value={value} onChange={setValue} height="100%" />
           </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      </div>
     </div>
   );
 }

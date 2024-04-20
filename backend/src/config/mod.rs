@@ -1,4 +1,3 @@
-use dotenv::dotenv;
 use lazy_static::lazy_static;
 use std::env;
 
@@ -6,6 +5,7 @@ pub mod database;
 pub mod ssl;
 
 pub struct Config {
+    pub mode: String,
     pub address: String,
     pub user_secret_key: String,
     pub admin_secret_key: String,
@@ -21,10 +21,10 @@ pub struct Config {
 
 lazy_static! {
     pub static ref CONFIG: Config = {
-        dotenv().ok();
         let smtp_username = env::var("SMTP_USERNAME").expect("SMTP_USERNAME must be set");
 
         Config {
+            mode: env::var("MODE").expect("MODE must be set"),
             address: format!(
                 "{}:{}",
                 env::var("HOST").expect("HOST must be set"),

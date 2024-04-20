@@ -1,9 +1,18 @@
-const SERVER_HOST = import.meta.env.VITE_APP_SERVER_HOST || "localhost";
+const SERVER_PROTOCOL = import.meta.env.VITE_APP_SERVER_PROTOCOL || "http";
 const SERVER_PORT = import.meta.env.VITE_APP_SERVER_PORT || "8080";
-const API_ROUTE = import.meta.env.VITE_APP_API_ROUTE || "/api/admin";
-export const API_URL = `http://${SERVER_HOST}:${SERVER_PORT}${API_ROUTE}`;
-export const SERVER_URL = `http://${SERVER_HOST}:${SERVER_PORT}`;
-export const SOCKET_URL = `ws://${SERVER_HOST}:${SERVER_PORT}/viewer/`;
+const SERVER_HOSTNAME = import.meta.env.VITE_APP_SERVER_HOST || "localhost";
+let SERVER_HOST = `${SERVER_HOSTNAME}:${SERVER_PORT}`;
+
+// if the domain in which it is connecting is different from the one that is being given
+// replace with the current domain
+SERVER_HOST =
+  window.location.hostname === SERVER_HOSTNAME
+    ? SERVER_HOST
+    : window.location.hostname + ":" + SERVER_PORT;
+
+const API_ROUTE = import.meta.env.VITE_APP_API_ROUTE || "api/admin";
+export const API_URL = `${SERVER_PROTOCOL}://${SERVER_HOST}/${API_ROUTE}`;
+export const SOCKET_URL = `ws://${SERVER_HOST}/viewer/`;
 
 export const ADMIN_PERMISSIONS = {
   VIEW_DOCUMENTS: "ViewDocuments",
@@ -43,7 +52,7 @@ export const CHART_DEFAULT_OPTIONS = {
 
 export function getOptions() {
   return {
-    ...CHART_DEFAULT_OPTIONS
+    ...CHART_DEFAULT_OPTIONS,
   };
 }
 

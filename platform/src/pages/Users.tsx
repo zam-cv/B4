@@ -80,13 +80,17 @@ export default function Users() {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={45}>
-            <Tabs defaultValue="info" className="w-full h-full grid grid-rows-[auto_1fr]">
+            <Tabs
+              defaultValue="info"
+              className="w-full h-full grid grid-rows-[auto_1fr]"
+            >
               <div className="p-3">
-                <TabsList className="grid grid-cols-2">
+                <TabsList className="grid grid-cols-3">
                   <TabsTrigger value="info">
                     Información del usuario
                   </TabsTrigger>
                   <TabsTrigger value="cycles">Recuento de ciclos</TabsTrigger>
+                  <TabsTrigger value="location">Ubicación</TabsTrigger>
                 </TabsList>
               </div>
               <div>
@@ -95,16 +99,8 @@ export default function Users() {
                     className="w-full h-full"
                     direction="vertical"
                   >
-                    <ResizablePanel defaultSize={35}>
-                      <div className="relative w-full h-full flex justify-center items-center">
-                        <div className="absolute w-full h-full flex justify-center items-center">
-                          <Map userInfo={userInfo} />
-                        </div>
-                      </div>
-                    </ResizablePanel>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={30}>
-                      <div className="p-5 h-full w-full">
+                    <ResizablePanel defaultSize={50}>
+                      <div className="px-5 pb-5 h-full w-full">
                         <div className="h-full w-full relative">
                           <div className="h-full w-full absolute">
                             <Statistics userId={userId} />
@@ -113,8 +109,8 @@ export default function Users() {
                       </div>
                     </ResizablePanel>
                     <ResizableHandle withHandle />
-                    <ResizablePanel defaultSize={35}>
-                      <div>
+                    <ResizablePanel defaultSize={50}>
+                      <div className="w-full h-full overflow-auto">
                         <PlayerInfo userId={userId} userInfo={userInfo} />
                       </div>
                     </ResizablePanel>
@@ -122,6 +118,13 @@ export default function Users() {
                 </TabsContent>
                 <TabsContent className="w-full h-full" value="cycles">
                   <History id={userId} />
+                </TabsContent>
+                <TabsContent className="w-full h-full" value="location">
+                  <div className="relative w-full h-full">
+                    <div className="absolute w-full h-full flex justify-center items-center">
+                      <Map userInfo={userInfo} />
+                    </div>
+                  </div>
                 </TabsContent>
               </div>
             </Tabs>

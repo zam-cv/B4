@@ -34,26 +34,30 @@ export default function Statistics({ userId }: { userId: string | null }) {
           Rendimiento del jugador
         </h2>
       </div>
-      <GraphicView
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false,
-            },
-          },
-        }}
-        values={{
-          labels,
-          datasets: [
-            {
-              data,
-              borderColor: "rgb(0, 200, 255)",
-            },
-          ],
-        }}
-      />
+      <div className="relative w-full h-full">
+        <div className="absolute h-full w-full">
+          <GraphicView
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+            }}
+            values={{
+              labels,
+              datasets: [
+                {
+                  data,
+                  borderColor: "rgb(0, 200, 255)",
+                },
+              ],
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

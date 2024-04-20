@@ -1,10 +1,11 @@
 use crate::config;
+use actix_cors::Cors;
 use actix_web::cookie::{self, Cookie};
+use argon2::Config;
 use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use rand::Rng;
 use serde::{Deserialize, Serialize};
 use woothee::parser::Parser;
-use argon2::Config;
-use rand::Rng;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -48,6 +49,16 @@ pub fn decode_token(secret_key: &String, token: &str) -> anyhow::Result<Claims> 
 }
 
 /// The function `get_cookie_with_expired_token` creates a cookie with an expired token.
+#[cfg(feature = "dev")]
+pub fn get_cookie_with_expired_token() -> Cookie<'static> {
+    Cookie::build("token", "")
+        .http_only(true)
+        .path("/")
+        .expires(cookie::time::OffsetDateTime::now_utc() - cookie::time::Duration::days(1))
+        .finish()
+}
+
+#[cfg(not(feature = "dev"))]
 pub fn get_cookie_with_expired_token() -> Cookie<'static> {
     Cookie::build("token", "")
         .http_only(true)
@@ -60,6 +71,15 @@ pub fn get_cookie_with_expired_token() -> Cookie<'static> {
 
 /// The function `get_cookie_with_token` in Rust creates a cookie with a specified token value and
 /// additional security settings.
+#[cfg(feature = "dev")]
+pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
+    Cookie::build("token", token)
+        .http_only(true)
+        .path("/")
+        .finish()
+}
+
+#[cfg(not(feature = "dev"))]
 pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
     Cookie::build("token", token)
         .http_only(true)
@@ -67,6 +87,20 @@ pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
         .same_site(cookie::SameSite::Strict)
         .path("/")
         .finish()
+}
+
+#[cfg(feature = "dev")]
+pub fn get_cors() -> Cors {
+    Cors::default()
+        .allow_any_origin()
+        .allow_any_method()
+        .allow_any_header()
+        .supports_credentials()
+}
+
+#[cfg(not(feature = "dev"))]
+pub fn get_cors() -> Cors {
+    Cors::permissive().supports_credentials()
 }
 
 // The function `get_os` in Rust returns the operating system of the user based on the user agent.
