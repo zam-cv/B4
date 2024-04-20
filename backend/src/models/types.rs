@@ -53,7 +53,7 @@ pub enum PermissionType {
     SendEmails,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ToSchema)]
 #[derive(DbEnum, Serialize, Deserialize, EnumIter, EnumString, Display)]
 pub enum EventType {
     Positive,

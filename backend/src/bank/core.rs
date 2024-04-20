@@ -65,13 +65,13 @@ impl Bank {
         }
     }
 
-    fn get_message_from_sentence(
-        sentence: &Sentence,
+    pub fn get_message_from_event(
+        event: &models::Event,
         variables: &HashMap<String, Result<String>>,
     ) -> String {
         let mut message = String::new();
 
-        for fragment in &get_fragments(&sentence.event.content) {
+        for fragment in &get_fragments(&event.content) {
             match fragment {
                 SentenceFragment::Text(text) => message.push_str(text),
                 SentenceFragment::Variable(variable) => {
@@ -87,7 +87,7 @@ impl Bank {
         message
     }
 
-    fn handle_event(
+    pub fn handle_event(
         &self,
         context: &mut Context,
         methods: &Vec<models::Function>,
@@ -128,7 +128,7 @@ impl Bank {
         self.get_variables_from_getters(context, variables, &sentence.getters);
 
         // build the message
-        let message = Bank::get_message_from_sentence(&sentence, &variables);
+        let message = Bank::get_message_from_event(&sentence.event, &variables);
 
         // handle the event
         self.handle_event(context, &sentence.handlers, &variables);

@@ -1,5 +1,6 @@
-use crate::database::Database;
+use crate::{bank::Bank, database::Database};
 use actix_web::{error, get, web, HttpResponse, Responder, Result};
+use std::collections::HashMap;
 
 const CONTEXT_PATH: &str = "/api/admin/player";
 
@@ -26,6 +27,15 @@ pub async fn get_player(
     Ok(web::Json(player))
 }
 
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The history of the player", body = Vec<(Statistic, Vec<(String, EventType)>)>)
+  ),
+  params(
+    ("user_id" = u64, Path, description = "The user id of the player")
+  )
+)]
 #[get("/{user_id}/history")]
 pub async fn get_player_history(
     database: web::Data<Database>,
@@ -44,9 +54,29 @@ pub async fn get_player_history(
                 .await
                 .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
-            println!("{:?}", history);
+            let history = history
+                .into_iter()
+                .map(|(statistic, events)| {
+                    let mut response = Vec::new();
 
-            Ok(HttpResponse::Ok().finish())
+                    for (event, functions) in events {
+                        let mut variables = HashMap::new();
+
+                        for (function, value) in functions {
+                            if let Some(key) = function.key {
+                                variables.insert(key, Ok(value.content));
+                            }
+                        }
+
+                        let message = Bank::get_message_from_event(&event, &variables);
+                        response.push((message, event.event_type));
+                    }
+
+                    (statistic, response)
+                })
+                .collect::<Vec<_>>();
+
+            Ok(HttpResponse::Ok().json(history))
         } else {
             Ok(HttpResponse::NotFound().finish())
         }

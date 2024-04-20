@@ -80,8 +80,8 @@ export default function Users() {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={45}>
-            <Tabs defaultValue="info" className="w-full h-full">
-              <div className="p-3 w-full">
+            <Tabs defaultValue="info" className="w-full h-full grid grid-rows-[auto_1fr]">
+              <div className="p-3">
                 <TabsList className="grid grid-cols-2">
                   <TabsTrigger value="info">
                     Información del usuario
@@ -89,7 +89,7 @@ export default function Users() {
                   <TabsTrigger value="cycles">Recuento de ciclos</TabsTrigger>
                 </TabsList>
               </div>
-              <div className="h-full w-full">
+              <div>
                 <TabsContent className="w-full h-full" value="info">
                   <ResizablePanelGroup
                     className="w-full h-full"
