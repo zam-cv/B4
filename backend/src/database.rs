@@ -441,16 +441,24 @@ impl Database {
         .await
     }
 
-    pub async fn get_statistics(&self, player_id: i32) -> anyhow::Result<Vec<models::Statistic>> {
+    pub async fn get_statistics(&self, user_id: i32) -> anyhow::Result<Vec<models::Statistic>> {
         self.query_wrapper(move |conn| {
-            schema::statistics::table
-                .filter(schema::statistics::player_id.eq(player_id))
+            schema::users::table
+                .inner_join(
+                    schema::statistics::table
+                        .on(schema::users::player_id.eq(schema::statistics::player_id)),
+                )
+                .filter(schema::users::id.eq(user_id))
+                .select(schema::statistics::all_columns)
                 .load::<models::Statistic>(conn)
         })
         .await
     }
 
-    pub async fn create_statistics(&self, new_statistics: models::Statistic) -> anyhow::Result<i32> {
+    pub async fn create_statistics(
+        &self,
+        new_statistics: models::Statistic,
+    ) -> anyhow::Result<i32> {
         self.query_wrapper(move |conn| {
             conn.transaction(|pooled| {
                 diesel::insert_into(schema::statistics::table)

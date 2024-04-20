@@ -43,40 +43,7 @@ export const CHART_DEFAULT_OPTIONS = {
 
 export function getOptions() {
   return {
-    ...CHART_DEFAULT_OPTIONS,
-    scales: {
-      x: {
-        ticks: {
-          color: "white",
-          stepSize: 110,
-        },
-        grid: {
-          display: false,
-        },
-        display: false,
-      },
-      y: {
-        ticks: {
-          stepSize: 110,
-        },
-        grid: {
-          display: false,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: "",
-        color: "white",
-      },
-    },
-    animation: {
-      duration: 200,
-    },
+    ...CHART_DEFAULT_OPTIONS
   };
 }
 

@@ -107,7 +107,7 @@ export default function Users() {
                       <div className="p-5 h-full w-full">
                         <div className="h-full w-full relative">
                           <div className="h-full w-full absolute">
-                            <Statistics />
+                            <Statistics userId={userId} />
                           </div>
                         </div>
                       </div>

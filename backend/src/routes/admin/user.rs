@@ -33,14 +33,14 @@ pub async fn get_user(
 #[utoipa::path(
   context_path = CONTEXT_PATH,
   responses(
-    (status = 200, description = "The user was found", body = Vec<StatisticsSample>),
+    (status = 200, description = "The user was found", body = Vec<Statistic>),
     (status = 404, description = "The user was not found")
   ),
   params(
     ("id" = u64, Path, description = "The id of the user")
   )
 )]
-#[get("/statistics/{id}")]
+#[get("/statistics/{user_id}")]
 pub async fn get_user_statistics(
     database: web::Data<Database>,
     path: web::Path<i32>,

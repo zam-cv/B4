@@ -1,27 +1,59 @@
-import { faker } from "@faker-js/faker";
-import { getOptions } from "../utils/constants";
 import GraphicView from "./GraphicView";
+import axios from "axios";
+import { API_URL } from "../utils/constants";
+import { getConfig } from "../utils/auth";
+import { useEffect, useState } from "react";
 
-const labels = ["1", "2", "3", "4", "5", "6", "7"];
-const options = getOptions();
-options.plugins.title.text = "Statistics";
-// options.scales.y.min = 80;
-// options.scales.y.max = 100;
-options.scales.y.ticks.stepSize = 5;
-// options.scales.x.ticks.stepSize = 5;
+interface Statistic {
+  cycle: number;
+  score: number;
+}
 
-const statistics = {
-  labels,
-  datasets: [
-    {
-      data: labels.map(() => faker.number.int({ min: 20, max: 100 })),
-      borderColor: "rgb(0, 200, 255)",
-    },
-  ],
-};
+export default function Statistics({ userId }: { userId: string | null }) {
+  const [labels, setLabels] = useState<string[]>([]);
+  const [data, setData] = useState<number[]>([]);
 
-export default function Statistics() {
+  useEffect(() => {
+    (async () => {
+      if (!userId) return;
+
+      const config = await getConfig();
+      axios
+        .get(`${API_URL}/user/statistics/${userId}`, config)
+        .then(({ data }: { data: Statistic[] }) => {
+          setData(data.map((d) => parseFloat(d.score.toFixed(2))));
+          setLabels(data.map((d) => d.cycle.toString()));
+        });
+    })();
+  }, [userId]);
+
   return (
-    <GraphicView options={options} values={statistics} />
+    <div className="w-full h-full flex flex-col">
+      <div>
+        <h2 className="text-center text-xl font-bold text-gray-800">
+          Rendimiento del jugador
+        </h2>
+      </div>
+      <GraphicView
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        }}
+        values={{
+          labels,
+          datasets: [
+            {
+              data,
+              borderColor: "rgb(0, 200, 255)",
+            },
+          ],
+        }}
+      />
+    </div>
   );
 }
