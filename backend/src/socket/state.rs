@@ -12,8 +12,18 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 
 #[derive(Deserialize)]
+pub enum Duration {
+    #[serde(rename = "1M")]
+    OneMonth,
+    #[serde(rename = "6M")]
+    SixMonths,
+    #[serde(rename = "1Y")]
+    OneYear
+}
+
+#[derive(Deserialize)]
 pub struct CycleData {
-    pub duration: i32,
+    pub duration: Duration,
 }
 
 #[derive(Deserialize)]

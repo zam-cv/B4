@@ -6,7 +6,7 @@ use crate::{
         },
     },
     config, models,
-    socket::{context::Context, state::CycleData},
+    socket::{context::Context, state::{CycleData, Duration}},
 };
 use anyhow::Result;
 use lazy_static::lazy_static;
@@ -18,8 +18,6 @@ pub type Functions = Vec<(Vec<models::Function>, HashMap<String, Result<String>>
 
 type Getter = fn(&mut Context, Vec<String>) -> Result<String>;
 type Handler = fn(&mut Context, Vec<String>) -> Result<()>;
-
-const NUMBER_OF_RANDOM_EVENTS: usize = 1;
 
 lazy_static! {
     static ref IDENT_REGEX: Regex = Regex::new(r"^[a-zA-Z_][a-zA-Z0-9_]*$").unwrap();
@@ -173,15 +171,21 @@ impl Bank {
 
     pub async fn handle_cycle<'a>(
         &self,
-        _: &'a CycleData,
+        cycle_data: &'a CycleData,
         mut context: Context<'a>,
     ) -> anyhow::Result<(ResolveCycleData, Functions)> {
-        let mut events = Vec::with_capacity(NUMBER_OF_RANDOM_EVENTS);
+        let number_of_random_events = match cycle_data.duration {
+            Duration::OneMonth => 1,
+            Duration::SixMonths => 6,
+            Duration::OneYear => 12,
+        } * config::EVENTS_PER_MONTH;
+
+        let mut events = Vec::with_capacity(number_of_random_events as usize);
         let mut functions = Vec::new();
 
         let random_events = context
             .database
-            .get_random_events(NUMBER_OF_RANDOM_EVENTS as i64)
+            .get_random_events(number_of_random_events as i64)
             .await?;
 
         for event in random_events {

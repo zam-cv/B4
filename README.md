@@ -96,6 +96,8 @@ Example of variables in the backend:
 ```bash
 # backend/.env
 
+MODE=dev
+RUST_LOG=debug
 HOST=0.0.0.0
 PORT=8080
 USER_SECRET_KEY=user_secret_key
@@ -114,9 +116,10 @@ Example of variables in the platform:
 ```bash
 # platform/.env
 
+VITE_APP_SERVER_PROTOCOL = "http"
 VITE_APP_SERVER_HOST = "localhost"
 VITE_APP_SERVER_PORT = 8080
-VITE_APP_API_ROUTE = "/api/admin"
+VITE_APP_API_ROUTE = "api/admin"
 ```
 
 ## Usage
