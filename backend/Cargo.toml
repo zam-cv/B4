@@ -49,6 +49,7 @@ itertools = "0.12.1"
 actix-rt = "2.4.0"
 fake = { version = "2.9.2", features = ["derive"] }
 futures = "0.3.30"
+dotenv = "0.15.0"
 
 [build-dependencies]
 dotenv = "0.15.0"

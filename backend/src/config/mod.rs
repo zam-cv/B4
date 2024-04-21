@@ -55,6 +55,7 @@ pub const VERQOR_WEIGHT: i32 = 30;
 pub const COYOTE_WEIGHT: i32 = 10;
 
 // Game constants
+pub const TOP_PLAYERS: i64 = 5;
 pub const CREDIT_LIMIT: i32 = -5000;
 pub const INITIAL_TIME: f64 = 0.0;
 pub const INITIAL_CYCLE: i32 = 0;

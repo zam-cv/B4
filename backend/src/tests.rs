@@ -6,9 +6,11 @@ use fake::{
 use futures::future::join_all;
 use rand::Rng;
 use std::ops::Range;
+use dotenv::dotenv;
 
 #[actix_rt::test]
 async fn create_users() {
+    dotenv().ok();
     let mut futures = Vec::new();
     let database = Database::new();
 

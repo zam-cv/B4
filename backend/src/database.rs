@@ -603,6 +603,23 @@ impl Database {
         .await
     }
 
+    pub async fn get_top_players(&self, limit: i64) -> anyhow::Result<Vec<String>> {
+        self.query_wrapper(move |conn| {
+            schema::users::table
+                .inner_join(
+                    schema::statistics::table
+                        .on(schema::users::player_id.eq(schema::statistics::player_id)),
+                )
+                .order(schema::statistics::cycle.desc())
+                .group_by(schema::users::id)
+                .order(avg!("score").desc())
+                .select(schema::users::username)
+                .limit(limit)
+                .load::<String>(conn)
+        })
+        .await
+    }
+
     pub async fn create_role(&self, new_role: models::Role) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::roles::table)

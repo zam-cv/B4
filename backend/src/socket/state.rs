@@ -40,6 +40,12 @@ pub struct ModifiedPlayer<T: Serialize> {
     pub payload: T,
 }
 
+#[derive(Serialize)]
+pub struct InitialData {
+    pub plots: Vec<models::Plot>,
+    pub top_players: Vec<String>,
+}
+
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
@@ -51,7 +57,7 @@ pub enum Request {
 #[derive(Serialize)]
 #[serde(tag = "type")]
 pub enum Response {
-    Init(ModifiedPlayer<Vec<models::Plot>>),
+    Init(ModifiedPlayer<InitialData>),
     CycleResolved(ModifiedPlayer<ResolveCycleData>),
     CropBought(ModifiedPlayer<Vec<models::Plot>>),
     // TODO: Add more
@@ -83,7 +89,7 @@ impl State {
                 plots: database.get_plots_by_player_id(id).await?,
             };
 
-            state.init()?;
+            state.init(database).await?;
             return Ok(state);
         }
 
@@ -91,10 +97,13 @@ impl State {
     }
 
     // Send user data at startup
-    pub fn init(&self) -> anyhow::Result<()> {
+    pub async fn init(&self, database: &Database) -> anyhow::Result<()> {
         self.send(Response::Init(ModifiedPlayer {
             player: self.player.clone(),
-            payload: self.plots.clone(),
+            payload: InitialData {
+                plots: self.plots.clone(),
+                top_players: database.get_top_players(config::TOP_PLAYERS).await?,
+            },
         }))
     }
 

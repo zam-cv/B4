@@ -28,6 +28,12 @@ public struct Plot
     public int quantity;
 }
 
+public struct InititialData
+{
+    public List<Plot> plots;
+    public List<string> top_players;
+}
+
 public struct ModifiedPlayer<T>
 {
     public Player player;
@@ -78,22 +84,24 @@ public class Connection : MonoBehaviour
             switch (sample["type"].ToString())
             {
                 case "Init":
-                    ModifiedPlayer<List<Plot>> initData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
+                    ModifiedPlayer<InititialData> initData = JsonConvert.DeserializeObject<ModifiedPlayer<InititialData>>(message);
                     gameObject.GetComponent<State>().SetState(initData.player);
                     // set the plots with data.payload
                     break;
                 case "CycleResolved":
                     Debug.Log(message);
                     ModifiedPlayer<CycleResolved> cycleResolvedData = JsonConvert.DeserializeObject<ModifiedPlayer<CycleResolved>>(message);
-                    Debug.Log(cycleResolvedData.payload.events[0]);
                     gameObject.GetComponent<State>().SetState(cycleResolvedData.player);
+                    Debug.Log(cycleResolvedData.payload.events[0]);
+                    break;
+                case "CropBought":
+                    ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>(message);
+                    gameObject.GetComponent<State>().SetState(initData.player); 
+                    // set the plots with data.payload
                     break;
                     // Add more cases here
             }
         };
-
-        // Keep sending messages at every 0.3s
-        InvokeRepeating("SendWebSocketMessage", 0.0f, 0.3f);
 
         // waiting for messages
         await websocket.Connect();
@@ -106,27 +114,14 @@ public class Connection : MonoBehaviour
 #endif
     }
 
-    async void SendWebSocketMessage()
-    {
-        if (websocket.State == WebSocketState.Open)
-        {
-            // Sending bytes
-            await websocket.Send(new byte[] { 10, 20, 30 });
-
-            // Sending plain text
-            await websocket.SendText("plain text message");
-        }
-    }
-
     private async void OnApplicationQuit()
     {
         await websocket.Close();
     }
 
-
     // Crear una funcion asincrona para hacer un ciclo
     // La funcion envia un json al socket y recibe otro json
-    public async void HacerCiclo()
+    public async void Cycle()
     {
         // Verifica que la conexión esté abierta antes de enviar el mensaje
         if (websocket.State == WebSocketState.Open)
@@ -135,8 +130,9 @@ public class Connection : MonoBehaviour
             var messageData = new Dictionary<string, object>
             {
                 {"type", "Cycle"},
-                {"duration", 12}
+                {"duration", "1M"} // 1M = 1 mes, 6M = 6 meses, 1Y = 1 año
             };
+
             string jsonMessage = JsonConvert.SerializeObject(messageData);
 
             // Enviar el mensaje JSON
@@ -148,4 +144,27 @@ public class Connection : MonoBehaviour
         }
     }
 
+    public async void BuyCrop(string name, int quantity, string moneyType)
+    {
+        // Verifica que la conexión esté abierta antes de enviar el mensaje
+        if (websocket.State == WebSocketState.Open)
+        {
+            // Crear el mensaje JSON para enviar
+            var messageData = new Dictionary<string, object>
+            {
+                {"name", name},
+                {"quantity", quantity},
+                {"moneyType", moneyType}
+            };
+
+            string jsonMessage = JsonConvert.SerializeObject(messageData);
+
+            // Enviar el mensaje JSON
+            await websocket.SendText(jsonMessage);
+        }
+        else
+        {
+            Debug.Log("WebSocket no está conectado.");
+        }
+    }
 }
