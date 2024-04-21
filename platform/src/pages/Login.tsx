@@ -2,6 +2,8 @@ import { handleKeyDown, handleEnter } from "../utils";
 import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
   const { isAuthenticated, signin, loading } = useAuth();
@@ -24,10 +26,10 @@ export default function Login() {
 
     if (loading) {
       button.disabled = true;
-      button.innerText = "Signing in...";
+      button.innerText = "Iniciando Sesión...";
     } else {
       button.disabled = false;
-      button.innerText = "Sign in";
+      button.innerText = "Iniciar Sesión";
     }
   }, [loading, isAuthenticated]);
 
@@ -36,30 +38,55 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 h-full select-none">
-      <h1 className="text-3xl font-bold">Sign in</h1>
-      <input
-        ref={emailRef}
-        type="email"
-        onKeyDown={(e) => handleKeyDown(e, passwordRef)}
-        tabIndex={1}
-        className="rounded-md border border-gray-300 p-2"
-      />
-      <input
-        ref={passwordRef}
-        type="password"
-        onKeyDown={(e) => handleEnter(e, login)}
-        tabIndex={2}
-        className="rounded-md border border-gray-300 p-2"
-      />
-      <button
-        ref={buttonRef}
-        onClick={login}
-        tabIndex={3}
-        className="rounded-md bg-blue-500 text-white p-2 px-10 hover:bg-blue-600"
-      >
-        Sign in
-      </button>
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="container">
+        <div className="grid grid-cols-2 max-md:grid-cols-1 shadow-lg rounded-2xl">
+          <div className="flex flex-col gap-5 px-10 py-16">
+            <div className="mb-5">
+              <h1 className="text-2xl font-bold text-orange-500 mb-3">
+                Iniciar Sesión
+              </h1>
+              <h2 className="text-lg font-semibold">Bienvenido!</h2>
+              <p className="text-sm text-gray-500">
+                Ingresa tu correo y contraseña para acceder a la plataforma
+              </p>
+            </div>
+            <div className="flex flex-col gap-8">
+              <Input
+                ref={emailRef}
+                type="email"
+                placeholder="Correo electrónico"
+                onKeyDown={(e) => handleKeyDown(e, passwordRef)}
+              />
+              <Input
+                ref={passwordRef}
+                type="password"
+                onKeyDown={(e) => handleEnter(e, login)}
+                placeholder="Contraseña"
+              />
+              <Button
+                className="bg-orange-500 text-white hover:bg-orange-600 font-bold"
+                ref={buttonRef}
+                onClick={login}
+              >
+                Iniciar Sesión
+              </Button>
+            </div>
+          </div>
+          <div className="bg-gradient-to-r from-orange-600 to-orange-400 rounded-2xl flex items-end max-md:hidden">
+            <div className="p-10 flex flex-col gap-5">
+              <h2 className="text-2xl font-bold text-white text-center">
+                Verqor te da la bienvenida
+              </h2>
+              <p className="text-white text-lg font-medium text-center">
+                ¿Sabías que? Algunas plantas se comunican bajo tierra mediante
+                señales químicas, activando defensas ante el estrés como la
+                presencia de herbívoros.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

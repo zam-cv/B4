@@ -10,7 +10,6 @@ interface Player {
   balance_cash: number;
   balance_verqor: number;
   balance_coyote: number;
-  max_plots: number;
 }
 
 function Field({ title, value }: { title: string; value: string | number }) {
@@ -75,10 +74,6 @@ export default function PlayerInfo({
           <Field
             title="Saldo del coyote"
             value={player.balance_coyote.toString()}
-          />
-          <Field
-            title="Máximo numero de parcelas"
-            value={player.max_plots.toString()}
           />
         </div>
       </div>

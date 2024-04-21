@@ -16,7 +16,15 @@ export default function Layout() {
         <div>{platform === "macos" && <Titlebar />}</div>
         {isAuthenticated ? <Header /> : <div></div>}
       </div>
-      <div className="p-5 overflow-auto">{isAuthenticated ? <Outlet /> : <Login />}</div>
+      {isAuthenticated ? (
+        <div className="p-5 overflow-auto">
+          <Outlet />{" "}
+        </div>
+      ) : (
+        <div>
+          <Login />
+        </div>
+      )}
     </div>
   );
 }
