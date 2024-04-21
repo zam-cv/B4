@@ -39,7 +39,6 @@ CREATE TABLE `players`(
 	`balance_cash` INTEGER NOT NULL,
 	`balance_verqor` INTEGER NOT NULL,
 	`balance_coyote` INTEGER NOT NULL,
-	`max_plots` INTEGER NOT NULL,
 	`max_change` INTEGER NOT NULL
 );
 
@@ -106,6 +105,7 @@ CREATE TABLE `crop_types`(
 CREATE TABLE `plots`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`crop_type_id` VARCHAR(50),
+	`quantity` INTEGER NOT NULL,
 	`player_id` INTEGER NOT NULL,
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)

@@ -55,12 +55,13 @@ pub const VERQOR_WEIGHT: i32 = 30;
 pub const COYOTE_WEIGHT: i32 = 10;
 
 // Game constants
+pub const CREDIT_LIMIT: i32 = -5000;
 pub const INITIAL_TIME: f64 = 0.0;
 pub const INITIAL_CYCLE: i32 = 0;
 pub const INITIAL_SCORE: f64 = 0.0;
 pub const INITIAL_BALANCE: i32 = 0;
 pub const INITIAL_BALANCE_CASH: i32 = 1000;
-pub const INITIAL_MAX_PLOTS: i32 = 4;
+pub const INITIAL_PLOTS: i32 = 4;
 pub const INITIAL_MAX_CHANGE: i32 = CASH_WEIGHT * INITIAL_BALANCE_CASH
     + VERQOR_WEIGHT * INITIAL_BALANCE
     + COYOTE_WEIGHT * INITIAL_BALANCE;

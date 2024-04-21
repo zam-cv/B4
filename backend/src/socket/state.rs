@@ -1,5 +1,6 @@
 use crate::{
     bank::{core::ResolveCycleData, Bank},
+    config,
     database::Database,
     models,
     socket::{
@@ -18,7 +19,7 @@ pub enum Duration {
     #[serde(rename = "6M")]
     SixMonths,
     #[serde(rename = "1Y")]
-    OneYear
+    OneYear,
 }
 
 #[derive(Deserialize)]
@@ -27,10 +28,17 @@ pub struct CycleData {
 }
 
 #[derive(Deserialize)]
+pub struct CropData {
+    pub name: String,
+    pub quantity: i32,
+    pub money_type: models::MoneyType,
+}
+
+#[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
     Cycle(CycleData),
-    CreateCropSection,
+    BuyCrop(CropData),
     // TODO: Add more
 }
 
@@ -39,6 +47,7 @@ pub enum Request {
 pub enum Response {
     Init(models::Player),
     CycleResolved(ResolveCycleData),
+    CropBought(models::Player),
     // TODO: Add more
 }
 
@@ -139,6 +148,83 @@ impl State {
         Ok(())
     }
 
+    pub fn get_empty_plot(&mut self) -> Option<&mut models::Plot> {
+        self.plots.iter_mut().find(|p| p.crop_type_id.is_none())
+    }
+
+    pub fn buy_crop_with_credit(
+        &mut self,
+        crop_data: CropData,
+        crop: &models::CropType,
+        price: i32,
+    ) -> anyhow::Result<()> {
+        if let Some(plot) = self.get_empty_plot() {
+            plot.crop_type_id = Some(crop.name.clone());
+            plot.quantity = crop_data.quantity;
+
+            match crop_data.money_type {
+                models::MoneyType::Verqor => {
+                    self.player.balance_verqor -= price;
+                }
+                models::MoneyType::Coyote => {
+                    self.player.balance_coyote -= price;
+                }
+                _ => {}
+            };
+
+            self.send(Response::CropBought(self.player.clone()))?;
+        }
+
+        Ok(())
+    }
+
+    pub async fn buy_crop(
+        &mut self,
+        crop_data: CropData,
+        database: &Database,
+    ) -> anyhow::Result<()> {
+        if crop_data.quantity <= 0 {
+            return Ok(());
+        }
+
+        if let Some(crop) = database
+            .get_crop_type_by_name(crop_data.name.clone())
+            .await?
+        {
+            let price = crop.price * crop_data.quantity;
+
+            if let models::MoneyType::Cash = crop_data.money_type {
+                if self.player.balance_cash >= price {
+                    if let Some(plot) = self.get_empty_plot() {
+                        plot.crop_type_id = Some(crop.name.clone());
+                        plot.quantity = crop_data.quantity;
+                        self.player.balance_cash -= price;
+
+                        self.send(Response::CropBought(self.player.clone()))?;
+                    }
+                }
+
+                return Ok(());
+            }
+
+            match crop_data.money_type {
+                models::MoneyType::Verqor => {
+                    if self.player.balance_verqor - price >= config::CREDIT_LIMIT {
+                        self.buy_crop_with_credit(crop_data, &crop, price)?;
+                    }
+                }
+                models::MoneyType::Coyote => {
+                    if self.player.balance_coyote - price >= config::CREDIT_LIMIT {
+                        self.buy_crop_with_credit(crop_data, &crop, price)?;
+                    }
+                }
+                _ => {}
+            };
+        }
+
+        Ok(())
+    }
+
     // Handles the message sent by the user
     pub async fn handle_message<'a>(
         &mut self,
@@ -151,15 +237,8 @@ impl State {
                 Request::Cycle(data) => {
                     self.resolve_cycle(data, database, bank).await?;
                 }
-                Request::CreateCropSection => {
-                    log::debug!("Create crop section");
-
-                    // TODO: Validate
-                    self.plots.push(models::Plot {
-                        id: None,
-                        crop_type_id: None,
-                        player_id: self.player.id.unwrap_or_default(),
-                    });
+                Request::BuyCrop(plot) => {
+                    self.buy_crop(plot, database).await?;
                 }
             }
         }

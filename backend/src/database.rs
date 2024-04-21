@@ -1,4 +1,9 @@
-use crate::{config::CONFIG, models, routes::admin::mail::Filters, schema};
+use crate::{
+    config::{self, CONFIG},
+    models,
+    routes::admin::mail::Filters,
+    schema,
+};
 use actix_web::web;
 use chrono::Datelike;
 use diesel::prelude::*;
@@ -261,10 +266,28 @@ impl Database {
                     .execute(pooled)?;
 
                 // Get the last inserted id
-                schema::players::table
+                let id = schema::players::table
                     .select(schema::players::id)
                     .order(schema::players::id.desc())
-                    .first::<i32>(pooled)
+                    .first::<i32>(pooled)?;
+
+                // create the initial plots
+                let mut plots = Vec::new();
+
+                for _ in 0..config::INITIAL_PLOTS {
+                    plots.push(models::Plot {
+                        id: None,
+                        crop_type_id: None,
+                        quantity: 0,
+                        player_id: id,
+                    });
+                }
+
+                diesel::insert_into(schema::plots::table)
+                    .values(&plots)
+                    .execute(pooled)?;
+
+                Ok(id)
             })
         })
         .await
@@ -475,6 +498,19 @@ impl Database {
         .await
     }
 
+    pub async fn get_crop_type_by_name(
+        &self,
+        name: String,
+    ) -> anyhow::Result<Option<models::CropType>> {
+        self.query_wrapper(move |conn| {
+            schema::crop_types::table
+                .find(name)
+                .first::<models::CropType>(conn)
+                .optional()
+        })
+        .await
+    }
+
     pub async fn unsert_crop_types(&self, crop_type: models::CropType) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::crop_types::table)
@@ -492,19 +528,6 @@ impl Database {
     pub async fn get_crop_types(&self) -> anyhow::Result<Vec<models::CropType>> {
         self.query_wrapper(move |conn| schema::crop_types::table.load::<models::CropType>(conn))
             .await
-    }
-
-    pub async fn get_crop_type_by_name(
-        &self,
-        name: String,
-    ) -> anyhow::Result<Option<models::CropType>> {
-        self.query_wrapper(move |conn| {
-            schema::crop_types::table
-                .filter(schema::crop_types::name.eq(name))
-                .first::<models::CropType>(conn)
-                .optional()
-        })
-        .await
     }
 
     pub async fn update_crop_type_description(

@@ -99,7 +99,7 @@ pub struct CropType {
     pub description: String,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[derive(Queryable, Selectable, Identifiable, Insertable, Associations, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
@@ -111,7 +111,8 @@ pub struct Plot {
     #[diesel(deserialize_as = i32)]
     pub id: Option<i32>,
     pub crop_type_id: Option<String>,
-    #[serde(skip_serializing)]
+    pub quantity: i32,
+    #[serde(skip_deserializing, skip_serializing)]
     pub player_id: i32,
 }
 

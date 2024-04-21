@@ -70,7 +70,6 @@ diesel::table! {
         balance_cash -> Integer,
         balance_verqor -> Integer,
         balance_coyote -> Integer,
-        max_plots -> Integer,
         max_change -> Integer,
     }
 }
@@ -83,7 +82,8 @@ diesel::table! {
         id -> Integer,
         #[max_length = 50]
         crop_type_id -> Nullable<Varchar>,
-        player_id -> Integer,
+        quantity -> Integer,
+        player_id -> Integer
     }
 }
 

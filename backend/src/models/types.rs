@@ -68,6 +68,13 @@ pub enum FunctionType {
     Handler,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub enum MoneyType {
+    Cash,
+    Verqor,
+    Coyote
+}
+
 pub(crate) mod exports {
   pub use super::GenderMapping as Gender;
   pub use super::UserTypeMapping as UserType;
