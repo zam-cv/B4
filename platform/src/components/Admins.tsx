@@ -55,7 +55,7 @@ export default function Edition() {
   return (
     <div className="grid p-5 gap-10">
       <div className="flex flex-col gap-5">
-        <h1 className="text-2xl font-bold">Registrar un nuevo administrador</h1>
+        <h1 className="text-2xl font-bold text-blue-950">Registrar un nuevo administrador</h1>
         <Input
           type="email"
           ref={emailRef}
@@ -76,14 +76,14 @@ export default function Edition() {
             placeholder="Confirmar contraseña"
           />
           {loading ? (
-            <Button disabled>Registrando...</Button>
+            <Button className="bg-blue-950 hover:bg-blue-800" disabled>Registrando...</Button>
           ) : (
-            <Button onClick={register}>Registrar</Button>
+            <Button className="bg-blue-950 hover:bg-blue-800" onClick={register}>Registrar</Button>
           )}
         </div>
       </div>
       <div className="flex flex-col gap-5">
-        <h1 className="text-2xl font-bold">Lista de administradores</h1>
+        <h1 className="text-2xl font-bold text-blue-950">Lista de administradores</h1>
         <Permissions userInfo={userInfo} />
         <AdminsTable
           setUserId={user[1]}

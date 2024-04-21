@@ -30,7 +30,7 @@ export default function Statistics({ userId }: { userId: string | null }) {
   return (
     <div className="w-full h-full flex flex-col">
       <div>
-        <h2 className="text-center text-xl font-bold text-gray-800">
+        <h2 className="text-center text-xl font-bold text-blue-950">
           Rendimiento del jugador
         </h2>
       </div>

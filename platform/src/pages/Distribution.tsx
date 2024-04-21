@@ -97,7 +97,7 @@ export default function Distribution() {
           </div>
           <div className="col-span-3">
             <div className="flex flex-col gap-5 p-5">
-              <h1 className="text-xl font-bold text-center">
+              <h1 className="text-xl font-bold text-center text-blue-950">
                 Tipos de usuarios
               </h1>
               <div className="flex flex-wrap justify-center">

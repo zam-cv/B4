@@ -159,7 +159,7 @@ export default function Emails() {
     <div className="h-full">
       <div className="flex flex-col gap-5 w-full h-full">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-bold text-blue-950">
             Redacción de correo electrónico
           </h1>
           <h2 className="text-sm text-muted-foreground">
@@ -173,7 +173,7 @@ export default function Emails() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <Button className="px-10" onClick={sendEmail}>
+            <Button className="px-10 bg-blue-950 hover:bg-blue-800" onClick={sendEmail}>
               Enviar
             </Button>
           </div>

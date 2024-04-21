@@ -6,8 +6,8 @@ import axios from "axios";
 function Detail({ title, value }: { title: string; value: string }) {
   return (
     <div className="flex flex-col gap-2 rounded border-b-gray-400 border-2 p-5">
-      <div className="text-lg">{title}</div>
-      <div className="text-2xl font-bold">{value}</div>
+      <div className="text-lg text-blue-950">{title}</div>
+      <div className="text-2xl font-bold text-blue-950">{value}</div>
     </div>
   );
 }

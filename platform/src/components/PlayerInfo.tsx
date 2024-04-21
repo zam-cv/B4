@@ -45,7 +45,7 @@ export default function PlayerInfo({
     player && (
       <div className="p-5 flex flex-col gap-5">
         <div>
-          <h2 className="text-center text-xl font-bold text-gray-800">
+          <h2 className="text-center text-xl font-bold text-blue-950">
             Información
           </h2>
         </div>

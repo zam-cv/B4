@@ -48,7 +48,7 @@ export default function Tips() {
   return (
     <div className="flex flex-col p-5 w-full h-full gap-5">
       <div className="flex flex-col gap-5">
-        <h1 className="text-2xl font-bold">Crear un nuevo Tip</h1>
+        <h1 className="text-2xl font-bold text-blue-950">Crear un nuevo Tip</h1>
         <div>
           <Textarea
             ref={textareaRef}
@@ -60,12 +60,12 @@ export default function Tips() {
           </p>
         </div>
         <div className="flex justify-end">
-          <Button onClick={createTip} className="px-10">
+          <Button onClick={createTip} className="px-10 bg-blue-950 hover:bg-blue-800">
             Crear Tip
           </Button>
         </div>
       </div>
-      <h1 className="text-2xl font-bold">Lista de Tips</h1>
+      <h1 className="text-2xl font-bold text-blue-950">Lista de Tips</h1>
       <div className="relative overflow-auto w-full h-full">
         <div className="absolute w-full h-full">
           <TipsTable data={data} setData={setData} />

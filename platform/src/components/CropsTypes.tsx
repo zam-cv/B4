@@ -113,7 +113,7 @@ export default function CropsTypes() {
 
   return (
     <div className="p-5 flex flex-col gap-5 h-full">
-      <h1 className="text-2xl font-bold">Editar tipos de Cultivo</h1>
+      <h1 className="text-2xl font-bold text-blue-950">Editar tipos de Cultivo</h1>
       <div className="relative w-full h-full overflow-auto">
         <div className="absolute w-full h-full">
           <DataTable columns={columns} data={data} />
