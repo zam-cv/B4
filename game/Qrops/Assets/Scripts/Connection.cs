@@ -13,20 +13,32 @@ public struct Player
     public int balance_coyote;
     public int balance_cash;
 }
+
+public struct CycleResolved
+{
+    public string type;
+    public List<string> events;
+    public Player player;
+    public string tip;
+}
+
+public struct Plot
+{
+    public string crop_type_id;
+    public int quantity;
+}
+
+public struct ModifiedPlayer<T>
+{
+    public Player player;
+    public T payload;
+}
+
 public class Connection : MonoBehaviour
 {
     WebSocket websocket;
 
     public GameObject loading_logo, loading_background;
-
-    struct CycleResolved
-    {
-        public string type;
-        public List<string> events;
-        public Player player;
-        public string tip;
-    }
-
 
     void Start()
     {
@@ -61,23 +73,20 @@ public class Connection : MonoBehaviour
         websocket.OnMessage += (bytes) =>
         {
             var message = System.Text.Encoding.UTF8.GetString(bytes);
-            var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
+            var sample = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
 
-            switch (data["type"].ToString())
+            switch (sample["type"].ToString())
             {
                 case "Init":
-                    Player player = JsonConvert.DeserializeObject<Player>(message);
-                    
-                    gameObject.GetComponent<State>().SetState(player);
-
+                    ModifiedPlayer<List<Plot>> initData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
+                    gameObject.GetComponent<State>().SetState(initData.player);
+                    // set the plots with data.payload
                     break;
                 case "CycleResolved":
                     Debug.Log(message);
-                    CycleResolved cycleResolved = JsonConvert.DeserializeObject<CycleResolved>(message);
-                    Debug.Log(cycleResolved.events[0]);
-                    gameObject.GetComponent<State>().SetState(cycleResolved.player);
-
-
+                    ModifiedPlayer<CycleResolved> cycleResolvedData = JsonConvert.DeserializeObject<ModifiedPlayer<CycleResolved>>(message);
+                    Debug.Log(cycleResolvedData.payload.events[0]);
+                    gameObject.GetComponent<State>().SetState(cycleResolvedData.player);
                     break;
                     // Add more cases here
             }

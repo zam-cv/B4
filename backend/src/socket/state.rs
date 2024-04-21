@@ -34,6 +34,12 @@ pub struct CropData {
     pub money_type: models::MoneyType,
 }
 
+#[derive(Serialize)]
+pub struct ModifiedPlayer<T: Serialize> {
+    pub player: models::Player,
+    pub payload: T,
+}
+
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
@@ -45,9 +51,9 @@ pub enum Request {
 #[derive(Serialize)]
 #[serde(tag = "type")]
 pub enum Response {
-    Init(models::Player),
-    CycleResolved(ResolveCycleData),
-    CropBought(models::Player),
+    Init(ModifiedPlayer<Vec<models::Plot>>),
+    CycleResolved(ModifiedPlayer<ResolveCycleData>),
+    CropBought(ModifiedPlayer<Vec<models::Plot>>),
     // TODO: Add more
 }
 
@@ -86,7 +92,10 @@ impl State {
 
     // Send user data at startup
     pub fn init(&self) -> anyhow::Result<()> {
-        self.send(Response::Init(self.player.clone()))
+        self.send(Response::Init(ModifiedPlayer {
+            player: self.player.clone(),
+            payload: self.plots.clone(),
+        }))
     }
 
     // Send a message to the user
@@ -112,16 +121,18 @@ impl State {
         };
 
         let data = bank.handle_cycle(&cycle_data, context).await?;
-        let new_player = data.0.player.clone();
         self.player.current_cycle += 1;
-        self.send(Response::CycleResolved(data.0))?;
+        self.send(Response::CycleResolved(ModifiedPlayer {
+            player: self.player.clone(),
+            payload: data.0,
+        }))?;
 
         if let Some(player_id) = self.player.id {
             let id = database
                 .create_statistics(models::Statistic {
                     id: None,
                     cycle: self.player.current_cycle,
-                    score: new_player.current_score,
+                    score: self.player.current_score,
                     player_id,
                 })
                 .await?;
@@ -172,7 +183,10 @@ impl State {
                 _ => {}
             };
 
-            self.send(Response::CropBought(self.player.clone()))?;
+            self.send(Response::CropBought(ModifiedPlayer {
+                player: self.player.clone(),
+                payload: self.plots.clone(),
+            }))?;
         }
 
         Ok(())
@@ -200,7 +214,10 @@ impl State {
                         plot.quantity = crop_data.quantity;
                         self.player.balance_cash -= price;
 
-                        self.send(Response::CropBought(self.player.clone()))?;
+                        self.send(Response::CropBought(ModifiedPlayer {
+                            player: self.player.clone(),
+                            payload: self.plots.clone(),
+                        }))?;
                     }
                 }
 

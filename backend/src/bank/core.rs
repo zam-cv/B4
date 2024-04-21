@@ -6,7 +6,10 @@ use crate::{
         },
     },
     config, models,
-    socket::{context::Context, state::{CycleData, Duration}},
+    socket::{
+        context::Context,
+        state::{CycleData, Duration},
+    },
 };
 use anyhow::Result;
 use lazy_static::lazy_static;
@@ -26,7 +29,6 @@ lazy_static! {
 #[derive(Serialize)]
 pub struct ResolveCycleData {
     pub events: Vec<String>,
-    pub player: models::Player,
     pub tip: Option<String>,
 }
 
@@ -230,13 +232,6 @@ impl Bank {
             context.player.current_score = change as f64 / max_change as f64;
         }
 
-        Ok((
-            ResolveCycleData {
-                events,
-                player: context.player.clone(),
-                tip,
-            },
-            functions,
-        ))
+        Ok((ResolveCycleData { events, tip }, functions))
     }
 }
