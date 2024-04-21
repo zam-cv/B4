@@ -57,7 +57,7 @@ public class Connection : MonoBehaviour
         Debug.Log("Token: " + token);
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("token", token);
-        websocket = new WebSocket("ws://localhost:8080/ws/", headers);
+        websocket = new WebSocket("ws://" + Context.Instance.Host + "/ws/", headers);
 
         websocket.OnOpen += () =>
         {
@@ -95,8 +95,8 @@ public class Connection : MonoBehaviour
                     Debug.Log(cycleResolvedData.payload.events[0]);
                     break;
                 case "CropBought":
-                    ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>(message);
-                    gameObject.GetComponent<State>().SetState(initData.player); 
+                    ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
+                    gameObject.GetComponent<State>().SetState(cropBoughtData.player); 
                     // set the plots with data.payload
                     break;
                     // Add more cases here

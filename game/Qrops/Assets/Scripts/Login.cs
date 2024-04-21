@@ -49,7 +49,8 @@ public class Login : MonoBehaviour
     IEnumerator RequestAuth()
     {
         string token = PlayerPrefs.GetString("token");
-        UnityWebRequest request = UnityWebRequest.Get("http://localhost:8080/api/auth");
+        // UnityWebRequest request = UnityWebRequest.Get("http://localhost:8080/api/auth");
+        UnityWebRequest request = UnityWebRequest.Get(Context.Instance.ServerUrl + "/auth");
         request.SetRequestHeader("token", token);
 
         yield return request.SendWebRequest();
@@ -83,7 +84,7 @@ public class Login : MonoBehaviour
 
         string json = JsonUtility.ToJson(user);
 
-        UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/signin", json, "application/json");
+        UnityWebRequest request = UnityWebRequest.Post(Context.Instance.ServerUrl + "/auth/signin", json, "application/json");
 
         yield return request.SendWebRequest();
 

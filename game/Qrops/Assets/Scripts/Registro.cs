@@ -65,7 +65,7 @@ public void Start(){
         string json = JsonUtility.ToJson(user);
         print(json);
 
-        UnityWebRequest request = UnityWebRequest.Post("http://localhost:8080/api/auth/register", json, "application/json");
+        UnityWebRequest request = UnityWebRequest.Post(Context.Instance.ServerUrl + "/auth/register", json, "application/json");
 
         yield return request.SendWebRequest();
 

@@ -99,7 +99,7 @@ public class Select_crop : MonoBehaviour
     IEnumerator RequestCropType()
     {
         string token = Context.Instance.AuthToken;
-        UnityWebRequest request = UnityWebRequest.Get("http://localhost:8080/api/admin/data/crops/" + cropType);
+        UnityWebRequest request = UnityWebRequest.Get(Context.Instance.ServerUrl + "/admin/data/crops/" + cropType);
         request.SetRequestHeader("token", token);
 
         yield return request.SendWebRequest();
