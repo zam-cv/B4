@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
-
+using UnityEngine.SceneManagement;
 using NativeWebSocket;
 
 public struct Player
@@ -42,13 +42,33 @@ public struct ModifiedPlayer<T>
 
 public class Connection : MonoBehaviour
 {
+    public static Connection Instance { get; private set; }
     WebSocket websocket;
 
     public GameObject loading_logo, loading_background;
 
+    // state
+    public Player player = new Player();
+
     void Start()
     {
-        StartAsync();
+        if (websocket == null)
+        {
+            StartAsync(); // Solo inicia la conexión si no está ya activa
+        }
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     async void StartAsync()
@@ -85,18 +105,21 @@ public class Connection : MonoBehaviour
             {
                 case "Init":
                     ModifiedPlayer<InititialData> initData = JsonConvert.DeserializeObject<ModifiedPlayer<InititialData>>(message);
-                    gameObject.GetComponent<State>().SetState(initData.player);
+                    player = initData.player;
+                    Utils.Instance.SetState(player);
+                    // SetState(player);
+                    // gameObject.GetComponent<State>().SetState(player);
                     // set the plots with data.payload
                     break;
                 case "CycleResolved":
                     Debug.Log(message);
                     ModifiedPlayer<CycleResolved> cycleResolvedData = JsonConvert.DeserializeObject<ModifiedPlayer<CycleResolved>>(message);
-                    gameObject.GetComponent<State>().SetState(cycleResolvedData.player);
+                    player = cycleResolvedData.player;
                     Debug.Log(cycleResolvedData.payload.events[0]);
                     break;
                 case "CropBought":
                     ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
-                    gameObject.GetComponent<State>().SetState(cropBoughtData.player); 
+                    player = cropBoughtData.player;
                     // set the plots with data.payload
                     break;
                     // Add more cases here
