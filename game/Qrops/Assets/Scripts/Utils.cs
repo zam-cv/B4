@@ -47,4 +47,19 @@ public class Utils : MonoBehaviour
         coyoteText.text = player.balance_coyote.ToString();
         cashText.text = player.balance_cash.ToString();
     }
+
+    public void SetTopPlayers(List<string> topPlayers)
+    {
+        GameObject topPlayersObject = GameObject.Find("topPlayers");
+        TMP_Text topPlayersText = topPlayersObject.GetComponent<TMP_Text>();
+
+        string topPlayersString = "";
+        int i = 1;
+        foreach (string player in topPlayers)
+        {
+            topPlayersString += i + ". " + player + "\n";
+        }
+
+        topPlayersText.text = topPlayersString;
+    }
 }

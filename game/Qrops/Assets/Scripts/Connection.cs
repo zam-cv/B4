@@ -107,6 +107,7 @@ public class Connection : MonoBehaviour
                     ModifiedPlayer<InititialData> initData = JsonConvert.DeserializeObject<ModifiedPlayer<InititialData>>(message);
                     player = initData.player;
                     Utils.Instance.SetState(player);
+                    Utils.Instance.SetTopPlayers(initData.payload.top_players);
                     // set the plots with data.payload
                     break;
                 case "CycleResolved":
