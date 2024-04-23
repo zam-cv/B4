@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.dark-theme {
+  filter: invert(1) hue-rotate(175deg) brightness(0.9) contrast(0.8);
+}
+
 html {
   overflow: hidden;
   height: 100%;
   width: 100%;
+  background: white;
 }
 
 body {
