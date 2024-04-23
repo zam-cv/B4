@@ -39,8 +39,8 @@ pub struct Bank {
 
 impl Bank {
     pub fn new() -> Self {
-        let getters = build_function_map!(Getter, getters, get_money, get_value_random);
-        let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money);
+        let getters = build_function_map!(Getter, getters, get_money, get_value_random, robar);
+        let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money, drop_money, duplicate_money);
 
         Bank { getters, handlers }
     }
