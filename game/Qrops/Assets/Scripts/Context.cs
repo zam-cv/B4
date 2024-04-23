@@ -5,12 +5,17 @@ using System.Runtime.InteropServices;
 
 public class Context : MonoBehaviour
 {
+    const string HOSTNAME = "localhost";
+    const string PORT = "8080";
+    const string PROTOCOL = "http:";
+
     public static Context Instance { get; private set; }
     public string AuthToken { get; set; }
-    public string HostName { get; set; } = "localhost";
-    public string Port { get; set; } = "8080";
-    public string Host { get; set; } = "localhost:8080";
-    public string ServerUrl { get; set; } = "http://localhost:8080/api";
+    public string HostName { get; set; } = HOSTNAME;
+    public string Port { get; set; } = PORT;
+    public string Protocol { get; set; } = PROTOCOL;
+    public string Host { get; set; } = HOSTNAME + ":" + PORT;
+    public string ServerUrl { get; set; } = PROTOCOL + "//" + HOSTNAME + ":" + PORT + "/api";
 
     [DllImport("__Internal")]
     private static extern string GetHostname();
@@ -21,10 +26,11 @@ public class Context : MonoBehaviour
         {
             string hostname = GetHostname();
             Instance.HostName = hostname;
-            Instance.Host = hostname + ":" + Instance.Port + "/api";
-            Instance.ServerUrl = "http://" + Instance.Host;
+            Instance.Host = hostname + ":" + Instance.Port;
+            Instance.ServerUrl = Protocol + "//" + Instance.Host + "/api";
             Debug.Log("Hostname: " + hostname);
-        } else
+        }
+        else
         {
             Debug.Log("Not WebGL");
         }
