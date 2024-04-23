@@ -2,22 +2,219 @@
   "positive": [
     {
       "getters": {
-        "value": "get_value_random(1, 100)"
+        "value": "get_value_random(100, 350)"
       },
-      "value": "Tu saldo incremento ${value}",
+      "value": "Tus productos ganaron un premio local por su excelente calidad.",
       "handlers": [
         "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "premio_mayor()"
+      },
+      "value": "¡Impresionante ganaste una apuesta con ganancias de ${value}!",
+      "handlers": []
+    },
+    {
+      "getters": {},
+      "value": "Una famosa personalidad visita tu granja y decide invertir en tu negocio.",
+      "handlers": [
+        "increment_money(800)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(150, 450)"
+      },
+      "value": "Tu historia de éxito se publica en una revista prominente, atrayendo nuevos clientes y ganas ${value}.",
+      "handlers": [
+        "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Fue una buena temporada, todos aman tus productos y duplicaste tus ganancias.",
+      "handlers": [
+        "duplicate_money()"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(500, 1000)"
+      },
+      "value": "Los precios de mercado para tus cultivos suben inesperadamente. Ganaste ${value}.",
+      "handlers": [
+        "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Recibes una donación de una ONG para ayudarte a mejorar tu producción.",
+      "handlers": [
+        "increment_money(450)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(1000, 3000)"
+      },
+      "value": "¡Compraste un boleto de loteria y ganaste ${value}!.",
+      "handlers": [
+        "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(200, 500)"
+      },
+      "value": "Un restaurante local de alta gama elige tus productos como proveedor exclusivo, incrementando tus ingresos en ${value}.",
+      "handlers": [
+        "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(100, 300)"
+      },
+      "value": "Desarrollas tus tecnicas de cultivo aumentando la eficiencia, te ahorras ${value} en costos operativos.",
+      "handlers": [
+        "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Un vecino te regala fertilizante sobrante, lo que te ahorra costos de insumos.",
+      "handlers": [
+        "increment_money(150)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(20, 100)"
+      },
+      "value": "Encuentras una oferta excelente en un mercado local para herramientas agrícolas, ahorrándote ${value}.",
+      "handlers": [
+        "increment_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Las condiciones climáticas han sido perfectas este mes, lo que resulta en un crecimiento excepcional de tus cultivos.",
+      "handlers": [
+        "increment_money(300)"
       ]
     }
   ],
   "negative": [
     {
+      "getters": {},
+      "value": "Hubo una sequía, perdiste todo tu dinero para sobrevivir a los gastos.",
+      "handlers": [
+        "drop_money()"
+      ]
+    },
+    {
       "getters": {
-        "value": "get_value_random(1, 100)"
+        "value": "get_value_random(300, 900)"
       },
-      "value": "Tu saldo decremento ${value}",
+      "value": "Trataste de tramitar un prestamo coyote y te estafaron con ${value}.",
       "handlers": [
         "decrement_money(value)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(50, 300)"
+      },
+      "value": "Una plaga devastó parte de tus cultivos, causando pérdidas de ${value}.",
+      "handlers": [
+        "decrement_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Una pieza esencial de maquinaria se rompió y requiere reparación urgente, costando mucho dinero.",
+      "handlers": [
+        "decrement_money(250)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(200, 600)"
+      },
+      "value": "El gobierno impone un impuesto nuevo a los agricultores, y pagas ${value}.",
+      "handlers": [
+        "decrement_money(value)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "robar()"
+      },
+      "value": "¡Te robaron! Perdiste ${value}.",
+      "handlers": []
+    },
+    {
+      "getters": {
+        "value": "get_value_random(100, 400)"
+      },
+      "value": "¡Un familiar tuyo fue al hospital!. Perdiste ${value}.",
+      "handlers": [
+        "decrement_money(value)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(100, 300)"
+      },
+      "value": "Una inspección de seguridad fallida resulta en la necesidad de renovaciones costosas, perdiendo ${value}.",
+      "handlers": [
+        "decrement_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Una mala gestión del riego lleva a un consumo excesivo de agua, incrementando drásticamente tu factura.",
+      "handlers": [
+        "decrement_money(200)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "El precio del combustible aumenta inesperadamente, elevando tus costos operativos.",
+      "handlers": [
+        "decrement_money(250)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Debido a un error administrativo, pagas doble por una entrega de insumos.",
+      "handlers": [
+        "decrement_money(150)"
+      ]
+    },
+    {
+      "getters": {
+        "value": "get_value_random(50, 150)"
+      },
+      "value": "Un aumento en las tarifas de seguro debido a cambios en la política regional te cuesta ${value}.",
+      "handlers": [
+        "decrement_money(value)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Un corte de energía prolongado daña tus cultivos almacenados y productos perecederos.",
+      "handlers": [
+        "decrement_money(400)"
+      ]
+    },
+    {
+      "getters": {},
+      "value": "Un error en la aplicación de pesticidas contamina una parte de tu cultivo, haciéndolo no vendible.",
+      "handlers": [
+        "decrement_money(300)"
       ]
     }
   ],
