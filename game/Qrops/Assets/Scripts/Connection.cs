@@ -42,7 +42,7 @@ public struct ModifiedPlayer<T>
 
 public class Connection : MonoBehaviour
 {
-    public static Connection Instance { get; private set; }
+    public static Connection Instance { get; set; }
     WebSocket websocket;
 
     public GameObject loading_logo, loading_background;
@@ -107,8 +107,6 @@ public class Connection : MonoBehaviour
                     ModifiedPlayer<InititialData> initData = JsonConvert.DeserializeObject<ModifiedPlayer<InititialData>>(message);
                     player = initData.player;
                     Utils.Instance.SetState(player);
-                    // SetState(player);
-                    // gameObject.GetComponent<State>().SetState(player);
                     // set the plots with data.payload
                     break;
                 case "CycleResolved":
