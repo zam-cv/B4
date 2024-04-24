@@ -223,3 +223,20 @@ pub async fn delete_tip(
 
     Ok(HttpResponse::Ok().finish())
 }
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The event was created", body = vec<Event>)
+  ),
+)]
+#[get("/events")]
+pub async fn get_events(
+  database: web::Data<Database>,
+) -> Result<impl Responder> {
+  let events = database.get_events()
+    .await
+    .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+  Ok(HttpResponse::Ok().json(events))
+}
