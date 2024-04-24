@@ -10,6 +10,7 @@ public class ConfigPanel : MonoBehaviour
         SceneManager.LoadScene("Login"); 
     }
 
+
     // Método para silenciar o activar el sonido del juego.
     public void ToggleMute()
     {
@@ -29,10 +30,6 @@ public class ConfigPanel : MonoBehaviour
     public void Logout()
     {
         Debug.Log("Cerrando sesión del usuario");
-        PlayerPrefs.DeleteKey("token");
-        Context.Instance.AuthToken = null;
-        // Cerrar la conexión con el socket
-        SceneManager.LoadScene("Login");
         // Aquí puedes añadir código para manejar el cierre de sesión o salir del juego.
     }
 
