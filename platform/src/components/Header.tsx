@@ -57,8 +57,8 @@ export default function Header() {
             </div>
           </span>
           <div
-            className={`flex max-[1100px]:${
-              open ? "flex" : "hidden"
+            className={`flex ${
+              open ? "max-[1100px]:flex" : "max-[1100px]:hidden"
             } max-[1100px]:flex-col max-[1100px]:top-[120%] max-[1100px]:absolute bg-white z-10 rounded max-[1100px]:shadow-md`}
           >
             {pagePermissions.map((page) => {
