@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Qrops</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+    <link rel="shortcut icon" href="./verqor.png" />
     <link rel="stylesheet" href="TemplateData/style.css" />
     <style>
       html {
@@ -15,22 +15,40 @@
         overflow: hidden;
       }
 
+      body { 
+        display: grid;
+        grid-template: auto 1fr / 1fr;
+        width: 100%;
+        height: 100%;
+        background: #a4c553;
+      }
+
       * {
         font-family: Arial, sans-serif;
+        outline: none;
       }
 
       #container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100vw;
+        width: 100%;
+        height: 100%;
         position: relative;
+      }
+
+      .content {
+        width: 1920px;
+        height: 1080px;
+        transform-origin: center center;
+        translate: -50% -50%;
+        /* scale: 0.5; */
+        position: absolute;
+        left: 50%;
+        top: 50%;
       }
 
       #unity-canvas {
         position: absolute;
         transition: width 0.9s, height 0.9s;
+        user-select: none;
       }
 
       header {
@@ -38,9 +56,10 @@
         padding: 20px 40px;
         box-shadow: 0 0 14px 13px rgb(11 11 11 / 35%);
         position: relative;
-        z-index: 3;
+        z-index: 20;
         justify-content: center;
         gap: 100px;
+        background: white;
       }
 
       h1 {
@@ -112,6 +131,25 @@
       .login {
         background: white;
         color: #fd8a33;
+      }
+
+      @media (max-width: 1300px) {
+        .logo > div {
+          position: relative;
+          margin-bottom: 15px;
+        }
+
+        .nav {
+          display: none;
+        }
+
+        .auth {
+          display: none;
+        }
+
+        .menu {
+          gap: 0;
+        }
       }
     </style>
   </head>
@@ -416,10 +454,13 @@
       </div>
     </header>
     <div id="container">
-      <canvas id="unity-canvas" tabindex="-1"></canvas>
+      <div class="content">
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
+      </div>
     </div>
     <script>
-            var container = document.querySelector("#container");
+      var content = document.querySelector(".content");
+      var container = document.querySelector("#container");
       var canvas = document.querySelector("#unity-canvas");
 
       async function resizeCanvas() {
@@ -428,6 +469,31 @@
         canvas.style.visibility = "visible";
       }
 
+      function resizeContent() {
+        let width = container.clientWidth;
+        let height = container.clientHeight;
+
+        let widthCanvas = 1920;
+        let heightCanvas = 1080;
+
+        let l = 0;
+        let r = Math.max(width, height);
+        let m;
+
+        for(let i = 0; i < 100; i++) {
+          m = (l + r) / 2;
+          
+          if (widthCanvas * m <= width && heightCanvas * m <= height) {
+            l = m;
+          } else {
+            r = m;
+          }
+        }
+
+        content.style.scale = l;
+      }
+
+      window.addEventListener("resize", resizeContent);
       window.addEventListener("resize", resizeCanvas);
       function unityShowBanner(msg, type) {}
 
@@ -450,9 +516,11 @@
         meta.content =
           "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
         document.getElementsByTagName("head")[0].appendChild(meta);
+        resizeContent()
         canvas.style.width = "100%";
         canvas.style.height = "100%";
       } else {
+        resizeContent()
         canvas.style.width = "100%";
         canvas.style.height = "100%";
       }

@@ -1,12 +1,15 @@
 import os
+import shutil
 
 # TODO: remove not necessary files
 # TODO: post your own images
 
 PATH = os.path.dirname(__file__)
 FILE = os.path.join(PATH, 'template.html')
+
 OUTPUT = os.path.join(PATH, "..", "..", "page", 'index.html')
 BUILD = os.path.join(PATH, "..", "..", "page", "Build")
+LOGO = os.path.join(PATH, "..", "..", "page", "verqor.png")
 
 with open(FILE, 'r') as f:
     with open(OUTPUT, 'w') as o:
@@ -25,3 +28,5 @@ with open(FILE, 'r') as f:
                 content = content.replace('/Qrops.framework.js.unityweb', "/" + file)
         
         o.write(content)
+
+shutil.copy(os.path.join(PATH, "verqor.png"), LOGO)
