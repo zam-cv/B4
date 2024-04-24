@@ -30,6 +30,7 @@ use utoipa::OpenApi;
         routes::admin::data::update_crop_type_description,
         routes::admin::data::update_crop_type_price,
         routes::admin::data::update_crop_type_duration,
+        routes::admin::data::get_events,
         routes::admin::mail::send_emails,
         routes::admin::mail::get_user_count_by_user_filter,
         routes::admin::player::get_player,
@@ -63,6 +64,7 @@ use utoipa::OpenApi;
         models::PermissionType,
         models::Tip,
         models::EventType,
+        models::Event,
         routes::admin::permissions::PermissionPayload,
         routes::admin::mail::EmailPayload,
         routes::admin::mail::Filters
