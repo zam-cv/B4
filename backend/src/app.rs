@@ -162,6 +162,7 @@ pub async fn app() -> std::io::Result<()> {
                                             .service(routes::admin::data::update_crop_type_description)
                                             .service(routes::admin::data::update_crop_type_price)
                                             .service(routes::admin::data::update_crop_type_duration)
+                                            .service(routes::admin::data::get_events),
                                     )
                                     .service(
                                         web::scope("/permissions")
