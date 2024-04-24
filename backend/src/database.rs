@@ -1019,6 +1019,11 @@ impl Database {
         .await
     }
 
+    pub async fn get_events(&self) -> anyhow::Result<Vec<models::Event>> {
+        self.query_wrapper(move |conn| schema::events::table.load::<models::Event>(conn))
+            .await
+    }
+
     pub async fn get_random_events(&self, count: i64) -> anyhow::Result<Vec<models::Event>> {
         // TODO: make more efficient
         self.query_wrapper(move |conn| {
