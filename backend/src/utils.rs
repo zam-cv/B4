@@ -63,8 +63,8 @@ pub fn get_cookie_with_expired_token() -> Cookie<'static> {
     Cookie::build("token", "")
         .http_only(true)
         .path("/")
-        .secure(true)
-        .same_site(cookie::SameSite::None)
+        // .secure(true)
+        // .same_site(cookie::SameSite::None)
         .expires(cookie::time::OffsetDateTime::now_utc() - cookie::time::Duration::days(1))
         .finish()
 }
@@ -95,8 +95,8 @@ pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
     Cookie::build("token", token)
         .http_only(true)
         .path("/")
-        .secure(true)
-        .same_site(cookie::SameSite::None)
+        // .secure(true)
+        // .same_site(cookie::SameSite::None)
         .finish()
 }
 

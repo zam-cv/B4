@@ -189,7 +189,11 @@ pub async fn app() -> std::io::Result<()> {
     let server = if let Ok(builder) = config::ssl::get_ssl_acceptor() {
         log::info!("SSL configuration loaded");
         log::info!("Server running at https://{}", &CONFIG.address);
-        server.bind_openssl(&CONFIG.address, builder)?
+
+        server
+            .bind(&CONFIG.address)?
+            .bind_auto_h2c(&format!("{}:80", &CONFIG.host))?
+            .bind_openssl(&format!("{}:443", &CONFIG.host), builder)?
     } else {
         log::warn!("Failed to load SSL configuration, using insecure connection");
         log::info!("Server running at http://{}", &CONFIG.address);

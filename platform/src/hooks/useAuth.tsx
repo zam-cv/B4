@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../utils/constants";
+import { API_URL, setHost, removeHost } from "../utils/constants";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, AuthContextType } from "../contexts/AuthContext";
 import { setToken, deleteToken } from "../utils/auth";
@@ -38,9 +38,15 @@ export function useProvideAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [permissions, setPermissions] = useState<Set<string> | null>(null);
 
-  const signin = async (email: string, password: string) => {
+  const signin = async (email: string, password: string, serverHost: string) => {
     setLoading(true);
     const config = await getConfig();
+
+    if (serverHost != "") {
+      setHost(serverHost);
+    } else {
+      removeHost();
+    }
 
     axios
       .post(
@@ -74,9 +80,11 @@ export function useProvideAuth() {
         setAdmin(null);
         setPermissions(null);
         deleteToken();
+        removeHost();
       })
       .catch((error) => {
         console.error(error);
+        removeHost();
       });
   };
 
@@ -95,6 +103,7 @@ export function useProvideAuth() {
         .catch((_) => {
           setIsAuthenticated(false);
           setLoading(false);
+          removeHost();
         });
     })();
   }, []);

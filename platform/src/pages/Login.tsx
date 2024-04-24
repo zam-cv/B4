@@ -1,11 +1,18 @@
 import { handleKeyDown, handleEnter } from "../utils";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function Login() {
+  const [serverHost, setServerHost] = useState("");
   const { isAuthenticated, signin, loading } = useAuth();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -17,7 +24,7 @@ export default function Login() {
     const password = passwordRef.current?.value;
 
     if (!email || !password) return;
-    signin(email, password);
+    signin(email, password, serverHost);
   }
 
   useEffect(() => {
@@ -51,19 +58,42 @@ export default function Login() {
                 Ingresa tu correo y contraseña para acceder a la plataforma
               </p>
             </div>
-            <div className="flex flex-col gap-8">
-              <Input
-                ref={emailRef}
-                type="email"
-                placeholder="Correo electrónico"
-                onKeyDown={(e) => handleKeyDown(e, passwordRef)}
-              />
-              <Input
-                ref={passwordRef}
-                type="password"
-                onKeyDown={(e) => handleEnter(e, login)}
-                placeholder="Contraseña"
-              />
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-8">
+                <Input
+                  ref={emailRef}
+                  type="email"
+                  placeholder="Correo electrónico"
+                  onKeyDown={(e) => handleKeyDown(e, passwordRef)}
+                />
+                <Input
+                  ref={passwordRef}
+                  type="password"
+                  onKeyDown={(e) => handleEnter(e, login)}
+                  placeholder="Contraseña"
+                />
+              </div>
+              <Accordion
+                type="single"
+                collapsible
+                className="px-2 pt-3 pb-3 text-gray-500"
+              >
+                <AccordionItem className=" border-b-0" value="item-1">
+                  <AccordionTrigger className="p-0 hover:no-underline">
+                    Opciones del servidor
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="pt-3 px-3">
+                      <Input
+                        type="text"
+                        placeholder="https://hostname:port"
+                        value={serverHost}
+                        onChange={(e) => setServerHost(e.target.value)}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
               <Button
                 className="bg-orange-500 text-white hover:bg-orange-600 font-bold"
                 ref={buttonRef}

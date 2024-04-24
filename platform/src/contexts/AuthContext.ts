@@ -6,7 +6,7 @@ export type AuthContextType = {
   loading: boolean;
   isAuthenticated: boolean;
   permissions: Set<string> | null;
-  signin: (email: string, password: string) => void;
+  signin: (email: string, password: string, serverHost: string) => void;
   signout: () => void;
 }
 

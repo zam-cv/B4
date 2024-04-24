@@ -1,3 +1,5 @@
+import { setInStorage, removeInStorage } from "./index";
+
 const SERVER_PROTOCOL = import.meta.env.VITE_APP_SERVER_PROTOCOL || "http";
 const SERVER_PORT = import.meta.env.VITE_APP_SERVER_PORT || "8080";
 const SERVER_HOSTNAME = import.meta.env.VITE_APP_SERVER_HOST || "localhost";
@@ -10,9 +12,23 @@ SERVER_HOST =
     ? SERVER_HOST
     : window.location.hostname + ":" + SERVER_PORT;
 
-const API_ROUTE = import.meta.env.VITE_APP_API_ROUTE || "api/admin";
-export const API_URL = `${SERVER_PROTOCOL}://${SERVER_HOST}/${API_ROUTE}`;
-export const SOCKET_URL = `ws${SERVER_PROTOCOL === "https" ? "s" : ""}://${SERVER_HOST}/viewer/`;
+export const API_ROUTE = import.meta.env.VITE_APP_API_ROUTE || "api/admin";
+export let API_URL = `${SERVER_PROTOCOL}://${SERVER_HOST}/${API_ROUTE}`;
+export let SOCKET_URL = `ws${SERVER_PROTOCOL === "https" ? "s" : ""}://${SERVER_HOST}/viewer/`;
+
+export function setHost(serverHost: string) {
+  setInStorage("API_URL", serverHost);
+  API_URL = `${serverHost}/${API_ROUTE}`;
+  let protocol = serverHost.startsWith("https") ? "wss" : "ws";
+  serverHost = serverHost.replace(/https?:\/\//, "");
+  SOCKET_URL = `${protocol}://${serverHost}/viewer/`;
+}
+
+export function removeHost() {
+  API_URL = `${SERVER_PROTOCOL}://${SERVER_HOST}/${API_ROUTE}`;
+  SOCKET_URL = `ws${SERVER_PROTOCOL === "https" ? "s" : ""}://${SERVER_HOST}/viewer/`;
+  removeInStorage("API_URL");
+}
 
 export const ADMIN_PERMISSIONS = {
   VIEW_DOCUMENTS: "ViewDocuments",

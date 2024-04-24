@@ -6,6 +6,8 @@ pub mod ssl;
 
 pub struct Config {
     pub mode: String,
+    pub port: String,
+    pub host: String,
     pub address: String,
     pub user_secret_key: String,
     pub admin_secret_key: String,
@@ -25,6 +27,8 @@ lazy_static! {
 
         Config {
             mode: env::var("MODE").expect("MODE must be set"),
+            port: env::var("PORT").expect("PORT must be set"),
+            host: env::var("HOST").expect("HOST must be set"),
             address: format!(
                 "{}:{}",
                 env::var("HOST").expect("HOST must be set"),

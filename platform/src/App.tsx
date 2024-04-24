@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { initChart } from "./utils/chart";
 import Layout from "./components/Layout";
 import { ADMIN_PERMISSIONS } from "@/utils/constants";
+import { initConfig } from "@/utils";
 
 initChart();
 
@@ -58,6 +59,7 @@ export const pagePermissions = [
 ];
 
 function Pages() {
+  initConfig();
   const { permissions } = useAuth();
 
   if (
