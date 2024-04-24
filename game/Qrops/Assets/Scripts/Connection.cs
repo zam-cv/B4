@@ -77,7 +77,7 @@ public class Connection : MonoBehaviour
         Debug.Log("Token: " + token);
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("token", token);
-        websocket = new WebSocket("ws://" + Context.Instance.Host + "/ws/", headers);
+        websocket = new WebSocket(Context.Instance.WebSocketUrl, headers);
 
         websocket.OnOpen += () =>
         {

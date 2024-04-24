@@ -58,7 +58,18 @@ pub fn get_cookie_with_expired_token() -> Cookie<'static> {
         .finish()
 }
 
-#[cfg(not(feature = "dev"))]
+#[cfg(feature = "dev_ssl")]
+pub fn get_cookie_with_expired_token() -> Cookie<'static> {
+    Cookie::build("token", "")
+        .http_only(true)
+        .path("/")
+        .secure(true)
+        .same_site(cookie::SameSite::None)
+        .expires(cookie::time::OffsetDateTime::now_utc() - cookie::time::Duration::days(1))
+        .finish()
+}
+
+#[cfg(feature = "prod")]
 pub fn get_cookie_with_expired_token() -> Cookie<'static> {
     Cookie::build("token", "")
         .http_only(true)
@@ -79,7 +90,17 @@ pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
         .finish()
 }
 
-#[cfg(not(feature = "dev"))]
+#[cfg(feature = "dev_ssl")]
+pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
+    Cookie::build("token", token)
+        .http_only(true)
+        .path("/")
+        .secure(true)
+        .same_site(cookie::SameSite::None)
+        .finish()
+}
+
+#[cfg(feature = "prod")]
 pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
     Cookie::build("token", token)
         .http_only(true)
@@ -91,15 +112,25 @@ pub fn get_cookie_with_token<'a>(token: &'a str) -> Cookie<'a> {
 
 #[cfg(feature = "dev")]
 pub fn get_cors() -> Cors {
-    Cors::default()
+    Cors::permissive()
         .allow_any_origin()
         .allow_any_method()
         .allow_any_header()
         .supports_credentials()
 }
 
-#[cfg(not(feature = "dev"))]
+#[cfg(feature = "dev_ssl")]
 pub fn get_cors() -> Cors {
+    Cors::permissive()
+        .allow_any_origin()
+        .allow_any_method()
+        .allow_any_header()
+        .supports_credentials()
+}
+
+#[cfg(feature = "prod")]
+pub fn get_cors() -> Cors {
+    // more restrictive cors settings
     Cors::permissive().supports_credentials()
 }
 

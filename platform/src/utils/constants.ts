@@ -12,7 +12,7 @@ SERVER_HOST =
 
 const API_ROUTE = import.meta.env.VITE_APP_API_ROUTE || "api/admin";
 export const API_URL = `${SERVER_PROTOCOL}://${SERVER_HOST}/${API_ROUTE}`;
-export const SOCKET_URL = `ws://${SERVER_HOST}/viewer/`;
+export const SOCKET_URL = `ws${SERVER_PROTOCOL === "https" ? "s" : ""}://${SERVER_HOST}/viewer/`;
 
 export const ADMIN_PERMISSIONS = {
   VIEW_DOCUMENTS: "ViewDocuments",

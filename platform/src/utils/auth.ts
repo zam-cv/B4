@@ -32,6 +32,6 @@ export async function getConfig(): Promise<Config> {
     withCredentials: true,
     headers: {
       token: await getToken(),
-    },
+    }
   }
 }

@@ -7,7 +7,7 @@ public class Context : MonoBehaviour
 {
     const string HOSTNAME = "localhost";
     const string PORT = "8080";
-    const string PROTOCOL = "http:";
+    const string PROTOCOL = "https:";
 
     public static Context Instance { get; private set; }
     public string AuthToken { get; set; }
@@ -16,18 +16,21 @@ public class Context : MonoBehaviour
     public string Protocol { get; set; } = PROTOCOL;
     public string Host { get; set; } = HOSTNAME + ":" + PORT;
     public string ServerUrl { get; set; } = PROTOCOL + "//" + HOSTNAME + ":" + PORT + "/api";
+    public string WebSocketUrl { get; set; } = "ws" + (PROTOCOL == "https:" ? "s" : "") + "://" + HOSTNAME + ":" + PORT + "/ws/";
 
     [DllImport("__Internal")]
     private static extern string GetHostname();
 
     void Start()
     {
+        Debug.Log("WebSocketUrl: " + Instance.WebSocketUrl);
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             string hostname = GetHostname();
             Instance.HostName = hostname;
             Instance.Host = hostname + ":" + Instance.Port;
             Instance.ServerUrl = Protocol + "//" + Instance.Host + "/api";
+            Instance.WebSocketUrl = "ws" + (Protocol == "https:" ? "s" : "") + "://" + Instance.Host + "/ws/";
             Debug.Log("Hostname: " + hostname);
         }
         else
