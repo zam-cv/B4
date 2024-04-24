@@ -15,16 +15,17 @@ export function Sub({ title, route }: { title: string; route: string }) {
 }
 
 export default function Header() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState(true);
   const { signout, admin, permissions } = useAuth();
 
   useEffect(() => {
-    if (!open) {
+    if (!theme) {
       document.body.classList.add("dark-theme");
     } else {
       document.body.classList.remove("dark-theme");
     }
-  }, [open]);
+  }, [theme]);
 
   return (
     <div className="grid grid-cols-[1fr_auto] p-1 shadow-lg px-10">
@@ -32,14 +33,44 @@ export default function Header() {
         <div className="p-4 font-bold hover:underline cursor-pointer relative flex items-center justify-center w-[80px] mr-5">
           <img src={logo} alt="Verqor" className="w-full h-full absolute" />
         </div>
-        {pagePermissions.map((page) => {
-          if (permissions?.has(page.permission)) {
-            return (
-              <Sub key={page.title} title={page.title} route={page.route} />
-            );
-          }
-          return null;
-        })}
+        <div className="flex relative">
+          <span
+            className="p-4 px-4 hover:underline font-semibold cursor-pointer select-none text-blue-900 gap-2 hidden max-[1100px]:flex"
+            onClick={() => setOpen(!open)}
+          >
+            Secciones
+            <div className="flex items-center justify-center h-full">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={3}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            </div>
+          </span>
+          <div
+            className={`flex max-[1100px]:${
+              open ? "flex" : "hidden"
+            } max-[1100px]:flex-col max-[1100px]:top-[120%] max-[1100px]:absolute bg-white z-10 rounded max-[1100px]:shadow-md`}
+          >
+            {pagePermissions.map((page) => {
+              if (permissions?.has(page.permission)) {
+                return (
+                  <Sub key={page.title} title={page.title} route={page.route} />
+                );
+              }
+              return null;
+            })}
+          </div>
+        </div>
       </div>
       <div className="flex items-center gap-5">
         <span
@@ -49,8 +80,8 @@ export default function Header() {
           Cerrar Sesión
         </span>
         <div>
-          <span onClick={() => setOpen(!open)}>
-            {open ? (
+          <span onClick={() => setTheme(!theme)}>
+            {theme ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
