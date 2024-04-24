@@ -2,11 +2,27 @@ using UnityEngine;
 
 public class ReiniciarMaiz : MonoBehaviour
 {
-    public GameObject contenedorMaices;
+    private GameObject contenedorMaices;
     public GameObject panelMensaje;  // Asegúrate de asignar esto desde el editor de Unity
 
     public void OnClick()
     {
+        //switch dependiendo del nombre del panelMensaje
+        switch (panelMensaje.name)
+        {
+            case "Panel Cosecha Maiz":
+                contenedorMaices = GameObject.Find("Maices" + (ParcelaActual.instance.NumeroParcela - 1));
+                break;
+            case "Panel Cosecha Tomate":
+                contenedorMaices = GameObject.Find("tomates" + (ParcelaActual.instance.NumeroParcela - 1));
+                break;
+            case "Panel Cosecha Cebada":
+                contenedorMaices = GameObject.Find("cebadas" + (ParcelaActual.instance.NumeroParcela - 1));
+                break;
+            case "Panel Cosecha Caña":
+                contenedorMaices = GameObject.Find("Cañas" + (ParcelaActual.instance.NumeroParcela - 1));
+                break;
+        }
         // Desactiva el panel de mensajes
         panelMensaje.SetActive(false);
 
