@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 public class Context : MonoBehaviour
 {
     const string HOSTNAME = "localhost";
-    const string PORT = "8080";
-    const string PROTOCOL = "https:";
+    const string PORT = "8080"; // 443
+    const string PROTOCOL = "http:"; // "https:"
 
     public static Context Instance { get; private set; }
     public string AuthToken { get; set; }
