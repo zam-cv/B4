@@ -34,17 +34,14 @@ public class Select_crop : MonoBehaviour
     void Start()
     {
         balance = GameObject.Find("Balance").GetComponent<TMP_Text>();
-        crop_name = GameObject.Find("Crop_name").GetComponent<TMP_Text>();
-        crop_price = GameObject.Find("Crop_price").GetComponent<TMP_Text>();
-        crop_duration = GameObject.Find("Crop_duration").GetComponent<TMP_Text>();
+        crop_name = GameObject.Find("Nombre").GetComponent<TMP_Text>();
+        crop_price = GameObject.Find("Precio").GetComponent<TMP_Text>();
+        crop_duration = GameObject.Find("Duración").GetComponent<TMP_Text>();
 
-        tomate = GameObject.Find("Anim_tomato");
-        cana = GameObject.Find("Anim_cana");
-        maiz = GameObject.Find("Anim_maiz");
-        cebada = GameObject.Find("Anim_cebada");
         crop = new GameObject();
 
         info_panel = GameObject.Find("Info_panel");
+        
         Hide_all();
     }
 
@@ -111,7 +108,7 @@ public class Select_crop : MonoBehaviour
             CropData cropData = JsonConvert.DeserializeObject<CropData>(request.downloadHandler.text);
             Debug.Log("Crop data: " + cropData.name + " " + cropData.price + " " + cropData.duration);
             crop_name.text = cropData.name;
-            crop_price.text = cropData.price;
+            crop_price.text = "$ " + cropData.price;
             crop_duration.text = cropData.duration;
         }
     }
