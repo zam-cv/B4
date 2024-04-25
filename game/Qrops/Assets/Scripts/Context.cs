@@ -6,8 +6,8 @@ using System.Runtime.InteropServices;
 public class Context : MonoBehaviour
 {
     const string HOSTNAME = "localhost";
-    const string PORT = "8080"; // 443
-    const string PROTOCOL = "http:"; // "https:"
+    const string PORT = "443"; // 443
+    const string PROTOCOL = "https:"; // "https:"
 
     public static Context Instance { get; private set; }
     public string AuthToken { get; set; }
@@ -23,7 +23,6 @@ public class Context : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("WebSocketUrl: " + Instance.WebSocketUrl);
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             string hostname = GetHostname();
@@ -37,6 +36,8 @@ public class Context : MonoBehaviour
         {
             Debug.Log("Not WebGL");
         }
+
+        Debug.Log("WebSocketUrl: " + Instance.WebSocketUrl);
     }
 
     private void Awake()

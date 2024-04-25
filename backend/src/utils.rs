@@ -146,16 +146,46 @@ pub fn always_skip<T>(_: &T) -> bool {
     true
 }
 
+pub fn get_my_ip() -> String {
+    let interfaces = pnet::datalink::interfaces();
+    let mut ip = String::new();
+
+    for interface in interfaces {
+        if !interface.is_up() || interface.ips.is_empty() {
+            continue;
+        }
+
+        for ip_address in interface.ips {
+            if ip_address.is_ipv4() {
+                println!("Interface: {:?}, IP: {:?}", interface.name, ip_address.ip());
+                ip = ip_address.ip().to_string();
+            }
+        }
+    }
+
+    ip
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use dotenv::dotenv;
     use crate::config::CONFIG;
 
     #[test]
     fn test_create_token() {
+        dotenv().ok();
         let token = create_token(&CONFIG.user_secret_key, 0).unwrap();
         let decoded = decode_token(&CONFIG.user_secret_key, &token).unwrap();
 
         assert_eq!(decoded.id, 0);
+    }
+
+    #[test]
+    fn test_get_my_ip() {
+        let ip = get_my_ip();
+
+        println!("My IP: {}", ip);
+        assert!(!ip.is_empty());
     }
 }
