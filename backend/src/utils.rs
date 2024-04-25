@@ -146,24 +146,10 @@ pub fn always_skip<T>(_: &T) -> bool {
     true
 }
 
-pub fn get_my_ip() -> String {
-    let interfaces = pnet::datalink::interfaces();
-    let mut ip = String::new();
-
-    for interface in interfaces {
-        if !interface.is_up() || interface.ips.is_empty() {
-            continue;
-        }
-
-        for ip_address in interface.ips {
-            if ip_address.is_ipv4() {
-                println!("Interface: {:?}, IP: {:?}", interface.name, ip_address.ip());
-                ip = ip_address.ip().to_string();
-            }
-        }
-    }
-
-    ip
+pub fn get_my_ip() -> anyhow::Result<String> {
+    local_ip_address::local_ip()
+        .map(|ip| ip.to_string())
+        .map_err(|_| anyhow::anyhow!("Failed to get the IP address"))
 }
 
 #[cfg(test)]
@@ -185,7 +171,7 @@ mod tests {
     fn test_get_my_ip() {
         let ip = get_my_ip();
 
-        println!("My IP: {}", ip);
-        assert!(!ip.is_empty());
+        println!("My IP: {}", ip.unwrap());
+        // assert!(!ip.is_empty());
     }
 }
