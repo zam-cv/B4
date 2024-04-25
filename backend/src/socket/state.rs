@@ -44,13 +44,14 @@ pub struct ModifiedPlayer<T: Serialize> {
 pub struct InitialData {
     pub plots: Vec<models::Plot>,
     pub top_players: Vec<String>,
+    pub crops_types: Vec<models::CropType>
 }
 
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
     Cycle(CycleData),
-    BuyCrop(CropData),
+    BuyCrop(CropData)
     // TODO: Add more
 }
 
@@ -103,6 +104,7 @@ impl State {
             payload: InitialData {
                 plots: self.plots.clone(),
                 top_players: database.get_top_players(config::TOP_PLAYERS).await?,
+                crops_types: database.get_crop_types().await?,
             },
         }))
     }

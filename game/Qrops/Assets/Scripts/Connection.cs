@@ -28,10 +28,19 @@ public struct Plot
     public int quantity;
 }
 
-public struct InititialData
+public struct CropType
+{
+    public string name;
+    public int price;
+    public int duration;
+    public string description;
+}
+
+public struct InitialData
 {
     public List<Plot> plots;
     public List<string> top_players;
+    public List<CropType> crops_types;
 }
 
 public struct ModifiedPlayer<T>
@@ -104,11 +113,12 @@ public class Connection : MonoBehaviour
             switch (sample["type"].ToString())
             {
                 case "Init":
-                    ModifiedPlayer<InititialData> initData = JsonConvert.DeserializeObject<ModifiedPlayer<InititialData>>(message);
+                    ModifiedPlayer<InitialData> initData = JsonConvert.DeserializeObject<ModifiedPlayer<InitialData>>(message);
                     player = initData.player;
                     Utils.Instance.SetState(player);
                     Utils.Instance.SetTopPlayers(initData.payload.top_players);
-                    // set the plots with data.payload
+                    // set the crops with data.payload.crops_types
+                    // set the plots with data.payload.plots
                     break;
                 case "CycleResolved":
                     Debug.Log(message);
