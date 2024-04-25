@@ -10,12 +10,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 public class Select_crop : MonoBehaviour
 {
-    public GameObject info_panel;
-    public GameObject tomate;
-    public GameObject cana;
-    public GameObject maiz;
-    public GameObject cebada;
-    public GameObject crop;
     public TMP_Text balance;
     public TMP_Text crop_name;
     public TMP_Text crop_price;
@@ -35,14 +29,11 @@ public class Select_crop : MonoBehaviour
     {
         balance = GameObject.Find("Balance").GetComponent<TMP_Text>();
         crop_name = GameObject.Find("Nombre").GetComponent<TMP_Text>();
+        crop_name.text = "";
         crop_price = GameObject.Find("Precio").GetComponent<TMP_Text>();
-        crop_duration = GameObject.Find("Duración").GetComponent<TMP_Text>();
-
-        crop = new GameObject();
-
-        info_panel = GameObject.Find("Info_panel");
-        
-        Hide_all();
+        crop_price.text = "";
+        crop_duration = GameObject.Find("Duracion").GetComponent<TMP_Text>();
+        crop_duration.text = "";
     }
 
     void AttemptCropRequest()
@@ -50,47 +41,26 @@ public class Select_crop : MonoBehaviour
         StartCoroutine(RequestCropType());
     }
 
-    public void Show_info()
-    { 
-        info_panel.SetActive(true);
-    }
-
-    public void Hide_all()
-    {
-        info_panel.SetActive(false);
-        tomate.SetActive(false);
-        cana.SetActive(false);
-        maiz.SetActive(false);
-        cebada.SetActive(false);
-    }
-
     public void View_crop(GameObject crop)
     {
-        Hide_all();
-        crop.SetActive(true);
-        Show_info();
         AttemptCropRequest();
     }
 
     public void View_tomate()
     {
         cropType = "tomate";
-        View_crop(tomate);
     }
     public void View_cana()
     {
         cropType = "cana";
-        View_crop(cana);
     }
     public void View_maiz()
     {
         cropType = "maiz";
-        View_crop(maiz);
     }
     public void View_cebada()
     {
         cropType = "cebada";
-        View_crop(cebada);
     }
 
     IEnumerator RequestCropType()

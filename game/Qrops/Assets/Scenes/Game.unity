@@ -5380,9 +5380,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 204381298}
-        m_TargetAssemblyTypeName: BotonInicio, Assembly-CSharp
-        m_MethodName: OnClick
+      - m_Target: {fileID: 1709040210}
+        m_TargetAssemblyTypeName: Select_crop, Assembly-CSharp
+        m_MethodName: View_tomate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8227,9 +8227,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 344695502}
-        m_TargetAssemblyTypeName: BotonInicio, Assembly-CSharp
-        m_MethodName: OnClick
+      - m_Target: {fileID: 1709040210}
+        m_TargetAssemblyTypeName: Select_crop, Assembly-CSharp
+        m_MethodName: View_maiz
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15570,7 +15570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &689490696
 Transform:
   m_ObjectHideFlags: 0
@@ -26793,9 +26793,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1241367340}
-        m_TargetAssemblyTypeName: BotonInicio, Assembly-CSharp
-        m_MethodName: OnClick
+      - m_Target: {fileID: 1709040210}
+        m_TargetAssemblyTypeName: Select_crop, Assembly-CSharp
+        m_MethodName: View_cana
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -26959,9 +26959,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1246969950}
-        m_TargetAssemblyTypeName: BotonInicio, Assembly-CSharp
-        m_MethodName: OnClick
+      - m_Target: {fileID: 1709040210}
+        m_TargetAssemblyTypeName: Select_crop, Assembly-CSharp
+        m_MethodName: View_cebada
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -44603,12 +44603,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75634a40691376c49ab38b54f58762bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  info_panel: {fileID: 0}
-  tomate: {fileID: 0}
-  cana: {fileID: 0}
-  maiz: {fileID: 0}
-  cebada: {fileID: 0}
-  crop: {fileID: 0}
   balance: {fileID: 0}
   crop_name: {fileID: 0}
   crop_price: {fileID: 0}
