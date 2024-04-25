@@ -10,6 +10,7 @@ FILE = os.path.join(PATH, 'template.html')
 OUTPUT = os.path.join(PATH, "..", "..", "page", 'index.html')
 BUILD = os.path.join(PATH, "..", "..", "page", "Build")
 LOGO = os.path.join(PATH, "..", "..", "page", "verqor.png")
+BACKGROUND = os.path.join(PATH, "..", "..", "page", "background.png")
 
 with open(FILE, 'r') as f:
     with open(OUTPUT, 'w') as o:
@@ -30,3 +31,4 @@ with open(FILE, 'r') as f:
         o.write(content)
 
 shutil.copy(os.path.join(PATH, "verqor.png"), LOGO)
+shutil.copy(os.path.join(PATH, "background.png"), BACKGROUND)
