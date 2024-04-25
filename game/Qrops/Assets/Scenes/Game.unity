@@ -913,6 +913,7 @@ GameObject:
   - component: {fileID: 32425445}
   - component: {fileID: 32425444}
   - component: {fileID: 32425448}
+  - component: {fileID: 32425449}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -1039,6 +1040,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b65b21f6a39544dd916def12af47789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &32425449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32425441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d6b344290c0f4c70a9e402c3e203a8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loading_logo: {fileID: 1486228611}
+  loading_background: {fileID: 1852380613}
 --- !u!1 &33388031
 GameObject:
   m_ObjectHideFlags: 0
@@ -4738,7 +4753,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 180843354}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 32425449}
+        m_TargetAssemblyTypeName: Connection, Assembly-CSharp
+        m_MethodName: Cycle1Y
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &180843354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37847,7 +37874,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1323061355}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 32425449}
+        m_TargetAssemblyTypeName: Connection, Assembly-CSharp
+        m_MethodName: Cycle1M
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1323061355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47670,7 +47709,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1759383377}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 32425449}
+        m_TargetAssemblyTypeName: Connection, Assembly-CSharp
+        m_MethodName: Cycle6M
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1759383377
 MonoBehaviour:
   m_ObjectHideFlags: 0
