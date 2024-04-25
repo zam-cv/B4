@@ -59,7 +59,7 @@ public class Connection : MonoBehaviour
 
     public GameObject events_window;
     GameObject scoreObject = GameObject.Find("score");
-    TMP_Text scoreText = scoreObject.GetComponent<TMP_Text>();
+    //TMP_Text scoreText = scoreObject.GetComponent<TMP_Text>();
 
 
     // state
