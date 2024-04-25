@@ -5,6 +5,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using NativeWebSocket;
+using TMPro;
 
 public struct Player
 {
@@ -46,6 +47,11 @@ public class Connection : MonoBehaviour
     WebSocket websocket;
 
     public GameObject loading_logo, loading_background;
+
+    public GameObject events_window;
+    GameObject scoreObject = GameObject.Find("score");
+    TMP_Text scoreText = scoreObject.GetComponent<TMP_Text>();
+
 
     // state
     public Player player = new Player();
