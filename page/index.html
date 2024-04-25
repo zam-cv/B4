@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html translate="no">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="google" content="notranslate" />
     <title>Qrops</title>
     <link rel="shortcut icon" href="./verqor.png" />
     <link rel="stylesheet" href="TemplateData/style.css" />
@@ -15,12 +16,14 @@
         overflow: hidden;
       }
 
-      body { 
+      body {
         display: grid;
-        grid-template: auto 1fr / 1fr;
+        grid-template: auto 1fr auto / 1fr;
         width: 100%;
         height: 100%;
-        background: #a4c553;
+        background-image: url("background.png");
+        background-repeat: repeat;
+        background-size: 200px 200px;
       }
 
       * {
@@ -47,7 +50,8 @@
 
       #unity-canvas {
         position: absolute;
-        transition: width 0.9s, height 0.9s;
+        background: #a4c554;
+        /* transition: width 0.9s, height 0.9s; */
         user-select: none;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -129,7 +133,7 @@
 
       .menu {
         display: flex;
-        gap: 20px
+        gap: 20px;
       }
 
       .register {
@@ -140,6 +144,71 @@
       .login {
         background: white;
         color: #fd8a33;
+      }
+
+      .mobile .float {
+        position: fixed;
+        border-radius: 50px;
+        margin: 10px;
+        right: 0%;
+        top: 0%;
+        z-index: 100;
+        background: white;
+        width: 50px;
+        height: 50px;
+        padding: 10px;
+      }
+
+      .mobile .float > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      .mobile header {
+        position: fixed;
+        display: none;
+      }
+
+      .mobile .menu {
+        display: none;
+      }
+
+      .mobile .menu {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile .nav {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mobile {
+        display: flex;
+      }
+
+      .message {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 20px;
+      }
+
+      .message > div {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .message > div > svg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
       }
 
       @media (max-width: 1300px) {
@@ -465,18 +534,61 @@
     <div id="container">
       <div class="content">
         <canvas id="unity-canvas" tabindex="-1"></canvas>
+        <div class="message">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 -960 960 960"
+              fill="#cd5e17"
+            >
+              <path
+                d="M496-182 182-496q-23-23-23-54t23-54l174-174q23-23 54-23t54 23l314 314q23 23 23 54t-23 54L604-182q-23 23-54 23t-54-23Zm54-58 170-170-310-310-170 170 310 310ZM480 0q-99 0-186.5-37.5t-153-103Q75-206 37.5-293.5T0-480h80q0 71 24 136t66.5 117Q213-175 272-138.5T401-87L296-192l56-56L588-12q-26 6-53.5 9T480 0Zm400-480q0-71-24-136t-66.5-117Q747-785 688-821.5T559-873l105 105-56 56-236-236q26-6 53.5-9t54.5-3q99 0 186.5 37.5t153 103q65.5 65.5 103 153T960-480h-80Zm-400 0Z"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
+    <span class="float">
+      <div>
+        <img src="v.png" width="30px" height="30px" />
+      </div>
+    </span>
     <script>
       var content = document.querySelector(".content");
       var container = document.querySelector("#container");
       var canvas = document.querySelector("#unity-canvas");
+      var message = document.querySelector(".message");
+      var float = document.querySelector(".float");
+      let header = document.querySelector("header");
 
-      async function resizeCanvas() {
-        canvas.style.visibility = "hidden";
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        canvas.style.visibility = "visible";
+      float.addEventListener("click", function () {
+        if (header.style.display === "none") {
+          header.style.display = "block";
+        } else {
+          header.style.display = "none";
+        }
+      });
+
+      function adaptToMobile() {
+        if (
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent
+          )
+        ) {
+          if (screen.orientation.angle === 0) {
+            message.style.display = "flex";
+            canvas.style.visibility = "hidden";
+          } else {
+            message.style.display = "none";
+            canvas.style.visibility = "visible";
+          }
+        }
       }
+
+      window.addEventListener("orientationchange", function () {
+        adaptToMobile();
+      });
 
       function resizeContent() {
         let width = container.clientWidth;
@@ -489,9 +601,9 @@
         let r = Math.max(width, height);
         let m;
 
-        for(let i = 0; i < 100; i++) {
+        for (let i = 0; i < 100; i++) {
           m = (l + r) / 2;
-          
+
           if (widthCanvas * m <= width && heightCanvas * m <= height) {
             l = m;
           } else {
@@ -502,16 +614,17 @@
         content.style.scale = l;
       }
 
+      adaptToMobile();
       window.addEventListener("resize", resizeContent);
-      window.addEventListener("resize", resizeCanvas);
       function unityShowBanner(msg, type) {}
 
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/Qrops.loader.js";
       var config = {
-        dataUrl: buildUrl + "/03bb723e7c5d81e85152afc0c5d92f04.data.unityweb",
-        frameworkUrl: buildUrl + "/a12ed4b3bb863d9509ad7d7d97f2813f.js.unityweb",
-        codeUrl: buildUrl + "/36bcb758c60bf166e7da4ec2368e4c50.wasm.unityweb",
+        dataUrl: buildUrl + "/ab0085646c1d9052da8de9f96ab86d4c.data.unityweb",
+        frameworkUrl:
+          buildUrl + "/bd07b39a5a9695fa1e8b569ab3580d3b.js.unityweb",
+        codeUrl: buildUrl + "/7b4e015ef4d799f9b6aec736a80dd175.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Qrops",
@@ -519,19 +632,27 @@
         showBanner: unityShowBanner,
       };
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      if (
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        )
+      ) {
         var meta = document.createElement("meta");
         meta.name = "viewport";
         meta.content =
           "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
         document.getElementsByTagName("head")[0].appendChild(meta);
-        resizeContent()
+        resizeContent();
         canvas.style.width = "100%";
         canvas.style.height = "100%";
+        document.body.classList.add("mobile");
+        canvas.style.visibility = "hidden";
+        message.style.display = "flex";
       } else {
-        resizeContent()
+        resizeContent();
         canvas.style.width = "100%";
         canvas.style.height = "100%";
+        float.style.display = "none";
       }
 
       var script = document.createElement("script");
