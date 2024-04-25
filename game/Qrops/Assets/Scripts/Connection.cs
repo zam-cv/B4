@@ -58,9 +58,8 @@ public class Connection : MonoBehaviour
     public GameObject loading_logo, loading_background;
 
     public GameObject events_window;
-    GameObject scoreObject = GameObject.Find("score");
-    //TMP_Text scoreText = scoreObject.GetComponent<TMP_Text>();
-
+    GameObject scoreObject;
+    TMP_Text scoreObjectText;
 
     // state
     public Player player = new Player();
@@ -93,6 +92,9 @@ public class Connection : MonoBehaviour
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("token", token);
         websocket = new WebSocket(Context.Instance.WebSocketUrl, headers);
+
+        scoreObject = GameObject.Find("Lista");
+        scoreObjectText = scoreObject.GetComponent<TMP_Text>();
 
         websocket.OnOpen += () =>
         {
@@ -132,6 +134,12 @@ public class Connection : MonoBehaviour
                     player = cycleResolvedData.player;
                     Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
+                    // Funcion que modifica el contenido del scoreObjectText con los eventos
+                    //scoreObjectText.text = cycleResolvedData.payload.events[0];
+                    foreach (string evento in cycleResolvedData.payload.events)
+                    {
+                        scoreObjectText.text += evento + "\n";
+                    }
                     break;
                 case "CropBought":
                     ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
