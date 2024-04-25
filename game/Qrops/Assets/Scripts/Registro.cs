@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using UnityEngine.UIElements;
 
 public class Registro : MonoBehaviour
 {    
@@ -35,6 +36,9 @@ public class Registro : MonoBehaviour
         public string user_type;
     }
 
+    public GameObject disclaimer;
+    public bool showDisclaimer = false;
+
 public void Start(){
     username = GameObject.Find("Username_input").GetComponent<TMP_InputField>();
     password = GameObject.Find("Password_input").GetComponent<TMP_InputField>();
@@ -43,6 +47,7 @@ public void Start(){
     year_of_birth = GameObject.Find("Age_input").GetComponent<TMP_InputField>();
     gender = GameObject.Find("Gender_input").GetComponent<TMP_Dropdown>();
     user_type = GameObject.Find("User_type_input").GetComponent<TMP_Dropdown>();
+
 
 }
     public void Registration()
@@ -84,5 +89,11 @@ public void Start(){
     public void BackToLogin()
     {
         SceneManager.LoadScene("Login");
+    }
+
+    public void ShowDisclaimer()
+    {
+        showDisclaimer = !showDisclaimer;
+        disclaimer.SetActive(showDisclaimer);
     }
 }
