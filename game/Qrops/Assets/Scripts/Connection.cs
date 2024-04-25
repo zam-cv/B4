@@ -141,9 +141,24 @@ public class Connection : MonoBehaviour
         await websocket.Close();
     }
 
+    public void Cycle1M()
+    {
+        Cycle("1M");
+    }
+
+    public void Cycle6M()
+    {
+        Cycle("6M");
+    }
+
+    public void Cycle1Y()
+    {
+        Cycle("1Y");
+    }
+
     // Crear una funcion asincrona para hacer un ciclo
     // La funcion envia un json al socket y recibe otro json
-    public async void Cycle()
+    public async void Cycle(string duration)
     {
         // Verifica que la conexión esté abierta antes de enviar el mensaje
         if (websocket.State == WebSocketState.Open)
@@ -152,7 +167,7 @@ public class Connection : MonoBehaviour
             var messageData = new Dictionary<string, object>
             {
                 {"type", "Cycle"},
-                {"duration", "1M"} // 1M = 1 mes, 6M = 6 meses, 1Y = 1 año
+                {"duration", duration} // 1M = 1 mes, 6M = 6 meses, 1Y = 1 año
             };
 
             string jsonMessage = JsonConvert.SerializeObject(messageData);
