@@ -14,6 +14,7 @@ use ip2location::DB;
 use std::sync::{atomic::AtomicUsize, Arc, Mutex};
 use tokio::sync::broadcast;
 use utoipa::OpenApi;
+use colored::*;
 
 const IPV6BIN: &str = "assets/IP2LOCATION-LITE-DB5.IPV6.BIN";
 
@@ -194,12 +195,18 @@ pub async fn app() -> std::io::Result<()> {
             .bind_auto_h2c(&format!("{}:80", &CONFIG.host))?
             .bind_openssl(&format!("{}:443", &CONFIG.host), builder)?;
 
-        log::info!("Server running at https://{}", &CONFIG.address);
+        if let Ok(ip) = utils::get_my_ip() {
+            log::info!("Server running at {}", format!("http://{}", ip).cyan());
+            log::info!("Game running at {}", format!("https://{}", ip).cyan());
+        } else {
+            log::warn!("Failed to get the server IP address");
+            log::info!("Server running at {}", format!("http://{}", &CONFIG.address).cyan());
+        }
 
         server
     } else {
         log::warn!("Failed to load SSL configuration, using insecure connection");
-        log::info!("Server running at http://{}", &CONFIG.address);
+        log::info!("Server running at {}", format!("http://{}", &CONFIG.address).cyan());
         server.bind(&CONFIG.address)?
     };
 
