@@ -169,9 +169,7 @@ mod tests {
 
     #[test]
     fn test_get_my_ip() {
-        let ip = get_my_ip();
-
-        println!("My IP: {}", ip.unwrap());
-        // assert!(!ip.is_empty());
+        let ip = get_my_ip().unwrap();
+        assert!(!ip.is_empty());
     }
 }
