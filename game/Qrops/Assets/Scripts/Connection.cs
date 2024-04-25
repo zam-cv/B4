@@ -114,6 +114,7 @@ public class Connection : MonoBehaviour
                     Debug.Log(message);
                     ModifiedPlayer<CycleResolved> cycleResolvedData = JsonConvert.DeserializeObject<ModifiedPlayer<CycleResolved>>(message);
                     player = cycleResolvedData.player;
+                    Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
                     break;
                 case "CropBought":
