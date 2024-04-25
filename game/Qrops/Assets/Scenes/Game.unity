@@ -1054,6 +1054,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loading_logo: {fileID: 1486228611}
   loading_background: {fileID: 1852380613}
+  events_window: {fileID: 1169390715}
 --- !u!1 &33388031
 GameObject:
   m_ObjectHideFlags: 0
@@ -43733,6 +43734,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loading_logo: {fileID: 1486228611}
   loading_background: {fileID: 1852380613}
+  events_window: {fileID: 0}
 --- !u!4 &1597151191
 Transform:
   m_ObjectHideFlags: 0
