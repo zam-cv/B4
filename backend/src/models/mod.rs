@@ -50,8 +50,8 @@ pub struct Insurance {
     pub loan_id: i32,
 }
 
-#[derive(Clone, Debug)]
-#[derive(Serialize, ToSchema, Queryable, Selectable, Identifiable, Insertable, Associations)]
+#[derive(Clone, Debug, Serialize, ToSchema)]
+#[derive(Queryable, Selectable, Identifiable, Insertable, Associations, AsChangeset)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 #[diesel(primary_key(id))]
 #[diesel(belongs_to(Player))]

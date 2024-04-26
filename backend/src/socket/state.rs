@@ -61,7 +61,9 @@ pub struct InitialData {
 #[serde(tag = "type")]
 pub enum Request {
     Cycle(CycleData),
-    BuyCrop(CropData), // TODO: Add more
+    BuyCrop(CropData), 
+    ResetPlayer
+    // TODO: Add more
 }
 
 #[derive(Serialize)]
@@ -70,6 +72,7 @@ pub enum Response {
     Init(ModifiedPlayer<InitialData>),
     CycleResolved(ModifiedPlayer<ResolveCycleData>),
     CropBought(ModifiedPlayer<Vec<models::Plot>>),
+    PlayerReseted(ModifiedPlayer<Vec<models::Plot>>),
     // TODO: Add more
 }
 
@@ -339,6 +342,25 @@ impl State {
                 }
                 Request::BuyCrop(plot) => {
                     self.buy_crop(plot, database).await?;
+                }
+                Request::ResetPlayer => {
+                    self.player.reset();
+                    
+                    for plot in self.plots.iter_mut() {
+                        plot.crop_type_id = None;
+                        plot.quantity = 0;
+                        plot.growth = 0;
+                    }
+
+                    if let Some(player_id) = self.player.id {
+                        database.delete_values_by_player_id(player_id).await?;
+                        database.delete_statistics_by_player_id(player_id).await?;
+                    }
+
+                    self.send(Response::PlayerReseted(ModifiedPlayer {
+                        player: self.player.clone(),
+                        payload: self.plots.clone(),
+                    }))?;
                 }
             }
         }

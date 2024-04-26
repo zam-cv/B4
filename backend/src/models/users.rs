@@ -89,4 +89,15 @@ impl Player {
             max_change: config::INITIAL_MAX_CHANGE,
         }
     }
+
+    pub fn reset(&mut self) {
+        self.time = config::INITIAL_TIME;
+        self.time_in_game = config::INITIAL_TIME_IN_GAME;
+        self.current_cycle = config::INITIAL_CYCLE;
+        self.current_score = config::INITIAL_SCORE;
+        self.balance_cash = config::INITIAL_BALANCE_CASH;
+        self.balance_verqor = config::INITIAL_BALANCE;
+        self.balance_coyote = config::INITIAL_BALANCE;
+        self.max_change = config::INITIAL_MAX_CHANGE;
+    }
 }

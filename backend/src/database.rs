@@ -218,6 +218,40 @@ impl Database {
         Ok(())
     }
 
+    pub async fn delete_values_by_player_id(&self, id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            diesel::delete(
+                schema::values::table.filter(
+                    schema::values::statistic_id.eq_any(
+                        schema::statistics::table
+                            .select(schema::statistics::id)
+                            .filter(schema::statistics::player_id.eq(id)),
+                    ),
+                ),
+            )
+            .execute(conn)
+        })
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn delete_statistics_by_player_id(&self, id: i32) -> anyhow::Result<()> {
+        self.query_wrapper(move |conn| {
+            conn.transaction(|pooled| {
+                diesel::delete(
+                    schema::statistics::table.filter(schema::statistics::player_id.eq(id)),
+                )
+                .execute(pooled)?;
+
+                Ok(())
+            })
+        })
+        .await?;
+
+        Ok(())
+    }
+
     pub async fn get_player_by_id(&self, id: i32) -> anyhow::Result<Option<models::Player>> {
         self.query_wrapper(move |conn| {
             schema::players::table
