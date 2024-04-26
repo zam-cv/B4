@@ -34,6 +34,7 @@ CREATE TABLE `admin_permissions`(
 CREATE TABLE `players`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`time_in_game` FLOAT4(30) NOT NULL,
+	`time` INTEGER NOT NULL,
 	`current_cycle` INTEGER NOT NULL,
 	`current_score` FLOAT4(30) NOT NULL,
 	`balance_cash` INTEGER NOT NULL,
@@ -106,6 +107,7 @@ CREATE TABLE `plots`(
 	`id` INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`crop_type_id` VARCHAR(50),
 	`quantity` INTEGER NOT NULL,
+	`growth` INTEGER NOT NULL,
 	`player_id` INTEGER NOT NULL,
 	FOREIGN KEY (`crop_type_id`) REFERENCES `crop_types`(`name`),
 	FOREIGN KEY (`player_id`) REFERENCES `players`(`id`)
