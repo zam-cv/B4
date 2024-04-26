@@ -16,6 +16,7 @@ use tokio::sync::broadcast;
 use utoipa::OpenApi;
 use colored::*;
 
+// The path to the location database
 const IPV6BIN: &str = "assets/IP2LOCATION-LITE-DB5.IPV6.BIN";
 
 pub async fn app() -> std::io::Result<()> {
@@ -179,6 +180,7 @@ pub async fn app() -> std::io::Result<()> {
                     ),
             )
             .service(
+                // Static files
                 fs::Files::new("/", "../page/")
                     .show_files_listing()
                     .index_file("index.html"),
@@ -191,9 +193,9 @@ pub async fn app() -> std::io::Result<()> {
         log::info!("SSL configuration loaded");
 
         let server = server
-            .bind(&CONFIG.address)?
-            .bind_auto_h2c(&format!("{}:80", &CONFIG.host))?
-            .bind_openssl(&format!("{}:443", &CONFIG.host), builder)?;
+            .bind(&CONFIG.address)? // HTTP
+            .bind_auto_h2c(&format!("{}:80", &CONFIG.host))? // HTTP/2
+            .bind_openssl(&format!("{}:443", &CONFIG.host), builder)?; // HTTPS
 
         if let Ok(ip) = utils::get_my_ip() {
             log::info!("Server running at {}", format!("http://{}", ip).cyan());
@@ -207,7 +209,7 @@ pub async fn app() -> std::io::Result<()> {
     } else {
         log::warn!("Failed to load SSL configuration, using insecure connection");
         log::info!("Server running at {}", format!("http://{}", &CONFIG.address).cyan());
-        server.bind(&CONFIG.address)?
+        server.bind(&CONFIG.address)? // HTTP
     };
 
     server.run().await

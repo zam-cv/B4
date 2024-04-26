@@ -5,6 +5,7 @@ use quote::{quote, ToTokens};
 use syn::{parse_macro_input, parse_quote, parse_str, Ident, ItemEnum, ItemFn, Stmt};
 
 fn handle_types(input_fn: ItemFn) -> Stmt {
+    // replace the second argument which is a vector of strings with "parameters"
     let statements: Vec<Stmt> = input_fn
         .sig
         .inputs

@@ -47,6 +47,7 @@ impl Actor for Viewer {
 
         let visitor_count = self.visitor_count.clone();
 
+        // Listen for visitor count updates
         task::spawn(async move {
             while let Ok(_) = rx.recv().await {
                 let captacion = Captacion {
