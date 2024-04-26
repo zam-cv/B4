@@ -136,6 +136,7 @@ public class Connection : MonoBehaviour
                     Debug.Log(cycleResolvedData.payload.events[0]);
                     // Funcion que modifica el contenido del scoreObjectText con los eventos
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
+                    scoreObjectText.text = "";
                     foreach (string evento in cycleResolvedData.payload.events)
                     {
                         scoreObjectText.text += evento + "\n";
