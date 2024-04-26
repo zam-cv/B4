@@ -9,6 +9,7 @@ using TMPro;
 
 public struct Player
 {
+    public int time;
     public float current_score;
     public int balance_verqor;
     public int balance_coyote;
@@ -27,6 +28,7 @@ public struct Plot
 {
     public string crop_type_id;
     public int quantity;
+    public int growth;
 }
 
 public struct CropType

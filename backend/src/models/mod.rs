@@ -112,6 +112,7 @@ pub struct Plot {
     pub id: Option<i32>,
     pub crop_type_id: Option<String>,
     pub quantity: i32,
+    pub growth: i32,
     #[serde(skip_deserializing, skip_serializing)]
     pub player_id: i32,
 }

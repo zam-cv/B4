@@ -22,6 +22,16 @@ pub enum Duration {
     OneYear,
 }
 
+impl Duration {
+    pub fn to_months(&self) -> i32 {
+        match self {
+            Duration::OneMonth => 1,
+            Duration::SixMonths => 6,
+            Duration::OneYear => 12,
+        }
+    }
+}
+
 #[derive(Deserialize)]
 pub struct CycleData {
     pub duration: Duration,
@@ -44,15 +54,14 @@ pub struct ModifiedPlayer<T: Serialize> {
 pub struct InitialData {
     pub plots: Vec<models::Plot>,
     pub top_players: Vec<String>,
-    pub crops_types: Vec<models::CropType>
+    pub crops_types: Vec<models::CropType>,
 }
 
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
     Cycle(CycleData),
-    BuyCrop(CropData)
-    // TODO: Add more
+    BuyCrop(CropData), // TODO: Add more
 }
 
 #[derive(Serialize)]
@@ -116,6 +125,33 @@ impl State {
         Ok(())
     }
 
+    pub async fn harvest<'a>(
+        &mut self,
+        cycle_data: &'a CycleData,
+        database: &'a Database,
+    ) -> anyhow::Result<()> {
+        for plot in self.plots.iter_mut() {
+            if let Some(crop_type_id) = &plot.crop_type_id {
+                if let Some(crop) = database.get_crop_type_by_name(crop_type_id.clone()).await? {
+                    plot.growth += cycle_data.duration.to_months();
+
+                    if plot.growth >= crop.duration {
+                        let sum = crop.price * plot.quantity;
+                        self.player.balance_cash +=
+                            sum + (sum as f64 * config::REVENUE_PERCENTAGE) as i32;
+
+                        plot.crop_type_id = None;
+                        plot.quantity = 0;
+                        plot.growth = 0;
+                    } else {
+                    }
+                }
+            }
+        }
+
+        Ok(())
+    }
+
     // resolve the user's cycle request
     pub async fn resolve_cycle<'a>(
         &mut self,
@@ -137,6 +173,42 @@ impl State {
             player: self.player.clone(),
             payload: data.0,
         }))?;
+
+        self.harvest(&cycle_data, database).await?;
+
+        let previous_time = self.player.time;
+        self.player.time += cycle_data.duration.to_months();
+
+        // verqor and coyote charge what they lent
+        if (previous_time / 12) < (self.player.time / 12) {
+            let half = self.player.balance_cash / 2;
+
+            if self.player.balance_verqor < 0 {
+                if self.player.balance_verqor + half <= 0 {
+                    self.player.balance_verqor += half;
+                    self.player.balance_cash -= half;
+                } else {
+                    self.player.balance_cash -= self.player.balance_verqor;
+                    self.player.balance_verqor = 0;
+                }
+            }
+
+            if self.player.balance_coyote < 0 {
+                if self.player.balance_coyote + half <= 0 {
+                    self.player.balance_coyote += half;
+                    self.player.balance_cash -= half;
+                } else {
+                    self.player.balance_cash -= self.player.balance_coyote;
+                    self.player.balance_coyote = 0;
+                }
+            }
+
+            self.player.balance_verqor +=
+                (self.player.balance_verqor as f64 * config::INTEREST_PERCENTAGE_VERQOR) as i32;
+
+            self.player.balance_coyote +=
+                (self.player.balance_coyote as f64 * config::INTEREST_PERCENTAGE_COYOTE) as i32;
+        }
 
         if let Some(player_id) = self.player.id {
             let id = database

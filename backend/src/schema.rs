@@ -65,6 +65,7 @@ diesel::table! {
     players (id) {
         id -> Integer,
         time_in_game -> Double,
+        time -> Integer,
         current_cycle -> Integer,
         current_score -> Double,
         balance_cash -> Integer,
@@ -83,6 +84,7 @@ diesel::table! {
         #[max_length = 50]
         crop_type_id -> Nullable<Varchar>,
         quantity -> Integer,
+        growth -> Integer,
         player_id -> Integer
     }
 }

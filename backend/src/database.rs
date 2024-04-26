@@ -279,6 +279,7 @@ impl Database {
                         id: None,
                         crop_type_id: None,
                         quantity: 0,
+                        growth: 0,
                         player_id: id,
                     });
                 }

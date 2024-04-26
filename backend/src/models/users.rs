@@ -65,11 +65,13 @@ pub struct Player {
     pub id: Option<i32>,
     #[serde(skip_deserializing, skip_serializing)]
     pub time_in_game: f64,
+    pub time: i32,
     pub current_cycle: i32,
     pub current_score: f64,
     pub balance_cash: i32,
     pub balance_verqor: i32,
     pub balance_coyote: i32,
+    #[serde(skip_serializing)]
     pub max_change: i32,
 }
 
@@ -77,7 +79,8 @@ impl Player {
     pub fn default() -> Self {
         Player {
             id: None,
-            time_in_game: config::INITIAL_TIME,
+            time: config::INITIAL_TIME,
+            time_in_game: config::INITIAL_TIME_IN_GAME,
             current_cycle: config::INITIAL_CYCLE,
             current_score: config::INITIAL_SCORE,
             balance_cash: config::INITIAL_BALANCE_CASH,

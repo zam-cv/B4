@@ -59,9 +59,13 @@ pub const VERQOR_WEIGHT: i32 = 30;
 pub const COYOTE_WEIGHT: i32 = 10;
 
 // Game constants
+pub const INTEREST_PERCENTAGE_COYOTE: f64 = 0.2;
+pub const INTEREST_PERCENTAGE_VERQOR: f64 = 0.05;
+pub const REVENUE_PERCENTAGE: f64 = 0.2;
 pub const TOP_PLAYERS: i64 = 5;
 pub const CREDIT_LIMIT: i32 = -5000;
-pub const INITIAL_TIME: f64 = 0.0;
+pub const INITIAL_TIME: i32 = 0;
+pub const INITIAL_TIME_IN_GAME: f64 = 0.0;
 pub const INITIAL_CYCLE: i32 = 0;
 pub const INITIAL_SCORE: f64 = 0.0;
 pub const INITIAL_BALANCE: i32 = 0;
