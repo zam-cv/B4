@@ -177,10 +177,10 @@ impl Bank {
         mut context: Context<'a>,
     ) -> anyhow::Result<(ResolveCycleData, Functions)> {
         let number_of_random_events = match cycle_data.duration {
-            Duration::OneMonth => 1,
-            Duration::SixMonths => 6,
-            Duration::OneYear => 12,
-        } * config::EVENTS_PER_MONTH;
+            Duration::OneMonth => 2,
+            Duration::SixMonths => 4,
+            Duration::OneYear => 6,
+        };
 
         let mut events = Vec::with_capacity(number_of_random_events as usize);
         let mut functions = Vec::new();
