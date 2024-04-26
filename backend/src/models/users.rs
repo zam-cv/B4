@@ -71,6 +71,7 @@ pub struct Player {
     pub balance_cash: i32,
     pub balance_verqor: i32,
     pub balance_coyote: i32,
+    #[serde(skip_serializing)]
     pub max_change: i32,
 }
 
