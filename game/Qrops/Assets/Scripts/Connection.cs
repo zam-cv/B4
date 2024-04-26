@@ -127,6 +127,7 @@ public class Connection : MonoBehaviour
                     player = initData.player;
                     Utils.Instance.SetState(player);
                     Utils.Instance.SetTopPlayers(initData.payload.top_players);
+                    Utils.Instance.SetCropsTypes(initData.payload.crops_types);
                     // set the crops with data.payload.crops_types
                     // set the plots with data.payload.plots
                     break;

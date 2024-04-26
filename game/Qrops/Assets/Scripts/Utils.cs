@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class Utils : MonoBehaviour
 {
+    public Dictionary<string, CropType> crops = new Dictionary<string, CropType>();
     public static Utils Instance { get; private set; }
 
     void Start()
@@ -63,5 +65,27 @@ public class Utils : MonoBehaviour
         }
 
         topPlayersText.text = topPlayersString;
+    }
+
+    public void SetCropsTypes(List<CropType> cropsTypes)
+    {
+        foreach (CropType cropType in cropsTypes)
+        {
+            crops.Add(cropType.name, cropType);
+        }
+    }
+
+    public int GetGrowth(Plot plot)
+    {
+        CropType cropType = crops[plot.crop_type_id];
+        var porcentage =  (float)plot.growth / cropType.duration;
+        var index = Math.Floor(porcentage * 4);
+
+        if (index == 4)
+        {
+            return 3;
+        }
+
+        return (int)index;
     }
 }
