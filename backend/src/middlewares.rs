@@ -15,6 +15,7 @@ macro_rules! auth {
             req: ServiceRequest,
             next: Next<impl MessageBody + 'static>,
         ) -> Result<ServiceResponse<impl MessageBody>, Error> {
+            // Check if the token is in the header or in the cookie
             let token = match req.headers().get(AUTH_HEADER) {
                 Some(token) => token.to_str().ok().map(|s| s.to_string()),
                 None => {
@@ -27,6 +28,7 @@ macro_rules! auth {
 
             if let Some(token) = token {
                 if let Ok(claims) = utils::decode_token(&$secret_key, &token) {
+                    // Check if the token has expired
                     if claims.exp < chrono::Utc::now().timestamp() as usize {
                         let cookie = utils::get_cookie_with_expired_token();
                         let response = HttpResponse::Unauthorized().cookie(cookie).finish();

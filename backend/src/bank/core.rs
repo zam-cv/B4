@@ -39,6 +39,7 @@ pub struct Bank {
 
 impl Bank {
     pub fn new() -> Self {
+        // build the function maps
         let getters = build_function_map!(Getter, getters, get_money, get_value_random, robar);
         let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money, drop_money, duplicate_money);
 
@@ -58,6 +59,7 @@ impl Bank {
                 if let Some(key) = &function.key {
                     variables.insert(
                         key.clone(),
+                        // execute the getter function
                         callback(context, func.args.iter().map(|s| s.to_string()).collect()),
                     );
                 }
@@ -71,6 +73,7 @@ impl Bank {
     ) -> String {
         let mut message = String::new();
 
+        // divides the content into fragments and replaces them according to their type
         for fragment in &get_fragments(&event.content) {
             match fragment {
                 SentenceFragment::Text(text) => message.push_str(text),
@@ -97,6 +100,7 @@ impl Bank {
             let func = get_function(&handler.function.as_str());
 
             if let Some(callback) = self.handlers.get(func.name) {
+                // extract the arguments from the function
                 let args = func
                     .args
                     .iter()
@@ -220,6 +224,7 @@ impl Bank {
             None
         };
 
+        // calculate the score
         let max_change = context.player.max_change;
         let change = context.player.balance_cash * config::CASH_WEIGHT
             + context.player.balance_verqor * config::VERQOR_WEIGHT
