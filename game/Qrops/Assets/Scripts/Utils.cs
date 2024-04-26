@@ -57,7 +57,7 @@ public class Utils : MonoBehaviour
         int i = 1;
         foreach (string player in topPlayers)
         {
-            topPlayersString += i + ". " + player + "\n";
+            topPlayersString += i++ + ". " + player.Trim() + "\n";
         }
 
         topPlayersText.text = topPlayersString;
