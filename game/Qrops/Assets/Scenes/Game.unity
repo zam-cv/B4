@@ -174,6 +174,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &2701707
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -277,6 +278,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &3946567
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -745,6 +747,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &27660197
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -848,6 +851,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &31741165
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1204,6 +1208,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &33771688
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1307,6 +1312,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &34853703
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1410,6 +1416,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &38578040
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1597,6 +1604,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &46909997
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1848,6 +1856,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &56607390
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1951,6 +1960,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &64275249
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2146,6 +2156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 77043687}
+  - component: {fileID: 77043688}
   m_Layer: 0
   m_Name: Cultivos
   m_TagString: Untagged
@@ -2184,6 +2195,18 @@ Transform:
   - {fileID: 755681369}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &77043688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77043686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2613af074a837465c9c2c0cc0395c951, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &87151318
 GameObject:
   m_ObjectHideFlags: 0
@@ -2235,6 +2258,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &87151321
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2338,6 +2362,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &91351738
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2509,6 +2534,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &108933299
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2748,6 +2774,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &110123490
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3277,6 +3304,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &141620803
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4022,6 +4050,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &162020360
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4125,6 +4154,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &163479311
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4228,6 +4258,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &164955006
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5161,6 +5192,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &191015337
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5348,6 +5380,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &193169389
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5496,7 +5529,7 @@ GameObject:
   - component: {fileID: 201803995}
   - component: {fileID: 201803994}
   m_Layer: 0
-  m_Name: Click (1)
+  m_Name: Click1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5578,6 +5611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e41caea23c144a2943598ef6fb8c4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planted: 0
 --- !u!1 &203261168
 GameObject:
   m_ObjectHideFlags: 0
@@ -5629,6 +5663,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &203261171
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5898,6 +5933,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &206383375
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6001,6 +6037,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &222058420
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6104,6 +6141,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &226869785
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6207,6 +6245,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &227278487
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6394,6 +6433,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &230449703
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6581,6 +6621,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &239091088
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6684,6 +6725,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &249307348
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6787,6 +6829,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &252993700
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6969,6 +7012,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &260186402
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7072,6 +7116,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &267183105
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7175,6 +7220,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &267731303
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7278,6 +7324,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &268091665
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7381,6 +7428,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &272995622
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7559,6 +7607,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &279817447
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7746,6 +7795,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &304892934
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7933,6 +7983,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &321537683
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8170,6 +8221,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &333361526
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8273,6 +8325,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &333562323
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8376,6 +8429,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &337052254
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8992,6 +9046,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &356656841
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9095,6 +9150,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &359456945
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9198,6 +9254,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &366985545
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9435,6 +9492,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &377370277
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9538,6 +9596,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &387966864
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9725,6 +9784,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &391289140
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9903,6 +9963,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &405721543
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10140,6 +10201,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &416060493
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10389,6 +10451,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &425179863
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10626,6 +10689,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &442607454
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11249,6 +11313,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &459887613
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12201,6 +12266,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &489420021
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12304,6 +12370,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &491356670
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12539,6 +12606,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &502688496
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12767,6 +12835,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &523304996
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13003,6 +13072,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &533774021
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13190,6 +13260,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &555885876
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13293,6 +13364,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &568019910
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13396,6 +13468,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &568313541
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13499,6 +13572,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &571248788
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13884,6 +13958,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &582492886
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13987,6 +14062,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &584542881
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14090,6 +14166,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &586613896
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14629,6 +14706,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &619771798
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14732,6 +14810,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &630714731
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14835,6 +14914,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &636421904
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14938,6 +15018,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &643764326
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15041,6 +15122,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &647564090
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15228,6 +15310,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &651985709
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15808,6 +15891,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &667804806
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15911,6 +15995,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &677370821
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16014,6 +16099,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &679832095
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16117,6 +16203,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &681328577
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16652,6 +16739,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &724848538
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16755,6 +16843,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &731742671
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16858,6 +16947,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &739940130
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16961,6 +17051,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &740545498
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -17064,6 +17155,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &744276110
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -17167,6 +17259,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &745298150
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -17270,6 +17363,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &747872429
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -17334,7 +17428,7 @@ GameObject:
   - component: {fileID: 750042980}
   - component: {fileID: 750042979}
   m_Layer: 0
-  m_Name: Click (3)
+  m_Name: Click3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17416,6 +17510,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e41caea23c144a2943598ef6fb8c4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planted: 0
 --- !u!1 &754601297
 GameObject:
   m_ObjectHideFlags: 0
@@ -17601,6 +17696,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &754789188
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -17938,6 +18034,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &769190601
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18041,6 +18138,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &785155831
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18144,6 +18242,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &790958647
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18394,6 +18493,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &810296201
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18631,6 +18731,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &817821452
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -18734,6 +18835,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &822239675
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19117,6 +19219,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &827668796
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19354,6 +19457,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &835657757
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19591,6 +19695,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &844811604
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19694,6 +19799,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &846777750
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19797,6 +19903,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &846879656
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -19900,6 +20007,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &849512843
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20003,6 +20111,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &851374267
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20106,6 +20215,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &853403132
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20427,6 +20537,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &865667814
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20530,6 +20641,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &873704203
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20708,6 +20820,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &877941661
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -20811,6 +20924,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &885215850
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21185,6 +21299,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &888145929
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21497,6 +21612,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &894061704
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21867,6 +21983,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &912828501
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -21970,6 +22087,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &913767352
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -22375,6 +22493,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &930331402
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -22478,6 +22597,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &930400982
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -22847,6 +22967,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &942099537
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23034,6 +23155,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &960008399
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23616,6 +23738,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &987377766
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23803,6 +23926,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1000646363
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23906,6 +24030,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1004753984
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24009,6 +24134,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1006087371
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24112,6 +24238,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1007791771
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24215,6 +24342,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1009694389
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24817,6 +24945,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1028233394
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24920,6 +25049,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1037394360
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25155,6 +25285,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1042089048
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25689,6 +25820,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1077713120
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25876,6 +26008,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1108669691
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25979,6 +26112,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1111594785
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -26257,6 +26391,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1118367189
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -26531,6 +26666,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1128528776
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -26678,6 +26814,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1129101359
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -27083,6 +27220,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1137376416
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -27338,6 +27476,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1161548540
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -27441,6 +27580,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1161911939
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -27753,6 +27893,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1180294254
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -27940,6 +28081,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1189629473
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -28043,6 +28185,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1204232788
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -28146,6 +28289,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1220993039
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -28249,6 +28393,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1224309211
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -28352,6 +28497,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1226184493
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -28601,6 +28747,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1233523254
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -29111,6 +29258,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1249640821
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -29214,6 +29362,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1250251717
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -29576,6 +29725,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1266035308
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -29754,6 +29904,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1269953217
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -29857,6 +30008,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1270751711
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -30044,6 +30196,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1275487842
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -30222,6 +30375,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1284276785
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -37509,6 +37663,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1295404261
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -37612,6 +37767,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1300086565
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -37940,6 +38096,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1310499653
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -38252,6 +38409,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1320118941
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -38587,6 +38745,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1324945304
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -38690,6 +38849,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1334360267
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -38793,6 +38953,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1338310520
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -39345,6 +39506,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1346831111
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -39995,6 +40157,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1384640134
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40232,6 +40395,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1386366798
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40335,6 +40499,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1396976586
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40438,6 +40603,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1399161743
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40541,6 +40707,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1399460411
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40644,6 +40811,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1403308902
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40747,6 +40915,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1405038825
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40850,6 +41019,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1406352520
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -41367,6 +41537,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1422474601
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -41700,6 +41871,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1435373475
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -41803,6 +41975,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1438671138
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -41906,6 +42079,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1455323967
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -42084,6 +42258,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1465518918
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -42187,6 +42362,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1470978891
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -42520,6 +42696,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1489116646
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -42965,6 +43142,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1524523228
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -43068,6 +43246,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1524985466
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -43452,6 +43631,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1553551489
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -43859,6 +44039,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1568628095
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -43962,6 +44143,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1574416430
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -44224,6 +44406,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1596054724
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -44374,6 +44557,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1601051973
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -44477,6 +44661,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1607376126
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -45057,6 +45242,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1647794425
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -45160,6 +45346,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1648064874
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -45263,6 +45450,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1649311601
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -45659,6 +45847,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1660442069
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -45921,6 +46110,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1667413323
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46205,6 +46395,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1675796842
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46308,6 +46499,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1677702315
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46411,6 +46603,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1679423127
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46626,6 +46819,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1681168717
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46729,6 +46923,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1682159866
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46832,6 +47027,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1682788632
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -46901,7 +47097,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1691132155
 RectTransform:
   m_ObjectHideFlags: 0
@@ -47014,6 +47210,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1694124471
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -47414,6 +47611,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1724679987
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -47596,6 +47794,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1728272287
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -47699,6 +47898,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1733304378
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -47802,6 +48002,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1736220172
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48005,6 +48206,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1746382686
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48183,6 +48385,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1747962537
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48286,6 +48489,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1753495230
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48546,6 +48750,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1761955961
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48649,6 +48854,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1772250135
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48886,6 +49092,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1787467717
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48989,6 +49196,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1792993864
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -49176,6 +49384,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1797288568
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -49363,6 +49572,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1800543377
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -49466,6 +49676,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1802142253
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -49837,6 +50048,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1829719155
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -49940,6 +50152,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1835531121
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -50004,7 +50217,7 @@ GameObject:
   - component: {fileID: 1843994555}
   - component: {fileID: 1843994554}
   m_Layer: 0
-  m_Name: Click (2)
+  m_Name: Click2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50086,6 +50299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e41caea23c144a2943598ef6fb8c4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planted: 0
 --- !u!1 &1844676989
 GameObject:
   m_ObjectHideFlags: 0
@@ -50274,7 +50488,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1852380614
 RectTransform:
   m_ObjectHideFlags: 0
@@ -50381,6 +50595,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1852925949
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -50484,6 +50699,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1854649574
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -50587,6 +50803,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1854859920
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -50690,6 +50907,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1855833782
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -51077,6 +51295,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1876574409
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -51854,6 +52073,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1914408572
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -51957,6 +52177,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1914906768
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -52060,6 +52281,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1920923584
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -52231,6 +52453,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1931671664
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -52577,6 +52800,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &1940381920
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -52680,6 +52904,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1942285628
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -53143,7 +53368,7 @@ GameObject:
   - component: {fileID: 1950246027}
   - component: {fileID: 1950246026}
   m_Layer: 0
-  m_Name: Click
+  m_Name: Click0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53225,6 +53450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e41caea23c144a2943598ef6fb8c4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planted: 0
 --- !u!1 &1951454223
 GameObject:
   m_ObjectHideFlags: 0
@@ -53276,6 +53502,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1951454226
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -53666,6 +53893,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &1976434203
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -53853,6 +54081,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
   - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
   panelMensaje: {fileID: 964643450}
+  indiceEtapa: 0
 --- !u!212 &1983439959
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -53956,6 +54185,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &1991260622
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -54368,6 +54598,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &2005583391
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -54471,6 +54702,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &2007775004
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -54846,6 +55078,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &2026669072
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -55007,6 +55240,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &2030930692
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -55110,6 +55344,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &2031598022
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -55459,6 +55694,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &2044597920
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -55742,6 +55978,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
   - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
   panelMensaje: {fileID: 1065412301}
+  indiceEtapa: 0
 --- !u!212 &2065345934
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -55929,6 +56166,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &2071463288
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -56166,6 +56404,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &2077603765
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -56834,6 +57073,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
   - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
   panelMensaje: {fileID: 352185162}
+  indiceEtapa: 0
 --- !u!212 &2107805689
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -57037,6 +57277,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   panelMensaje: {fileID: 1957120271}
+  indiceEtapa: 0
 --- !u!212 &2131342217
 SpriteRenderer:
   m_ObjectHideFlags: 0

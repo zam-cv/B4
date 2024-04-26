@@ -42,6 +42,7 @@ public class BotonInicio : MonoBehaviour
                 break;
         }
         //Guarda el contenedorMaices en el Queue de CultivosPlantados
+        GameObject.Find("Click" + (ParcelaActual.instance.NumeroParcela - 1)).GetComponent<SelectParcela>().planted = true;
         CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
 
         // Recorre todos los hijos del contenedor
