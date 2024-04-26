@@ -8,9 +8,13 @@ public class prueba : MonoBehaviour
     private bool crecimientoIniciado = false;
     private float tiempoInicio;
     public GameObject panelMensaje;
+    public int indiceEtapa;
 
     void Start()
     {
+        if (instance == null) {
+                instance = this;
+            }
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = null;
         panelMensaje.SetActive(false);
@@ -21,8 +25,9 @@ public class prueba : MonoBehaviour
         if (crecimientoIniciado)
         {
             float tiempoTranscurrido = Time.time - tiempoInicio;
-            int indiceEtapa = Mathf.FloorToInt(tiempoTranscurrido / 5f * etapasCrecimiento.Length);
-            indiceEtapa = Mathf.Clamp(indiceEtapa, 0, etapasCrecimiento.Length - 1);
+            //indiceEtapa = Mathf.FloorToInt(tiempoTranscurrido / 5f * etapasCrecimiento.Length);
+            //indiceEtapa = Mathf.Clamp(indiceEtapa, 0, etapasCrecimiento.Length - 1);
+            indiceEtapa = 3;
             spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
             if (indiceEtapa == etapasCrecimiento.Length - 1 && !panelMensaje.activeSelf)
             {
