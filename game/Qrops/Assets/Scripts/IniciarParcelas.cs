@@ -13,10 +13,18 @@ public class IniciarParcelas : MonoBehaviour
     
     //Crea una lista de plots publica
     public List<Plot> plots = new List<Plot>();
-    //Crea un plot y dale valores
+    //Crea un 4 plots y dale valores
     public Plot plot1 = new Plot { crop_type_id = "1", quantity = 1, growth = 2 };
+    public Plot plot2 = new Plot { crop_type_id = "2", quantity = 1, growth = 2 };
+    public Plot plot3 = new Plot { crop_type_id = "3", quantity = 1, growth = 0 };
+    public Plot plot4 = new Plot { crop_type_id = "4", quantity = 1, growth = 1 };
 
     void Start(){
-
+        //Agrega los plots a la lista
+        plots.Add(plot1);
+        plots.Add(plot2);
+        plots.Add(plot3);
+        plots.Add(plot4);
+        //
     }
 }

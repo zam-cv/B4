@@ -41,6 +41,8 @@ public class BotonInicio : MonoBehaviour
                 contenedorMaices = cañas[ParcelaActual.instance.NumeroParcela - 1];
                 break;
         }
+        //Guarda el contenedorMaices en el Queue de CultivosPlantados
+        CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
 
         // Recorre todos los hijos del contenedor
         foreach (Transform hijo in contenedorMaices.transform)
