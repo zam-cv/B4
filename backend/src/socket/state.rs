@@ -11,6 +11,7 @@ use crate::{
 use actix::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json;
+use std::borrow::Cow;
 
 #[derive(Deserialize)]
 pub enum Duration {
@@ -57,21 +58,42 @@ pub struct InitialData {
     pub crops_types: Vec<models::CropType>,
 }
 
+#[derive(Serialize)]
+pub struct Interest {
+    pub interest_verqor: i32,
+    pub interest_coyote: i32,
+}
+
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
     Cycle(CycleData),
     BuyCrop(CropData),
-    ResetPlayer, // TODO: Add more
+    ResetPlayer, 
+    // TODO: Add more
+}
+
+#[derive(Serialize)]
+pub enum Status {
+    Warning,
+    Success,
+}
+
+#[derive(Serialize)]
+pub struct Message<'a> {
+    pub status: Status,
+    pub message: Cow<'a, str>,
 }
 
 #[derive(Serialize)]
 #[serde(tag = "type")]
-pub enum Response {
+pub enum Response<'a> {
     Init(ModifiedPlayer<InitialData>),
     CycleResolved(ModifiedPlayer<ResolveCycleData>),
     CropBought(ModifiedPlayer<Vec<models::Plot>>),
     PlayerReseted(ModifiedPlayer<Vec<models::Plot>>),
+    Interest(Interest),
+    Message(Message<'a>), 
     // TODO: Add more
 }
 
@@ -208,11 +230,21 @@ impl State {
             }
 
             // the player receives interest on the balance
-            self.player.balance_verqor +=
+            let interest_verqor =
                 (self.player.balance_verqor as f64 * config::INTEREST_PERCENTAGE_VERQOR) as i32;
 
-            self.player.balance_coyote +=
+            let interest_coyote =
                 (self.player.balance_coyote as f64 * config::INTEREST_PERCENTAGE_COYOTE) as i32;
+
+            if interest_verqor > 0 || interest_coyote > 0 {
+                self.send(Response::Interest(Interest {
+                    interest_verqor,
+                    interest_coyote,
+                }))?;
+            }
+
+            self.player.balance_verqor += interest_verqor;
+            self.player.balance_coyote += interest_coyote;
         }
 
         if let Some(player_id) = self.player.id {
@@ -274,6 +306,11 @@ impl State {
                 player: self.player.clone(),
                 payload: self.plots.clone(),
             }))?;
+        } else {
+            self.send(Response::Message(Message {
+                status: Status::Warning,
+                message: "No tienes suficiente espacio".into(),
+            }))?;
         }
 
         Ok(())
@@ -305,7 +342,17 @@ impl State {
                             player: self.player.clone(),
                             payload: self.plots.clone(),
                         }))?;
+                    } else {
+                        self.send(Response::Message(Message {
+                            status: Status::Warning,
+                            message: "No tienes suficiente espacio".into(),
+                        }))?;
                     }
+                } else {
+                    self.send(Response::Message(Message {
+                        status: Status::Warning,
+                        message: "No tienes suficiente dinero".into(),
+                    }))?;
                 }
 
                 return Ok(());
@@ -315,11 +362,21 @@ impl State {
                 models::MoneyType::Verqor => {
                     if self.player.balance_verqor - price >= config::CREDIT_LIMIT {
                         self.buy_crop_with_credit(crop_data, &crop, price)?;
+                    } else {
+                        self.send(Response::Message(Message {
+                            status: Status::Warning,
+                            message: "El límite de crédito verqor ha sido alcanzado".into(),
+                        }))?;
                     }
                 }
                 models::MoneyType::Coyote => {
                     if self.player.balance_coyote - price >= config::CREDIT_LIMIT {
                         self.buy_crop_with_credit(crop_data, &crop, price)?;
+                    } else {
+                        self.send(Response::Message(Message {
+                            status: Status::Warning,
+                            message: "El límite de crédito coyote ha sido alcanzado".into(),
+                        }))?;
                     }
                 }
                 _ => {}
@@ -349,6 +406,11 @@ impl State {
         self.send(Response::PlayerReseted(ModifiedPlayer {
             player: self.player.clone(),
             payload: self.plots.clone(),
+        }))?;
+
+        self.send(Response::Message(Message {
+            status: Status::Success,
+            message: "Tu progreso ha sido reiniciado".into(),
         }))?;
 
         Ok(())
