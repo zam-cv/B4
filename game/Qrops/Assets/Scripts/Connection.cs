@@ -95,9 +95,6 @@ public class Connection : MonoBehaviour
         headers.Add("token", token);
         websocket = new WebSocket(Context.Instance.WebSocketUrl, headers);
 
-        scoreObject = GameObject.Find("Lista");
-        scoreObjectText = scoreObject.GetComponent<TMP_Text>();
-
         websocket.OnOpen += () =>
         {
             Debug.Log("Connection open!");
@@ -132,6 +129,9 @@ public class Connection : MonoBehaviour
                     // set the plots with data.payload.plots
                     break;
                 case "CycleResolved":
+                    scoreObject = GameObject.Find("Lista");
+                    scoreObjectText = scoreObject.GetComponent<TMP_Text>();
+
                     Debug.Log(message);
                     ModifiedPlayer<CycleResolved> cycleResolvedData = JsonConvert.DeserializeObject<ModifiedPlayer<CycleResolved>>(message);
                     player = cycleResolvedData.player;
