@@ -41,8 +41,10 @@ public class Utils : MonoBehaviour
 
         GameObject cashObject = GameObject.Find("cash");
         TMP_Text cashText = cashObject.GetComponent<TMP_Text>();
-
-        scoreText.text = player.current_score.ToString();
+        
+        double score = Mathf.RoundToInt(player.current_score * 100.0f);
+        if (score < -100) score = -100;
+        scoreText.text =  score + "%";
         verqorText.text = player.balance_verqor.ToString();
         coyoteText.text = player.balance_coyote.ToString();
         cashText.text = player.balance_cash.ToString();
