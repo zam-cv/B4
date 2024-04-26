@@ -6,8 +6,6 @@ using TMPro;
 public class EventsPanel : MonoBehaviour
 {
     public GameObject panel;
-    GameObject scoreObject;
-    TMP_Text scoreObjectText;
     
     void Start()
     {
