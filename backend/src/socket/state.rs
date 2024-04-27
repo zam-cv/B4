@@ -64,15 +64,6 @@ pub struct Interest {
     pub interest_coyote: i32,
 }
 
-#[derive(Deserialize)]
-#[serde(tag = "type")]
-pub enum Request {
-    Cycle(CycleData),
-    BuyCrop(CropData),
-    ResetPlayer, 
-    // TODO: Add more
-}
-
 #[derive(Serialize)]
 pub enum Status {
     Warning,
@@ -83,6 +74,15 @@ pub enum Status {
 pub struct Message<'a> {
     pub status: Status,
     pub message: Cow<'a, str>,
+}
+
+#[derive(Deserialize)]
+#[serde(tag = "type")]
+pub enum Request {
+    Cycle(CycleData),
+    BuyCrop(CropData),
+    ResetPlayer, 
+    // TODO: Add more
 }
 
 #[derive(Serialize)]
@@ -306,6 +306,11 @@ impl State {
                 player: self.player.clone(),
                 payload: self.plots.clone(),
             }))?;
+
+            self.send(Response::Message(Message {
+                status: Status::Success,
+                message: "Compra realizada con éxito".into(),
+            }))?;
         } else {
             self.send(Response::Message(Message {
                 status: Status::Warning,
@@ -341,6 +346,11 @@ impl State {
                         self.send(Response::CropBought(ModifiedPlayer {
                             player: self.player.clone(),
                             payload: self.plots.clone(),
+                        }))?;
+
+                        self.send(Response::Message(Message {
+                            status: Status::Success,
+                            message: "Compra realizada con éxito".into(),
                         }))?;
                     } else {
                         self.send(Response::Message(Message {

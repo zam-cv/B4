@@ -28,10 +28,12 @@ async fn create_users() {
             let mut rng = rand::thread_rng();
             let gender: models::Gender = rng.gen();
 
+            let username: String = internet::en::Username().fake();
+
             let user = models::User {
                 id: None,
                 user_type,
-                username: internet::en::Username().fake(),
+                username: username.trim().to_string(),
                 email: internet::en::SafeEmail().fake(),
                 password: utils::hash_password(&password).unwrap().to_string(),
                 gender,
