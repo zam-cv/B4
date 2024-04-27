@@ -1057,6 +1057,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6b344290c0f4c70a9e402c3e203a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toast: {fileID: 1779653109559497798, guid: c85aa153dae9f4fc89e67a4314ca1b21, type: 3}
   loading_logo: {fileID: 1486228611}
   loading_background: {fileID: 1852380613}
   events_window: {fileID: 1169390715}
@@ -2207,6 +2208,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2613af074a837465c9c2c0cc0395c951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tienda: 0
 --- !u!1 &87151318
 GameObject:
   m_ObjectHideFlags: 0
@@ -44204,6 +44206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d6b344290c0f4c70a9e402c3e203a8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  toast: {fileID: 1779653109559497798, guid: c85aa153dae9f4fc89e67a4314ca1b21, type: 3}
   loading_logo: {fileID: 1486228611}
   loading_background: {fileID: 1852380613}
   events_window: {fileID: 0}

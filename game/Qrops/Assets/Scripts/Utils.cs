@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System;
 
 public class Utils : MonoBehaviour
 {
@@ -39,6 +38,7 @@ public class Utils : MonoBehaviour
         int cont = 0;
         foreach (Plot plot in plots)
         {
+<<<<<<< HEAD
             if (GameObject.Find("Click" + cont++).GetComponent<SelectParcela>().planted == false)
             {
                 //switch crop_type_id
@@ -60,6 +60,15 @@ public class Utils : MonoBehaviour
                 quantity = plot.quantity;
                 growth = plot.growth;
             }
+=======
+            // GameObject plotObject = GameObject.Find("plot" + plot.id);
+            // GameObject cropObject = plotObject.transform.Find("crop").gameObject;
+            // GameObject growthObject = plotObject.transform.Find("growth").gameObject;
+
+            // CropType cropType = crops[plot.crop_type_id];
+            // cropObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("crops/" + cropType.name);
+            // growthObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("growth/" + GetGrowth(plot));
+>>>>>>> b6cd1f9 (add: toast)
         }
     }
 
@@ -112,7 +121,7 @@ public class Utils : MonoBehaviour
     {
         CropType cropType = crops[plot.crop_type_id];
         var porcentage =  (float)plot.growth / cropType.duration;
-        var index = Math.Floor(porcentage * 4);
+        var index = Mathf.Floor(porcentage * 4);
 
         if (index == 4)
         {

@@ -68,6 +68,7 @@ pub struct Interest {
 pub enum Status {
     Warning,
     Success,
+    Info
 }
 
 #[derive(Serialize)]
@@ -132,6 +133,11 @@ impl State {
 
     // Send user data at startup
     pub async fn init(&self, database: &Database) -> anyhow::Result<()> {
+        self.send(Response::Message(Message {
+            status: Status::Info,
+            message: "Bienvenido".into(),
+        }))?;
+
         self.send(Response::Init(ModifiedPlayer {
             player: self.player.clone(),
             payload: InitialData {

@@ -7,6 +7,12 @@ using UnityEngine.SceneManagement;
 using NativeWebSocket;
 using TMPro;
 
+public struct Message
+{
+    public string status;
+    public string message;
+}
+
 public struct Player
 {
     public int time;
@@ -56,6 +62,8 @@ public class Connection : MonoBehaviour
 {
     public static Connection Instance { get; set; }
     WebSocket websocket;
+
+    public GameObject toast;
 
     public GameObject loading_logo, loading_background;
 
@@ -152,6 +160,32 @@ public class Connection : MonoBehaviour
                     ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
                     player = cropBoughtData.player;
                     // set the plots with data.payload
+                    break;
+                case "Message":
+                    Message ObjMessage = JsonConvert.DeserializeObject<Message>(message);
+                    GameObject toastClone = Instantiate(toast);
+
+                    TMP_Text toastText = toastClone.transform.Find("Message").GetComponent<TMP_Text>();
+                    toastText.text = ObjMessage.message;
+
+                    UnityEngine.UI.Image statusImage = toastClone.transform.Find("Status").GetComponent<UnityEngine.UI.Image>();
+
+                    if (ObjMessage.status == "Info")
+                    {
+                        statusImage.color = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+                    }
+                    else if (ObjMessage.status == "Success")
+                    {
+                        statusImage.color = new Color(0.0f, 1.0f, 0.0f, 1.0f);
+                    }
+                    else if (ObjMessage.status == "Warning")
+                    {
+                        statusImage.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+                    }
+
+                    toastClone.transform.SetParent(GameObject.Find("HUD").transform, false);
+                    Destroy(toastClone, 3);
+
                     break;
                     // Add more cases here
             }
