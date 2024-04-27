@@ -5,9 +5,9 @@ import {
   Marker,
   ZoomableGroup,
 } from "react-simple-maps";
-import { Payment } from "./UsersTable";
+import { User } from "@/utils/api";
 
-export default function Map({ userInfo }: { userInfo: Payment | null }) {
+export default function Map({ userInfo }: { userInfo: User | null }) {
   if (!userInfo) return <div></div>;
 
   return (

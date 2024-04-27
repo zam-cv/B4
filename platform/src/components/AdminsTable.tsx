@@ -1,18 +1,10 @@
-import { API_URL } from "@/utils/constants";
 import { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
-import { getConfig } from "../utils/auth";
 import Delete from "./Delete";
-import axios from "axios";
+import api, { Admin } from "@/utils/api";
 
-export type Payment = {
-  id: string;
-  email: string;
-  role_id: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Admin>[] = [
   {
     accessorKey: "email",
     header: "Correo electrónico",
@@ -24,12 +16,9 @@ export const columns: ColumnDef<Payment>[] = [
       const payment = row.original;
 
       async function deleteAdmin() {
-        const config = await getConfig();
-
-        axios.delete(`${API_URL}/admins/${payment.id}`, config).then(() => {
-          // @ts-ignore
-          payment.deleteAdmin(payment.id);
-        });
+        await api.admins.deleteAdmin(payment.id);
+        // @ts-ignore
+        payment.deleteAdmin(payment.id);
       }
 
       return <Delete onClick={deleteAdmin} />;
@@ -37,29 +26,23 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-async function getData(
-  setUserId: React.Dispatch<React.SetStateAction<string | null>>,
-  setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>
-): Promise<Payment[]> {
-  let admins = await axios.get(`${API_URL}/admins`, await getConfig());
-  setUserId(admins.data[0].id);
-  setUserInfo(admins.data[0]);
-  return admins.data;
-}
-
 export default function AdminsTable({
   data,
   setData,
   setUserId,
   setUserInfo,
 }: {
-  data: Payment[];
-  setData: React.Dispatch<React.SetStateAction<Payment[]>>;
+  data: Admin[];
+  setData: React.Dispatch<React.SetStateAction<Admin[]>>;
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
-  setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>;
+  setUserInfo: React.Dispatch<React.SetStateAction<Admin | null>>;
 }) {
   useEffect(() => {
-    getData(setUserId, setUserInfo).then(setData);
+    api.admins.getAdmins().then((admins) => {
+      setUserId(admins[0].id);
+      setUserInfo(admins[0]);
+      setData(admins);
+    });
   }, []);
 
   function deleteAdmin(id: string) {

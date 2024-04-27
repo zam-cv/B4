@@ -3,26 +3,20 @@ import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { getColors } from "../../utils/chart";
 import { CHART_DEFAULT_OPTIONS } from "../../utils/constants";
-import { API_URL } from "../../utils/constants";
-import { getConfig } from "../../utils/auth";
-import axios from "axios";
+import api from "@/utils/api";
 
 export default function UsersByType() {
   const [typesUsers, setTypesUsers] = useState<string[]>([]);
   const [users, setUsers] = useState<[string, number][]>([]);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
+    api.users.getUsersTypes().then((data) => {
+      setTypesUsers(data);
+    });
 
-      axios.get(`${API_URL}/users/types`, config).then(({ data }) => {
-        setTypesUsers(data);
-      });
-
-      axios.get(`${API_URL}/users/types/count`, config).then(({ data }) => {
-        setUsers(data);
-      });
-    })();
+    api.users.getCountUsersByType().then((data) => {
+      setUsers(data);
+    });
   }, []);
 
   return (

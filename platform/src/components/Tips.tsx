@@ -1,13 +1,11 @@
 import { useRef, useState, useEffect } from "react";
-import TipsTable, { Payment } from "@/components/TipsTable";
+import TipsTable from "@/components/TipsTable";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { API_URL } from "@/utils/constants";
-import { getConfig } from "@/utils/auth";
-import axios from "axios";
+import api, { Tip } from "@/utils/api";
 
 export default function Tips() {
-  const [data, setData] = useState<Payment[]>([]);
+  const [data, setData] = useState<Tip[]>([]);
   const [length, setLength] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -15,34 +13,19 @@ export default function Tips() {
     if (!textareaRef.current || textareaRef.current.value === "") return;
 
     const tip = textareaRef.current.value;
-    const config = await getConfig();
 
-    axios
-      .post(
-        `${API_URL}/data/tips`,
-        {
-          content: tip,
-        },
-        config
-      )
-      .then((response) => {
-        const id = parseInt(response.data);
-        const value = { id, content: tip } as Payment;
-        setData([...data, value]);
-        textareaRef.current!.value = "";
-        setLength(0);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    api.data.setTip(tip).then((id) => {
+      const value = { id: parseInt(id), content: tip } as Tip;
+      setData([...data, value] as Tip[]);
+      textareaRef.current!.value = "";
+      setLength(0);
+    })
   }
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-      let users = await axios.get(`${API_URL}/data/tips`, config);
-      setData(users.data);
-    })();
+    api.data.getTips().then((tips) => {
+      setData(tips);
+    });
   }, []);
 
   return (

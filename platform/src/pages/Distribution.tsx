@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { getColors } from "../utils/chart";
-import { API_URL } from "../utils/constants";
-import { getConfig } from "../utils/auth";
-import axios from "axios";
 import {
   ComposableMap,
   Geographies,
@@ -10,6 +7,7 @@ import {
   ZoomableGroup,
   Marker,
 } from "react-simple-maps";
+import api from "@/utils/api";
 
 interface Response {
   colors: string[];
@@ -43,18 +41,14 @@ export default function Distribution() {
   const data = getData(typesUsers, locations);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
+    api.users.getUsersTypes().then((data) => {
+      setTypesUsers(data);
+      setVisibility(data.map(() => true));
+    });
 
-      axios.get(`${API_URL}/users/types`, config).then(({ data }) => {
-        setTypesUsers(data);
-        setVisibility(data.map(() => true));
-      });
-
-      axios.get(`${API_URL}/users/locations/types`, config).then(({ data }) => {
-        setLocations(data);
-      });
-    })();
+    api.users.getUsersLocations().then((data) => {
+      setLocations(data);
+    });
   }, []);
 
   function handleVisibility(index: number) {

@@ -1,35 +1,19 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { API_URL } from "@/utils/constants";
 import { DataTable } from "./DataTable";
-import { getConfig } from "@/utils/auth";
 import Delete from "./Delete";
-import axios from "axios";
 import ContentEdit from "./ContentEdit";
+import api, { Tip } from "@/utils/api";
 
-export type Payment = {
-  id: number;
-  content: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Tip>[] = [
   {
     accessorKey: "content",
     header: "Tips",
     cell: (row) => {
       async function handleContentChange(ref: HTMLParagraphElement | null) {
-        const config = await getConfig();
-
-        axios
-          .put(
-            `${API_URL}/data/tips/${row.row.original.id}`,
-            {
-              content: ref?.textContent,
-            },
-            config
-          )
-          .catch((error) => {
-            console.error(error);
-          });
+        api.data.updateTip(
+          row.row.original.id,
+          ref?.textContent || ""
+        );
       }
 
       return (
@@ -47,12 +31,10 @@ export const columns: ColumnDef<Payment>[] = [
       const payment = row.original;
 
       async function deleteTip() {
-        const config = await getConfig();
-
-        axios.delete(`${API_URL}/data/tips/${payment.id}`, config).then(() => {
+        api.data.deleteTip(payment.id).then(() => {
           // @ts-ignore
           payment.deleteTip(payment.id);
-        });
+        })
       }
 
       return <Delete onClick={deleteTip} />;
@@ -64,8 +46,8 @@ export default function TipsTable({
   data,
   setData,
 }: {
-  data: Payment[];
-  setData: React.Dispatch<React.SetStateAction<Payment[]>>;
+  data: Tip[];
+  setData: React.Dispatch<React.SetStateAction<Tip[]>>;
 }) {
   function deleteTip(id: number) {
     let newData = data.filter((tip) => tip.id !== id);

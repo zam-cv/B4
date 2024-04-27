@@ -1,9 +1,6 @@
-import { getConfig } from "../utils/auth";
-import { Payment } from "@/components/AdminsTable";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { API_URL } from "../utils/constants";
 import { Checkbox } from "@/components/ui/checkbox";
+import api, { Admin } from "@/utils/api";
 
 function getPermissionDiff(
   permissions: Set<string> | null,
@@ -19,7 +16,7 @@ function getPermissionDiff(
   return Array.from(diff);
 }
 
-export default function Permissions({ userInfo }: { userInfo: Payment | null }) {
+export default function Permissions({ userInfo }: { userInfo: Admin | null }) {
   const [permissions, setPermissions] = useState<Set<string> | null>(new Set());
   const [userPermissions, setUserPermissions] = useState<Set<string> | null>(
     new Set()
@@ -28,44 +25,24 @@ export default function Permissions({ userInfo }: { userInfo: Payment | null }) 
   useEffect(() => {
     if (!userInfo) return;
 
-    (async () => {
-      const config = await getConfig();
+    api.permissions.getPermissionsTypes(userInfo.role_id).then((data) => {
+      setPermissions(new Set(data));
+    });
 
-      axios
-        .get(`${API_URL}/permissions/types/${userInfo.role_id}`, config)
-        .then(({ data }) => setPermissions(new Set(data)))
-        .catch((error) => console.error(error));
-
-      axios
-        .get(`${API_URL}/permissions/${userInfo.id}`, config)
-        .then(({ data }) => setUserPermissions(new Set(data)))
-        .catch((error) => console.error(error));
-    })();
+    api.permissions.getUserPermissions(userInfo.id).then((data) => {
+      setUserPermissions(new Set(data));
+    });
   }, [userInfo]);
 
   async function setPermission(permission: string, value: boolean) {
     if (!userInfo || !permissions || !userPermissions) return;
-    const config = await getConfig();
 
     if (value) {
       userPermissions.add(permission);
-
-      axios
-      .post(
-        `${API_URL}/permissions`,
-        {
-          id: userInfo.id,
-          permission,
-        },
-        config
-      )
-      .catch((error) => console.error(error));
+      api.permissions.setPermission(userInfo.id, permission);
     } else {
       userPermissions.delete(permission);
-
-      axios
-      .delete(`${API_URL}/permissions/${userInfo.id}/${permission}`, config)
-      .catch((error) => console.error(error));
+      api.permissions.deletePermission(userInfo.id, permission);
     }
 
     setUserPermissions(new Set(userPermissions));

@@ -1,16 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { API_URL } from "../utils/constants";
-import { getConfig } from "../utils/auth";
-import { Payment } from "./UsersTable";
-
-interface Player {
-  current_cycle: number;
-  current_score: number;
-  balance_cash: number;
-  balance_verqor: number;
-  balance_coyote: number;
-}
+import api, { Player, User } from "@/utils/api";
 
 function Field({ title, value }: { title: string; value: string | number }) {
   return (
@@ -25,20 +14,15 @@ export default function PlayerInfo({
   userInfo,
 }: {
   userId: string | null;
-  userInfo: Payment | null;
+  userInfo: User | null;
 }) {
   const [player, setPlayer] = useState<Player | null>(null);
 
   useEffect(() => {
-    (async () => {
-      if (!userId) return;
-
-      axios
-        .get(`${API_URL}/player/${userId}`, await getConfig())
-        .then(({ data }) => {
-          setPlayer(data);
-        });
-    })();
+    if (!userId) return;
+    api.player.getPlayer(userId).then((data) => {
+      setPlayer(data);
+    });
   }, [userId]);
 
   return (

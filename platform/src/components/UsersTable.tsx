@@ -1,25 +1,11 @@
-import { API_URL } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { DataTable } from "./DataTable";
-import { getConfig } from "../utils/auth";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import axios from "axios";
+import api, { User } from "@/utils/api";
 
-export type Payment = {
-  id: string;
-  username: string;
-  user_type: string;
-  email: string;
-  gender: string;
-  age: number;
-  os: string;
-  latitude: number;
-  longitude: number;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "username",
     header: "Nombre de usuario",
@@ -78,33 +64,28 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-async function getData(
-  setUserId: React.Dispatch<React.SetStateAction<string | null>>,
-  setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>
-): Promise<Payment[]> {
-  let date = new Date();
-  let users = await axios.get(`${API_URL}/users`, await getConfig());
-
-  users.data.forEach((user: any) => {
-    user.age = date.getFullYear() - user.year_of_birth;
-  });
-
-  setUserId(users.data[0].id);
-  setUserInfo(users.data[0]);
-  return users.data;
-}
-
 export default function UsersTable({
   setUserId,
   setUserInfo,
 }: {
   setUserId: React.Dispatch<React.SetStateAction<string | null>>;
-  setUserInfo: React.Dispatch<React.SetStateAction<Payment | null>>;
+  setUserInfo: React.Dispatch<React.SetStateAction<User | null>>;
 }) {
-  const [data, setData] = useState<Payment[]>([]);
+  const [data, setData] = useState<User[]>([]);
 
   useEffect(() => {
-    getData(setUserId, setUserInfo).then(setData);
+    api.users.getUsers().then((users) => {
+      let date = new Date();
+
+      users.forEach((user) => {
+        // @ts-ignore
+        user.age = date.getFullYear() - user.year_of_birth;
+      });
+
+      setUserId(users[0].id);
+      setUserInfo(users[0]);
+      setData(users);
+    });
   }, []);
 
   return (

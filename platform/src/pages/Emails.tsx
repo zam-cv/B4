@@ -10,19 +10,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { API_URL } from "@/utils/constants";
-import { getConfig } from "../utils/auth";
 import MDEditor from "@uiw/react-md-editor";
 import juice from "juice";
 import { EMAIL_EXAMPLE } from "@/utils/constants";
-
-interface Filters {
-  by_age_range?: [number | null, number | null];
-  by_user_type?: string;
-  by_gender?: string;
-  by_extension?: string;
-}
+import api, { Filters } from "@/utils/api";
 
 export default function Emails() {
   const [typesUsers, setTypesUsers] = useState<string[]>([]);
@@ -67,30 +58,14 @@ export default function Emails() {
     // gets the body of the document
     const body = doc.documentElement.outerHTML;
 
-    const config = await getConfig();
-
     if (title !== "" && value !== "") {
-      axios
-        .post(
-          `${API_URL}/mail`,
-          {
-            title,
-            body,
-            filters, // filters to send the email
-          },
-          config
-        )
-        .then(() => {
-          setValue("");
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      api.mail.sendMail(title, body, filters).then(() => {
+        setValue("");
+      });
     }
   }
 
   async function getSelectedUsers() {
-    const config = await getConfig();
     let tmp: Filters = {};
 
     if (
@@ -123,14 +98,9 @@ export default function Emails() {
     }
 
     if (Object.keys(tmp).length !== 0) {
-      axios
-        .post(`${API_URL}/mail/count`, tmp, config)
-        .then(({ data }) => {
-          setSelectedUsers(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      api.mail.countMails(tmp).then((data) => {
+        setSelectedUsers(data);
+      });
     }
   }
 
@@ -140,26 +110,17 @@ export default function Emails() {
   }
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
+    api.mail.countMails({}).then((data) => {
+      setSelectedUsers(data);
+    });
 
-      axios
-        .post(`${API_URL}/mail/count`, {}, config)
-        .then(({ data }) => {
-          setSelectedUsers(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    api.users.getGenders().then((data) => {
+      setGender(data);
+    });
 
-      axios.get(`${API_URL}/users/genders`, config).then(({ data }) => {
-        setGender(data);
-      });
-
-      axios.get(`${API_URL}/users/types`, config).then(({ data }) => {
-        setTypesUsers(data);
-      });
-    })();
+    api.users.getUsersTypes().then((data) => {
+      setTypesUsers(data);
+    });
   }, []);
 
   return (

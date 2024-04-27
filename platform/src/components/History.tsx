@@ -1,29 +1,16 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { getConfig } from "../utils/auth";
-import { API_URL } from "../utils/constants";
+import api, { Statistic } from "@/utils/api";
 
 const EVENT_TYPES = ["Positive", "Negative", "Default"];
-
-interface Statistic {
-  cycle: number;
-  score: number;
-}
 
 export default function History({ id }: { id: string | null }) {
   const [history, setHistory] = useState<[Statistic, [string, string][]][]>([]);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-      if (!id) return;
-
-      axios
-        .get(`${API_URL}/player/${id}/history`, config)
-        .then(({ data }: { data: any }) => {
-          setHistory(data);
-        });
-    })();
+    if (!id) return;
+    api.player.getHistory(id).then((data) => {
+      setHistory(data);
+    })
   }, [id]);
 
   function Action(action: [string, string], index: number) {

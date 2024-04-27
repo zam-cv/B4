@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_URL } from "@/utils/constants";
-import { getConfig } from "@/utils/auth";
-import axios from "axios";
+import api from "@/utils/api";
 
 function Detail({ title, value }: { title: string; value: string }) {
   return (
@@ -17,17 +15,13 @@ export default function Details() {
   const [averageAge, setAverageAge] = useState<number | null>(0);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
+    api.players.getAverageTimeInGame().then((data) => {
+      setAverageTime(data);
+    });
 
-      axios.get(`${API_URL}/players/average-time`, config).then(({ data }) => {
-        setAverageTime(data);
-      });
-
-      axios.get(`${API_URL}/users/average-age`, config).then(({ data }) => {
-        setAverageAge(data);
-      });
-    })();
+    api.users.getAverageAge().then((data) => {
+      setAverageAge(data);
+    });
   }, []);
 
   return (

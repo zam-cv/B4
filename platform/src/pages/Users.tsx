@@ -1,10 +1,9 @@
-import { SOCKET_URL, API_URL } from "../utils/constants";
+import { SOCKET_URL } from "../utils/constants";
 import { getConfig } from "../utils/auth";
 import Socket from "../utils/socket";
 import { PlatformContext } from "../contexts/Platform";
 import { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import UsersTable, { Payment } from "../components/UsersTable";
+import UsersTable from "../components/UsersTable";
 import PlayerInfo from "../components/PlayerInfo";
 import Map from "../components/Map";
 import Statistics from "../components/Statistics";
@@ -15,6 +14,7 @@ import {
 } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import History from "@/components/History";
+import api, { User } from "@/utils/api";
 
 interface Captacion {
   visitor_count: number;
@@ -22,7 +22,7 @@ interface Captacion {
 
 export default function Users() {
   const [userId, setUserId] = useState<string | null>(null);
-  const [userInfo, setUserInfo] = useState<Payment | null>(null);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const { platform } = useContext(PlatformContext);
   const [active, setActive] = useState(0);
   const [inactive, setInactive] = useState(0);
@@ -42,11 +42,9 @@ export default function Users() {
         config.headers.token as string
       );
 
-      axios
-        .get(`${API_URL}/players/count`, config)
-        .then(({ data }: { data: any }) => {
-          setInactive(data);
-        });
+      api.players.getCountPlayers().then((data) => {
+        setInactive(data);
+      })
     })();
   }, [platform]);
 

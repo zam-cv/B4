@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
-import { API_URL } from "@/utils/constants";
-import { getConfig } from "../utils/auth";
-import axios from "axios";
+import api from "@/utils/api";
 
 export type Payment = {
   name: string;
@@ -17,20 +15,12 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 export default function TopPlayers() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Payment[]>([]);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-
-      const { data } = await axios.get(
-        `${API_URL}/players/top-players`,
-        config
-      );
-      console.log(data);
-
-      setData(data.map((player: any) => ({ name: player })));
-    })();
+    api.players.getTopPlayers().then((players) => {
+      setData(players.map((player) => ({ name: player })));
+    });
   }, []);
 
   return (

@@ -1,19 +1,10 @@
 import { useState, useEffect } from "react";
 import { DataTable } from "./DataTable";
-import { API_URL } from "@/utils/constants";
 import { ColumnDef } from "@tanstack/react-table";
-import { getConfig } from "../utils/auth";
 import ContentEdit from "./ContentEdit";
-import axios from "axios";
+import api, { Crop } from "@/utils/api";
 
-export type Payment = {
-  name: string;
-  price: number;
-  duration: number;
-  description: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Crop>[] = [
   {
     accessorKey: "name",
     header: "Nombre",
@@ -23,17 +14,10 @@ export const columns: ColumnDef<Payment>[] = [
     header: "Precio",
     cell: (row) => {
       async function handleContentChange(ref: HTMLParagraphElement | null) {
-        const config = await getConfig();
-
-        axios
-          .put(
-            `${API_URL}/data/crops/${row.row.original.name}/price`,
-            ref?.textContent,
-            config
-          )
-          .catch((error) => {
-            console.error(error);
-          });
+        api.data.updateCropPrice(
+          row.row.original.name,
+          parseFloat(ref?.textContent || "0")
+        );
       }
 
       return (
@@ -42,24 +26,17 @@ export const columns: ColumnDef<Payment>[] = [
           onInput={handleContentChange}
         />
       );
-    }
+    },
   },
   {
     accessorKey: "duration",
     header: "Duración",
     cell: (row) => {
       async function handleContentChange(ref: HTMLParagraphElement | null) {
-        const config = await getConfig();
-
-        axios
-          .put(
-            `${API_URL}/data/crops/${row.row.original.name}/duration`,
-            ref?.textContent,
-            config
-          )
-          .catch((error) => {
-            console.error(error);
-          });
+        api.data.updateCropDuration(
+          row.row.original.name,
+          parseFloat(ref?.textContent || "0")
+        );
       }
 
       return (
@@ -68,24 +45,17 @@ export const columns: ColumnDef<Payment>[] = [
           onInput={handleContentChange}
         />
       );
-    }
+    },
   },
   {
     accessorKey: "description",
     header: "Descripción",
     cell: (row) => {
       async function handleContentChange(ref: HTMLParagraphElement | null) {
-        const config = await getConfig();
-
-        axios
-          .put(
-            `${API_URL}/data/crops/${row.row.original.name}/description`,
-            ref?.textContent,
-            config
-          )
-          .catch((error) => {
-            console.error(error);
-          });
+        api.data.updateCropDescription(
+          row.row.original.name,
+          ref?.textContent || ""
+        );
       }
 
       return (
@@ -99,21 +69,19 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 export default function CropsTypes() {
-  const [data, setData] = useState<Payment[]>([]);
+  const [data, setData] = useState<Crop[]>([]);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-
-      axios.get(`${API_URL}/data/crops`, config).then(({ data }) => {
-        setData(data);
-      });
-    })();
+    api.data.getCrops().then((crops) => {
+      setData(crops);
+    });
   }, []);
 
   return (
     <div className="p-5 flex flex-col gap-5 h-full">
-      <h1 className="text-2xl font-bold text-blue-950">Editar tipos de Cultivo</h1>
+      <h1 className="text-2xl font-bold text-blue-950">
+        Editar tipos de Cultivo
+      </h1>
       <div className="relative w-full h-full overflow-auto">
         <div className="absolute w-full h-full">
           <DataTable columns={columns} data={data} />

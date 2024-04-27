@@ -1,18 +1,8 @@
-import axios from "axios";
-import { API_URL, setHost, removeHost } from "../utils/constants";
+import { setHost, removeHost } from "../utils/constants";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext, AuthContextType } from "../contexts/AuthContext";
 import { setToken, deleteToken } from "../utils/auth";
-import { getConfig } from "../utils/auth";
-
-export interface Admin {
-  email: string;
-}
-
-export interface Info {
-  token: string;
-  admin: Admin;
-}
+import api, { Admin } from "@/utils/api";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const auth = useProvideAuth();
@@ -24,12 +14,7 @@ export function useAuth(): AuthContextType {
 }
 
 async function getPermissions(): Promise<Set<string>> {
-  const config = await getConfig();
-
-  return axios
-    .get(`${API_URL}/permissions`, config)
-    .then(({ data }: { data: string[] }) => new Set(data))
-    .catch((_) => new Set());
+  return new Set(await api.permissions.getPermissions());
 }
 
 export function useProvideAuth() {
@@ -38,9 +23,12 @@ export function useProvideAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [permissions, setPermissions] = useState<Set<string> | null>(null);
 
-  const signin = async (email: string, password: string, serverHost: string) => {
+  const signin = async (
+    email: string,
+    password: string,
+    serverHost: string
+  ) => {
     setLoading(true);
-    const config = await getConfig();
 
     if (serverHost != "") {
       setHost(serverHost);
@@ -48,16 +36,9 @@ export function useProvideAuth() {
       removeHost();
     }
 
-    axios
-      .post(
-        `${API_URL}/auth/signin`,
-        {
-          email,
-          password,
-        },
-        config
-      )
-      .then(({ data }: { data: Info }) => {
+    api.auth
+      .signin(email, password)
+      .then((data) => {
         setIsAuthenticated(true);
         setAdmin(data.admin);
         setToken(data.token);
@@ -71,10 +52,8 @@ export function useProvideAuth() {
   };
 
   const signout = async () => {
-    const config = await getConfig();
-
-    axios
-      .delete(`${API_URL}/auth/signout`, config)
+    api.auth
+      .signout()
       .then((_) => {
         setIsAuthenticated(false);
         setAdmin(null);
@@ -89,23 +68,19 @@ export function useProvideAuth() {
   };
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-
-      axios
-        .get(`${API_URL}/auth`, config)
-        .then(({ data }: { data: Admin }) => {
-          setIsAuthenticated(true);
-          setAdmin(data);
-          getPermissions().then((permissions) => setPermissions(permissions));
-          setLoading(false);
-        })
-        .catch((_) => {
-          setIsAuthenticated(false);
-          setLoading(false);
-          removeHost();
-        });
-    })();
+    api.auth
+      .authenticate()
+      .then((data) => {
+        setIsAuthenticated(true);
+        setAdmin(data);
+        getPermissions().then((permissions) => setPermissions(permissions));
+        setLoading(false);
+      })
+      .catch((_) => {
+        setIsAuthenticated(false);
+        setLoading(false);
+        removeHost();
+      });
   }, []);
 
   return {

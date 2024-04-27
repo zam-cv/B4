@@ -1,18 +1,15 @@
 import { handleKeyDown, handleEnter } from "../utils";
-import { getConfig } from "../utils/auth";
-import { Payment } from "@/components/AdminsTable";
 import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import AdminsTable from "@/components/AdminsTable";
-import axios from "axios";
-import { API_URL } from "../utils/constants";
 import Permissions from "@/components/Permissions";
+import api, { Admin } from "@/utils/api";
 
 export default function Edition() {
   const user = useState<string | null>(null);
-  const [userInfo, setUserInfo] = useState<Payment | null>(null);
-  const [data, setData] = useState<Payment[]>([]);
+  const [userInfo, setUserInfo] = useState<Admin | null>(null);
+  const [data, setData] = useState<Admin[]>([]);
   const [loading, setLoading] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -26,30 +23,18 @@ export default function Edition() {
     if (!email || !password || !confirm || password !== confirm) return;
     setLoading(true);
 
-    const config = await getConfig();
+    api.auth.registerAdmin(email, password).then((data) => {
+      emailRef.current!.value = "";
+      passwordRef.current!.value = "";
+      confirmRef.current!.value = "";
+      setLoading(false);
 
-    axios
-      .post(
-        `${API_URL}/auth/register`,
-        {
-          email,
-          password,
-        },
-        config
-      )
-      .then(({ data }) => {
-        emailRef.current!.value = "";
-        passwordRef.current!.value = "";
-        confirmRef.current!.value = "";
-        setLoading(false);
-
-        setData((prev) => [...prev, data as Payment]);
-        setUserInfo(data as Payment);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
+      setData((prev) => [...prev, data]);
+      setUserInfo(data);
+    }).catch((error) => {
+      console.error(error);
+      setLoading(false);
+    });
   }
 
   return (

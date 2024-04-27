@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { API_URL } from "@/utils/constants";
-import { getConfig } from "@/utils/auth";
-import axios from "axios";
 import { DataTable } from "./DataTable";
+import api, { Event } from "@/utils/api";
 
 // Definición de las columnas para la tabla de eventos
 const columns = [
@@ -12,22 +10,15 @@ const columns = [
   },
 ];
 
-interface Event {
-  event_type: "Positive" | "Negative",
-  content: string,
-}
-
 export default function Events() {
   const [positives, setPositives] = useState<Event[]>([]);
   const [negatives, setNegatives] = useState<Event[]>([]);
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-      let { data: events } = await axios.get(`${API_URL}/data/events`, config);
+    api.data.getEvents().then((events) => {
       setPositives(events.filter((event: Event) => event.event_type === "Positive"));
       setNegatives(events.filter((event: Event) => event.event_type === "Negative"));
-    })();
+    });
   }, []);
 
   return (

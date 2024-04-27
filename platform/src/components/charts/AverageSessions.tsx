@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { getColors } from "../../utils/chart";
 import { CHART_DEFAULT_OPTIONS } from "../../utils/constants";
-import { API_URL } from "../../utils/constants";
-import { getConfig } from "../../utils/auth";
-import axios from "axios";
+import api from "@/utils/api";
 
 const DAYS = [
   "Domingo",
@@ -23,14 +21,9 @@ export default function AverageSessions() {
   );
 
   useEffect(() => {
-    (async () => {
-      const config = await getConfig();
-      axios
-        .get(`${API_URL}/users/average-sessions`, config)
-        .then(({ data }: { data: any }) => {
-          setAverageSessions(data);
-        });
-    })();
+    api.users.getAverageSessions().then((data) => {
+      setAverageSessions(data);
+    });
   }, []);
 
   return (

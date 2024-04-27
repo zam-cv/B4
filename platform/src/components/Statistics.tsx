@@ -1,30 +1,17 @@
 import GraphicView from "./GraphicView";
-import axios from "axios";
-import { API_URL } from "../utils/constants";
-import { getConfig } from "../utils/auth";
 import { useEffect, useState } from "react";
-
-interface Statistic {
-  cycle: number;
-  score: number;
-}
+import api from "@/utils/api";
 
 export default function Statistics({ userId }: { userId: string | null }) {
   const [labels, setLabels] = useState<string[]>([]);
   const [data, setData] = useState<number[]>([]);
 
   useEffect(() => {
-    (async () => {
-      if (!userId) return;
-
-      const config = await getConfig();
-      axios
-        .get(`${API_URL}/user/statistics/${userId}`, config)
-        .then(({ data }: { data: Statistic[] }) => {
-          setData(data.map((d) => parseFloat(d.score.toFixed(2))));
-          setLabels(data.map((d) => d.cycle.toString()));
-        });
-    })();
+    if (!userId) return;
+    api.user.getStatistics(userId).then((data) => {
+      setData(data.map((d) => parseFloat(d.score.toFixed(2))));
+      setLabels(data.map((d) => d.cycle.toString()));
+    })
   }, [userId]);
 
   return (
