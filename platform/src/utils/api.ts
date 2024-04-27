@@ -118,6 +118,8 @@ export default {
     getAverageTimeInGame: (): Promise<number> => get("/players/average-time"),
     getTopPlayers: (): Promise<string[]> => get("/players/top-players"),
     getCountPlayers: (): Promise<number> => get("/players/count"),
+    getAverageMoney: (): Promise<[string, number][]> => get("/players/average-money"),
+    getAverageScore: (): Promise<number> => get("/players/average-score"),
   },
   player: {
     getPlayer: (id: string): Promise<Player> => get(`/player/${id}`),

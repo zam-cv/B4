@@ -655,6 +655,43 @@ impl Database {
         .await
     }
 
+    pub async fn get_average_score(&self) -> anyhow::Result<Option<f64>> {
+        self.query_wrapper(move |conn| {
+            schema::players::table
+                .select(avg!("current_score"))
+                .first::<Option<f64>>(conn)
+        })
+        .await
+    }
+
+    pub async fn get_average_money(
+        &self,
+    ) -> anyhow::Result<[(models::MoneyType, Option<f64>); 3]> {
+        self.query_wrapper(move |conn| {
+            if let Ok((cash, verqor, coyote)) = schema::players::table
+                .select((
+                    avg!("balance_cash"),
+                    avg!("balance_verqor"),
+                    avg!("balance_coyote"),
+                ))
+                .first::<(Option<f64>, Option<f64>, Option<f64>)>(conn)
+            {
+                Ok([
+                    (models::MoneyType::Cash, cash),
+                    (models::MoneyType::Verqor, verqor),
+                    (models::MoneyType::Coyote, coyote),
+                ])
+            } else {
+                Ok([
+                    (models::MoneyType::Cash, None),
+                    (models::MoneyType::Verqor, None),
+                    (models::MoneyType::Coyote, None),
+                ])
+            }
+        })
+        .await
+    }
+
     pub async fn create_role(&self, new_role: models::Role) -> anyhow::Result<()> {
         self.query_wrapper(move |conn| {
             diesel::insert_into(schema::roles::table)

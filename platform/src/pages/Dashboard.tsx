@@ -5,6 +5,7 @@ import Details from "@/components/Details";
 import AverageSessions from "@/components/charts/AverageSessions";
 import AverageTimeInGame from "@/components/charts/AverageTimeInGame";
 import TopPlayers from "@/components/TopPlayers";
+import AverageMoney from "@/components/charts/AverageMoney";
 
 export default function Dashboard() {
   return (
@@ -22,10 +23,13 @@ export default function Dashboard() {
         <TopPlayers />
       </div>
 
-      <div className="col-span-3">
+      <div className="col-span-2">
         <Details />
       </div>
-      <div className="col-span-4">
+      <div className="col-span-2">
+        <AverageMoney />
+      </div>
+      <div className="col-span-3">
         <AverageSessions />
       </div>
       <div className="col-span-3">

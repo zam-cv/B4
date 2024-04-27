@@ -151,7 +151,9 @@ pub async fn app() -> std::io::Result<()> {
                                         web::scope("/players")
                                             .service(routes::admin::players::get_players_count)
                                             .service(routes::admin::players::get_average_time_in_game)
-                                            .service(routes::admin::players::get_top_players),
+                                            .service(routes::admin::players::get_top_players)
+                                            .service(routes::admin::players::get_average_money)
+                                            .service(routes::admin::players::get_average_score),
                                     )
                                     .service(
                                         web::scope("/data")

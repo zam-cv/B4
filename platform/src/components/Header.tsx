@@ -4,9 +4,17 @@ import { useAuth } from "../hooks/useAuth";
 import { pagePermissions } from "../App";
 import logo from "../assets/verqor.svg";
 
-export function Sub({ title, route }: { title: string; route: string }) {
+export function Sub({
+  title,
+  route,
+  onClick,
+}: {
+  title: string;
+  route: string;
+  onClick: () => void;
+}) {
   return (
-    <Link to={route}>
+    <Link to={route} onClick={onClick}>
       <div className="p-4 px-4 hover:underline font-semibold cursor-pointer select-none text-blue-900">
         {title}
       </div>
@@ -64,7 +72,12 @@ export default function Header() {
             {pagePermissions.map((page) => {
               if (permissions?.has(page.permission)) {
                 return (
-                  <Sub key={page.title} title={page.title} route={page.route} />
+                  <Sub
+                    key={page.title}
+                    title={page.title}
+                    route={page.route}
+                    onClick={() => setOpen(false)}
+                  />
                 );
               }
               return null;

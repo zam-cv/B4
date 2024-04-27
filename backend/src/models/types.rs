@@ -68,7 +68,7 @@ pub enum FunctionType {
     Handler,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub enum MoneyType {
     Cash,
     Verqor,

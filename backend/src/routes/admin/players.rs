@@ -50,3 +50,35 @@ pub async fn get_top_players(database: web::Data<database::Database>) -> Result<
 
     Ok(web::Json(top_players))
 }
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The average money was found", body = Vec<(MoneyType, f64)>)
+  )
+)]
+#[get("/average-money")]
+pub async fn get_average_money(database: web::Data<database::Database>) -> Result<impl Responder> {
+    let average_money = database
+        .get_average_money()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(web::Json(average_money))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The average score was found", body = f64)
+  )
+)]
+#[get("/average-score")]
+pub async fn get_average_score(database: web::Data<database::Database>) -> Result<impl Responder> {
+    let average_score = database
+        .get_average_score()
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(web::Json(average_score))
+}
