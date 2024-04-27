@@ -1,8 +1,12 @@
 FROM rust:1.76.0 AS builder
 
+ENV MODE=dev_ssl
 WORKDIR /usr/src/app
 
+COPY backend/assets ./assets
+COPY backend/macros ./macros
 COPY backend/Cargo.toml backend/Cargo.lock ./
+COPY backend/build.rs .
 
 RUN mkdir src && \
     echo "fn main() {}" > src/main.rs && \
@@ -40,11 +44,11 @@ COPY page ./page
 
 WORKDIR /usr/src/app/backend
 
-COPY backend/assets ./assets
+COPY backend/cert ./cert
 COPY backend/migrations ./migrations
 COPY backend/diesel.toml .
+COPY backend/build.rs .
 
 CMD dockerize -wait tcp://db-prod:3306 -timeout 60s && \
     diesel setup && \
-    diesel migration run && \
     app
