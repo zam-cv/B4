@@ -32,9 +32,10 @@ public class Utils : MonoBehaviour
 
     public void SetPlots(List<Plot> plots)
     {
+        int cont = 0;
         foreach (Plot plot in plots)
         {
-            GameObject plotObject = GameObject.Find("plot" + plot.id);
+            GameObject plotObject = GameObject.Find("Click" + cont++);
             GameObject cropObject = plotObject.transform.Find("crop").gameObject;
             GameObject growthObject = plotObject.transform.Find("growth").gameObject;
 

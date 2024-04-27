@@ -44,6 +44,7 @@ public class BotonInicio : MonoBehaviour
         //Guarda el contenedorMaices en el Queue de CultivosPlantados
         GameObject.Find("Click" + (ParcelaActual.instance.NumeroParcela - 1)).GetComponent<SelectParcela>().planted = true;
         CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
+        CultivosPlantados.instance.queuePlots.Enqueue(ParcelaActual.instance.NumeroParcela - 1);
 
         // Recorre todos los hijos del contenedor
         foreach (Transform hijo in contenedorMaices.transform)

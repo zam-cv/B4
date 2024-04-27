@@ -26,6 +26,8 @@ public class ReiniciarMaiz : MonoBehaviour
 
         //Dale el valor del primer elemento de la cola a contenedorMaices
         contenedorMaices = CultivosPlantados.instance.queueCultivos.Dequeue();
+        GameObject.Find("Click" + CultivosPlantados.instance.queuePlots.Dequeue()).GetComponent<SelectParcela>().planted = false;
+
         // Desactiva el panel de mensajes
         panelMensaje.SetActive(false);
 
