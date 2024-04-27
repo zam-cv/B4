@@ -4,16 +4,33 @@ import UsersByAgeRange from "@/components/charts/UsersByAgeRange";
 import Details from "@/components/Details";
 import AverageSessions from "@/components/charts/AverageSessions";
 import AverageTimeInGame from "@/components/charts/AverageTimeInGame";
+import TopPlayers from "@/components/TopPlayers";
 
 export default function Dashboard() {
   return (
-    <div className="grid grid-cols-3 grid-rows-2 gap-5 h-full">
-      <UsersByType />
-      <UsersByAgeRange />
-      <UsersByGender />
-      <Details />
-      <AverageSessions />
-      <AverageTimeInGame />
+    <div className="grid grid-cols-10 grid-rows-2 gap-5 h-full">
+      <div className="col-span-3">
+        <UsersByType />
+      </div>
+      <div className="col-span-3">
+        <UsersByAgeRange />
+      </div>
+      <div className="col-span-2">
+        <UsersByGender />
+      </div>
+      <div className="col-span-2">
+        <TopPlayers />
+      </div>
+
+      <div className="col-span-3">
+        <Details />
+      </div>
+      <div className="col-span-4">
+        <AverageSessions />
+      </div>
+      <div className="col-span-3">
+        <AverageTimeInGame />
+      </div>
     </div>
   );
 }

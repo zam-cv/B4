@@ -1,4 +1,4 @@
-use crate::database;
+use crate::{database, config};
 use actix_web::{error, get, web, Responder, Result};
 
 const CONTEXT_PATH: &str = "/api/admin/players";
@@ -33,4 +33,20 @@ pub async fn get_average_time_in_game(database: web::Data<database::Database>) -
         .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     Ok(web::Json(average_time))
+}
+
+#[utoipa::path(
+  context_path = CONTEXT_PATH,
+  responses(
+    (status = 200, description = "The top players were found", body = Vec<String>)
+  )
+)]
+#[get("/top-players")]
+pub async fn get_top_players(database: web::Data<database::Database>) -> Result<impl Responder> {
+    let top_players = database
+        .get_top_players(config::TOP_PLAYERS)
+        .await
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+
+    Ok(web::Json(top_players))
 }

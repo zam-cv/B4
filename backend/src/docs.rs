@@ -37,6 +37,7 @@ use utoipa::OpenApi;
         routes::admin::player::get_player_history,
         routes::admin::players::get_players_count,
         routes::admin::players::get_average_time_in_game,
+        routes::admin::players::get_top_players,
         routes::admin::user::get_user,
         routes::admin::user::get_user_statistics,
         routes::admin::users::get_users,
