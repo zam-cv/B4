@@ -15,10 +15,6 @@ public class Reglas : MonoBehaviour
             //toggle CultivosPlantados.tienda
             CultivosPlantados.instance.tienda = true;
             //print("Cambiando a segundo canvas (tienda)");
-            GameObject.Find("Click0").GetComponent<Collider2D>().enabled = false;
-            GameObject.Find("Click1").GetComponent<Collider2D>().enabled = false;
-            GameObject.Find("Click2").GetComponent<Collider2D>().enabled = false;
-            GameObject.Find("Click3").GetComponent<Collider2D>().enabled = false;
         }
         else
         {
@@ -26,10 +22,6 @@ public class Reglas : MonoBehaviour
             secondCanvas.SetActive(false);
             //print("Cambiando a primer canvas (juego)");
             CultivosPlantados.instance.tienda = false;
-            GameObject.Find("Click0").GetComponent<Collider2D>().enabled = true;
-            GameObject.Find("Click1").GetComponent<Collider2D>().enabled = true;
-            GameObject.Find("Click2").GetComponent<Collider2D>().enabled = true;
-            GameObject.Find("Click3").GetComponent<Collider2D>().enabled = true;
         }
     }
 }

@@ -19,6 +19,19 @@ public class CultivosPlantados : MonoBehaviour
     }
     void update()
     {
-        
+        if (tienda)
+        {
+            GameObject.Find("Click0").GetComponent<Collider2D>().enabled = false;
+            GameObject.Find("Click1").GetComponent<Collider2D>().enabled = false;
+            GameObject.Find("Click2").GetComponent<Collider2D>().enabled = false;
+            GameObject.Find("Click3").GetComponent<Collider2D>().enabled = false;
+        }
+        else
+        {
+            GameObject.Find("Click0").GetComponent<Collider2D>().enabled = true;
+            GameObject.Find("Click1").GetComponent<Collider2D>().enabled = true;
+            GameObject.Find("Click2").GetComponent<Collider2D>().enabled = true;
+            GameObject.Find("Click3").GetComponent<Collider2D>().enabled = true;
+        }
     }
 }
