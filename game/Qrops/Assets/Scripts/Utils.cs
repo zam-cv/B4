@@ -8,6 +8,10 @@ public class Utils : MonoBehaviour
 {
     public Dictionary<string, CropType> crops = new Dictionary<string, CropType>();
     public static Utils Instance { get; private set; }
+    public string crop_type_id; //Plot struct
+    public int quantity;
+    public int growth;
+    public GameObject contenedorMaices;
 
     void Start()
     {
@@ -35,13 +39,27 @@ public class Utils : MonoBehaviour
         int cont = 0;
         foreach (Plot plot in plots)
         {
-            GameObject plotObject = GameObject.Find("Click" + cont++);
-            GameObject cropObject = plotObject.transform.Find("crop").gameObject;
-            GameObject growthObject = plotObject.transform.Find("growth").gameObject;
-
-            CropType cropType = crops[plot.crop_type_id];
-            cropObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("crops/" + cropType.name);
-            growthObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("growth/" + GetGrowth(plot));
+            if (GameObject.Find("Click" + cont++).GetComponent<SelectParcela>().planted == false)
+            {
+                //switch crop_type_id
+                switch (plot.crop_type_id)
+                {
+                    case "tomate":
+                        GameObject.Find("Click" + cont).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("maiz");
+                        break;
+                    case "cana":
+                        GameObject.Find("Click" + cont).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("trigo");
+                        break;
+                    case "maiz":
+                        contenedorMaices = BotonInicio.instance.maices[cont];
+                        break;
+                    case "cebada":
+                        GameObject.Find("Click" + cont).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("tomate");
+                        break;
+                }
+                quantity = plot.quantity;
+                growth = plot.growth;
+            }
         }
     }
 

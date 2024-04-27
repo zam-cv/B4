@@ -8,9 +8,16 @@ public class BotonInicio : MonoBehaviour
     public GameObject[] tomates = new GameObject[4];
     public GameObject[] cebadas = new GameObject[4];
     public GameObject[] cañas = new GameObject[4];
+    //instancia de la clase
+    public static BotonInicio instance;
 
     private void Start()
     {
+        //Si la instancia es nula, se le asigna el valor de esta clase
+        if (instance == null)
+        {
+            instance = this;
+        }
         //un for que inicialice los arrays
         for (int i = 0; i < 4; i++)
         {
