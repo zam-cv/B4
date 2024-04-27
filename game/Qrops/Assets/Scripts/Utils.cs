@@ -30,6 +30,20 @@ public class Utils : MonoBehaviour
         }
     }
 
+    public void SetPlots(List<Plot> plots)
+    {
+        foreach (Plot plot in plots)
+        {
+            GameObject plotObject = GameObject.Find("plot" + plot.id);
+            GameObject cropObject = plotObject.transform.Find("crop").gameObject;
+            GameObject growthObject = plotObject.transform.Find("growth").gameObject;
+
+            CropType cropType = crops[plot.crop_type_id];
+            cropObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("crops/" + cropType.name);
+            growthObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("growth/" + GetGrowth(plot));
+        }
+    }
+
     public void SetState(Player player)
     {
         GameObject scoreObject = GameObject.Find("score");

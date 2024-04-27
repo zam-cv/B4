@@ -125,7 +125,10 @@ public class Connection : MonoBehaviour
                     Utils.Instance.SetState(player);
                     Utils.Instance.SetTopPlayers(initData.payload.top_players);
                     Utils.Instance.SetCropsTypes(initData.payload.crops_types);
-                    // set the crops with data.payload.crops_types
+                    
+                    Utils.Instance.SetPlots(initData.payload.plots);
+
+                    // set the crop with data.payload.crops_types
                     // set the plots with data.payload.plots
                     break;
                 case "CycleResolved":
