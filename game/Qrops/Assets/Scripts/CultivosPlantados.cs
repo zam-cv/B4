@@ -5,6 +5,7 @@ using UnityEngine;
 public class CultivosPlantados : MonoBehaviour
 {
     public Queue<GameObject> queueCultivos = new Queue<GameObject>();
+    public bool tienda = false;
     //crea la instancia de la clase
     public static CultivosPlantados instance;
 

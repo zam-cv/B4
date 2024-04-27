@@ -12,6 +12,8 @@ public class Reglas : MonoBehaviour
         {
             firstCanvas.SetActive(false);
             secondCanvas.SetActive(true);
+            //toggle CultivosPlantados.tienda
+            CultivosPlantados.instance.tienda = true;
             //print("Cambiando a segundo canvas (tienda)");
             GameObject.Find("Click0").GetComponent<Collider2D>().enabled = false;
             GameObject.Find("Click1").GetComponent<Collider2D>().enabled = false;
@@ -23,6 +25,7 @@ public class Reglas : MonoBehaviour
             firstCanvas.SetActive(true);
             secondCanvas.SetActive(false);
             //print("Cambiando a primer canvas (juego)");
+            CultivosPlantados.instance.tienda = false;
             GameObject.Find("Click0").GetComponent<Collider2D>().enabled = true;
             GameObject.Find("Click1").GetComponent<Collider2D>().enabled = true;
             GameObject.Find("Click2").GetComponent<Collider2D>().enabled = true;
