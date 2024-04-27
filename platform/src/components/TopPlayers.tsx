@@ -24,7 +24,7 @@ export default function TopPlayers() {
   }, []);
 
   return (
-    <div className="grid grid-rows-[auto_1fr] w-full h-full">
+    <div className="grid grid-rows-[auto_1fr] w-full h-full p-5">
       <div className="text-xl font-bold pt-5 text-blue-950 text-center">
         Top jugadores
       </div>

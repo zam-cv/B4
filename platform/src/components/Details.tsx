@@ -31,7 +31,7 @@ export default function Details() {
 
   return (
     <div className="relative overflow-auto w-full h-full">
-      <div className="flex flex-col gap-5 absolute w-full h-full">
+      <div className="flex flex-col gap-5 absolute w-full h-full p-5">
         <Detail
           title="Tiempo promedio que se esta en el juego"
           value={`${averageTime ? averageTime.toFixed(2) : 0} minutos`}
