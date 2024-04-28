@@ -1,17 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class MoveSlide : MonoBehaviour
 {
     // Declare array of panels to store the slides
-    public GameObject[] slides;
-    // Declare array of RectTransform to store the initial position of each slide
-    private RectTransform[] slideInsidePositions;
-    private RectTransform[] slideLeftPositions;
-    private RectTransform[] slideRightPositions;
+    public UnityEngine.UI.Image[] slides;
+
+    public UnityEngine.UI.Button nextButton;
+    public UnityEngine.UI.Button previousButton;
+    private float[] centerPositions;
+    private float[] leftPositions;
+    private float[] rightPositions;
     
     private int currentSlide = 0;
+
+    private float slideWidth = 2000f;
+    private float transition = 0.3f;
 
 
 
@@ -19,54 +26,92 @@ public class MoveSlide : MonoBehaviour
     void Start()
     {
         // Assign the position of each slide to the array
-        slides = new GameObject[5];
-        slideInsidePositions = new RectTransform[5];
-        slideLeftPositions = new RectTransform[5];
-        slideRightPositions = new RectTransform[5];
+        slides = new UnityEngine.UI.Image[5];
+        centerPositions = new float[5];
+        leftPositions = new float[5];
+        rightPositions = new float[5];
+
+        nextButton = GameObject.Find("Next").gameObject.GetComponent<UnityEngine.UI.Button>();
+        previousButton = GameObject.Find("Prev").gameObject.GetComponent<UnityEngine.UI.Button>();
 
         for(int i = 0; i < 5; i++)
         {
-            slides[i] = GameObject.Find("SS_" + (i + 1).ToString());
-            print(slides[i].name);
+            slides[i] = GameObject.Find("SS_" + (i + 1).ToString()).gameObject.GetComponent<UnityEngine.UI.Image>();
 
-            // get rect transform of the slide
-            slideInsidePositions[i] = slides[i].GetComponent<RectTransform>();
-            print(slideInsidePositions[i].position.x);
-            slideLeftPositions[i] = slides[i].GetComponent<RectTransform>();
-            slideLeftPositions[i].position = new Vector3(slideInsidePositions[i].position.x - 2000, slideInsidePositions[i].position.y, slideInsidePositions[i].position.z);
-            slideRightPositions[i] = slides[i].GetComponent<RectTransform>();
-            slideRightPositions[i].position = new Vector3(slideInsidePositions[i].position.x + 2000, slideInsidePositions[i].position.y, slideInsidePositions[i].position.z);
+            centerPositions[i] = slides[i].transform.position.x;
+            leftPositions[i] = centerPositions[i] - slideWidth;
+            rightPositions[i] = centerPositions[i] + slideWidth;
         }
         
+        print(centerPositions[0]);
         // Set slides to be on the right side of the screen
         for(int i = 0; i < 5; i++)
         {
-            print("right");
-            print(slideRightPositions[i].position);
-            slides[i].transform.position = slideRightPositions[i].position;
+            slides[i].transform.position = new Vector2(rightPositions[i], slides[i].transform.position.y);
         }      
 
         // Move the first slide to the center of the screen
-        currentSlide = 0;
-        NextSlide();
+        StartCoroutine(MoveForward(0));
+        UpdateButtons();
+    }
+
+    public void UpdateButtons(){
+        //Hide the next button if the last slide is reached
+        nextButton.gameObject.SetActive(currentSlide < 4);
+
+        //Hide the previous button if the first slide is reached
+        previousButton.gameObject.SetActive(currentSlide > 0);
     }
 
     public void NextSlide(){
+
         if(currentSlide < 4)
         {
             StartCoroutine(MoveLeft(currentSlide));
             currentSlide++;
+            StartCoroutine(MoveForward(currentSlide));
         }
+        UpdateButtons();
     }
 
+    public void PreviousSlide(){
 
+        if(currentSlide > 0)
+        {
+            StartCoroutine(MoveRight(currentSlide));
+            currentSlide--;
+            StartCoroutine(MoveBackward(currentSlide));
+        }
+        UpdateButtons();
+    }
+
+    IEnumerator MoveForward(int slide)
+    {
+        float t = 0.0f;
+        while (t < 1.0f)
+        {
+            t += Time.deltaTime/transition;
+            slides[slide].transform.position = Vector2.Lerp(new Vector2(rightPositions[slide], slides[slide].transform.position.y), new Vector2(centerPositions[slide], slides[slide].transform.position.y), t);
+            yield return null;
+        }
+    }
+    IEnumerator MoveBackward(int slide)
+    {
+        float t = 0.0f;
+        while (t < 1.0f)
+        {
+            t += Time.deltaTime/transition;
+            slides[slide].transform.position = Vector2.Lerp(new Vector2(leftPositions[slide], slides[slide].transform.position.y), new Vector2(centerPositions[slide], slides[slide].transform.position.y), t);
+            yield return null;
+        }
+    }
     IEnumerator MoveLeft(int slide)
     {
         float t = 0.0f;
         while (t < 1.0f)
         {
-            t += Time.deltaTime;
-            slides[slide].transform.position = Vector3.Lerp(slideInsidePositions[slide].position, slideLeftPositions[slide].position, t);
+            t += Time.deltaTime/transition;
+            slides[slide].transform.position = Vector2.Lerp(new Vector2(centerPositions[slide], slides[slide].transform.position.y), new Vector2(leftPositions[slide], slides[slide].transform.position.y), t);
             yield return null;
         }
     }
@@ -76,8 +121,8 @@ public class MoveSlide : MonoBehaviour
         float t = 0.0f;
         while (t < 1.0f)
         {
-            t += Time.deltaTime;
-            slides[slide].transform.position = Vector3.Lerp(slideInsidePositions[slide].position, slideRightPositions[slide].position, t);
+            t += Time.deltaTime/transition;
+            slides[slide].transform.position = Vector2.Lerp(new Vector2(centerPositions[slide], slides[slide].transform.position.y), new Vector2(rightPositions[slide], slides[slide].transform.position.y), t);
             yield return null;
         }
     }
