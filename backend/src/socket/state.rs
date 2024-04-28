@@ -24,7 +24,7 @@ pub enum Duration {
 }
 
 impl Duration {
-    pub fn to_months(&self) -> i32 {
+    pub fn to_months(&self) -> u32 {
         match self {
             Duration::OneMonth => 1,
             Duration::SixMonths => 6,
@@ -68,7 +68,7 @@ pub struct Interest {
 pub enum Status {
     Warning,
     Success,
-    Info
+    Info,
 }
 
 #[derive(Serialize)]
@@ -82,7 +82,7 @@ pub struct Message<'a> {
 pub enum Request {
     Cycle(CycleData),
     BuyCrop(CropData),
-    ResetPlayer, 
+    ResetPlayer,
     // TODO: Add more
 }
 
@@ -94,7 +94,7 @@ pub enum Response<'a> {
     CropBought(ModifiedPlayer<Vec<models::Plot>>),
     PlayerReseted(ModifiedPlayer<Vec<models::Plot>>),
     Interest(Interest),
-    Message(Message<'a>), 
+    Message(Message<'a>),
     // TODO: Add more
 }
 
@@ -165,7 +165,7 @@ impl State {
             if let Some(crop_type_id) = &plot.crop_type_id {
                 if let Some(crop) = database.get_crop_type_by_name(crop_type_id.clone()).await? {
                     // to the growth of the plant is added the time of the simulation
-                    plot.growth += cycle_data.duration.to_months();
+                    plot.growth += cycle_data.duration.to_months() as i32;
 
                     // if the plant has grown enough it is harvested and sold
                     if plot.growth >= crop.duration {
@@ -191,12 +191,23 @@ impl State {
         database: &'a Database,
         bank: &'a Bank,
     ) -> anyhow::Result<()> {
+        // if he has crops he can start the cycle
+        if let None = self.plots.iter().find(|p| p.crop_type_id.is_some()) {
+            self.send(Response::Message(Message {
+                status: Status::Warning,
+                message: "No tienes cultivos".into(),
+            }))?;
+
+            return Ok(());
+        };
+
         let context = Context {
             id_user: &self.id,
             database,
             player: &mut self.player,
             plots: &mut self.plots,
             session: &self.session,
+            cycle_data: &cycle_data,
         };
 
         let data = bank.handle_cycle(&cycle_data, context).await?;
@@ -209,7 +220,7 @@ impl State {
         self.harvest(&cycle_data, database).await?;
 
         let previous_time = self.player.time;
-        self.player.time += cycle_data.duration.to_months();
+        self.player.time += cycle_data.duration.to_months() as i32;
 
         // verqor and coyote collect what they lent at the end of each year
         if (previous_time / 12) < (self.player.time / 12) {

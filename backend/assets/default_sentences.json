@@ -1,9 +1,7 @@
 {
   "positive": [
     {
-      "getters": {
-        "value": "get_value_random(100, 350)"
-      },
+      "getters": {},
       "value": "Tus productos ganaron un premio local por su excelente calidad.",
       "handlers": [
         "increment_money(value)"
@@ -221,10 +219,13 @@
   "default": [
     {
       "getters": {
-        "money": "get_money()"
+        "time": "get_time()",
+        "quantity": "get_personal_expenses()"
       },
-      "value": "Tu efectivo es de ${money}",
-      "handlers": []
+      "value": "Tus gastos personales en ${time} han sido de $${quantity}.",
+      "handlers": [
+        "decrement_money(quantity)"
+      ]
     }
   ]
 }

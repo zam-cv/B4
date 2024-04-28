@@ -40,8 +40,24 @@ pub struct Bank {
 impl Bank {
     pub fn new() -> Self {
         // build the function maps
-        let getters = build_function_map!(Getter, getters, get_money, get_value_random, robar);
-        let handlers = build_function_map!(Handler, handlers, decrement_money, increment_money, drop_money, duplicate_money);
+        let getters = build_function_map!(
+            Getter,
+            getters,
+            get_money,
+            get_value_random,
+            robar,
+            get_time,
+            get_personal_expenses
+        );
+
+        let handlers = build_function_map!(
+            Handler,
+            handlers,
+            decrement_money,
+            increment_money,
+            drop_money,
+            duplicate_money
+        );
 
         Bank { getters, handlers }
     }
@@ -140,9 +156,9 @@ impl Bank {
         message
     }
 
-    async fn get_message<'a>(
+    async fn get_message<'a, 'b>(
         &self,
-        context: &mut Context<'a>,
+        context: &mut Context<'a, 'b>,
         event: models::Event,
     ) -> Result<(
         String,
@@ -175,10 +191,10 @@ impl Bank {
         anyhow::bail!("Event not found")
     }
 
-    pub async fn handle_cycle<'a>(
+    pub async fn handle_cycle<'a, 'b>(
         &self,
         cycle_data: &'a CycleData,
-        mut context: Context<'a>,
+        mut context: Context<'a, 'b>,
     ) -> anyhow::Result<(ResolveCycleData, Functions)> {
         let number_of_random_events = match cycle_data.duration {
             Duration::OneMonth => 2,

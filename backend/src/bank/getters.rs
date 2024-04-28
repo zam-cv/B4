@@ -1,4 +1,4 @@
-use crate::socket::context::Context;
+use crate::socket::{context::Context, state::Duration};
 use anyhow::Result;
 use macros::getter;
 use rand::Rng;
@@ -30,4 +30,21 @@ fn __premio_mayor(ctx: &mut Context) -> Result<String> {
     let ganancia = ctx.player.max_change / 100;
     ctx.player.balance_cash += ganancia as i32;
     Ok(ganancia.to_string())
+}
+
+#[getter]
+fn __get_time(ctx: &mut Context) -> Result<String> {
+    Ok(match ctx.cycle_data.duration {
+        Duration::OneMonth => "1 mes",
+        Duration::SixMonths => "6 meses",
+        Duration::OneYear => "1 año",
+    }
+    .to_string())
+}
+
+#[getter]
+fn __get_personal_expenses(ctx: &mut Context) -> Result<String> {
+    let months = ctx.cycle_data.duration.to_months();
+    let quantity = months * 30 * get_random(200, 400); // months * days * random
+    Ok(quantity.to_string())
 }
