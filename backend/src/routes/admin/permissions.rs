@@ -1,6 +1,9 @@
-use crate::{database::Database, models};
+use crate::{
+    database::{Database, DbResponder},
+    models,
+};
 use actix_web::{
-    delete, error, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result,
+    delete, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result,
 };
 use serde::Deserialize;
 use utoipa::ToSchema;
@@ -26,11 +29,7 @@ pub async fn get_permissions(
     database: web::Data<Database>,
 ) -> Result<impl Responder> {
     if let Some(id) = req.extensions().get::<i32>() {
-        let permissions = database
-            .get_permissions_by_admin_id(*id)
-            .await
-            .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+        let permissions = database.get_permissions_by_admin_id(*id).await.to_web()?;
         return Ok(HttpResponse::Ok().json(permissions));
     }
 
@@ -53,12 +52,7 @@ pub async fn get_permissions_by_admin_id(
     path: web::Path<i32>,
 ) -> Result<impl Responder> {
     let id = path.into_inner();
-
-    let permissions = database
-        .get_permissions_by_admin_id(id)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let permissions = database.get_permissions_by_admin_id(id).await.to_web()?;
     return Ok(HttpResponse::Ok().json(permissions));
 }
 
@@ -78,12 +72,7 @@ pub async fn get_permission_types(
     path: web::Path<String>,
 ) -> Result<impl Responder> {
     let role = path.into_inner();
-
-    let permissions = database
-        .get_permissions_by_role_id(role)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let permissions = database.get_permissions_by_role_id(role).await.to_web()?;
     Ok(HttpResponse::Ok().json(permissions))
 }
 
@@ -103,7 +92,7 @@ pub async fn add_permission(
     database
         .unsert_permission_by_admin_id(body.id, body.permission)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -129,7 +118,7 @@ pub async fn delete_permission(
     database
         .delete_permission_by_admin_id(id, permission)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }

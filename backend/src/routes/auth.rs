@@ -1,5 +1,11 @@
-use crate::{config::CONFIG, database::Database, models, utils, routes};
-use actix_web::{delete, error, post, get, web, HttpRequest, HttpResponse, HttpMessage, Responder, Result};
+use crate::{
+    config::CONFIG,
+    database::{Database, DbResponder},
+    models, routes, utils,
+};
+use actix_web::{
+    delete, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result,
+};
 use ipinfo::{IpInfo, IpInfoConfig};
 use std::sync::{Arc, Mutex};
 use validator::Validate;
@@ -13,22 +19,19 @@ const CONTEXT_PATH: &str = "/api/auth";
       (status = 401, description = "The admin was not found")
     )
   )]
-  #[get("")]
-  pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<impl Responder> {
-      if let Some(id) = req.extensions().get::<i32>() {
-          let user = database
-              .get_user_by_id(*id)
-              .await
-              .map_err(|_| error::ErrorBadRequest("Failed"))?;
-  
-          return match user {
-              Some(_) => Ok(HttpResponse::Ok().finish()),
-              None => Ok(HttpResponse::NotFound().finish()),
-          };
-      }
-  
-      Ok(HttpResponse::Unauthorized().finish())
-  }
+#[get("")]
+pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<impl Responder> {
+    if let Some(id) = req.extensions().get::<i32>() {
+        let user = database.get_user_by_id(*id).await.to_web()?;
+
+        return match user {
+            Some(_) => Ok(HttpResponse::Ok().finish()),
+            None => Ok(HttpResponse::NotFound().finish()),
+        };
+    }
+
+    Ok(HttpResponse::Unauthorized().finish())
+}
 
 #[utoipa::path(
     context_path = CONTEXT_PATH,
@@ -43,7 +46,10 @@ pub async fn signin(
     database: web::Data<Database>,
     profile: web::Json<routes::UserCredentials>,
 ) -> impl Responder {
-    if let Ok(Some(user)) = database.get_user_by_username(profile.username.clone()).await {
+    if let Ok(Some(user)) = database
+        .get_user_by_username(profile.username.clone())
+        .await
+    {
         if let Ok(true) = utils::verify_password(&profile.password, &user.password) {
             if let Some(id) = user.id {
                 if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, id) {
@@ -92,7 +98,7 @@ pub async fn register(
             let player_id = database
                 .create_player(models::Player::default())
                 .await
-                .map_err(|_| error::ErrorBadRequest("Failed"))?;
+                .to_web()?;
 
             user.id = None;
             user.password = hash.to_string();
@@ -131,7 +137,8 @@ pub async fn register(
                 if !accepted {
                     if let Some(location_db) = location_db.get_ref() {
                         if let Ok(mut location_db) = location_db.lock() {
-                            if let Ok(ip2location::Record::LocationDb(rec)) = location_db.ip_lookup(ip)
+                            if let Ok(ip2location::Record::LocationDb(rec)) =
+                                location_db.ip_lookup(ip)
                             {
                                 user.latitude = rec.latitude.map(|lat| lat as f64);
                                 user.longitude = rec.longitude.map(|long| long as f64);
@@ -141,10 +148,7 @@ pub async fn register(
                 }
             }
 
-            let user_id = database
-                .create_user(user.into_inner())
-                .await
-                .map_err(|_| error::ErrorBadRequest("Failed"))?;
+            let user_id = database.create_user(user.into_inner()).await.to_web()?;
 
             if let Ok(token) = utils::create_token(&CONFIG.user_secret_key, user_id) {
                 let cookie = utils::get_cookie_with_token(&token);

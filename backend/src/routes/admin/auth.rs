@@ -1,4 +1,8 @@
-use crate::{config::CONFIG, database::Database, models, routes, utils};
+use crate::{
+    config::CONFIG,
+    database::{Database, DbResponder},
+    models, routes, utils,
+};
 use actix_web::{
     delete, error, get, post, web, HttpMessage, HttpRequest, HttpResponse, Responder, Result,
 };
@@ -39,7 +43,7 @@ pub async fn register(
                     Vec::new(),
                 )
                 .await
-                .map_err(|_| error::ErrorBadRequest("Failed"))?;
+                .to_web()?;
 
             new_admin.id = Some(id);
             return Ok(HttpResponse::Ok().json(new_admin));
@@ -61,10 +65,7 @@ pub async fn register(
 #[get("")]
 pub async fn auth(req: HttpRequest, database: web::Data<Database>) -> Result<impl Responder> {
     if let Some(id) = req.extensions().get::<i32>() {
-        let admin = database
-            .get_admin_by_id(*id)
-            .await
-            .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        let admin = database.get_admin_by_id(*id).await.to_web()?;
 
         return match admin {
             Some(admin) => Ok(HttpResponse::Ok().json(admin)),

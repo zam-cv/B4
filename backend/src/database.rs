@@ -53,6 +53,22 @@ macro_rules! apply_filters {
     };
 }
 
+pub trait DbResponder<T> {
+    fn to_web(self) -> actix_web::Result<T, actix_web::Error>;
+}
+
+impl<T: serde::Serialize> DbResponder<T> for anyhow::Result<T> {
+    fn to_web(self) -> actix_web::Result<T, actix_web::Error> {
+        match self {
+            Ok(data) => Ok(data),
+            Err(e) => {
+                log::error!("Database error: {:?}", e);
+                Err(actix_web::error::ErrorBadRequest("Failed"))
+            }
+        }
+    }
+}
+
 const MAX_POOL_SIZE: u32 = 5;
 pub type DBPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
@@ -664,9 +680,7 @@ impl Database {
         .await
     }
 
-    pub async fn get_average_money(
-        &self,
-    ) -> anyhow::Result<[(models::MoneyType, Option<f64>); 3]> {
+    pub async fn get_average_money(&self) -> anyhow::Result<[(models::MoneyType, Option<f64>); 3]> {
         self.query_wrapper(move |conn| {
             if let Ok((cash, verqor, coyote)) = schema::players::table
                 .select((

@@ -1,5 +1,5 @@
-use crate::database::Database;
-use actix_web::{error, get, web, HttpResponse, Responder, Result};
+use crate::database::{Database, DbResponder};
+use actix_web::{get, web, HttpResponse, Responder, Result};
 
 const CONTEXT_PATH: &str = "/api/admin/user";
 
@@ -19,10 +19,7 @@ pub async fn get_user(
     path: web::Path<i32>,
 ) -> Result<impl Responder> {
     let id = path.into_inner();
-    let user = database
-        .get_user_by_id(id)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+    let user = database.get_user_by_id(id).await.to_web()?;
 
     match user {
         Some(user) => Ok(HttpResponse::Ok().json(user)),
@@ -46,10 +43,6 @@ pub async fn get_user_statistics(
     path: web::Path<i32>,
 ) -> Result<impl Responder> {
     let id = path.into_inner();
-    let statistics = database
-        .get_statistics(id)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let statistics = database.get_statistics(id).await.to_web()?;
     Ok(HttpResponse::Ok().json(statistics))
 }

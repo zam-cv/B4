@@ -1,4 +1,4 @@
-use crate::{bank::Bank, database::Database};
+use crate::{bank::Bank, database::{Database, DbResponder}};
 use actix_web::{error, get, web, HttpResponse, Responder, Result};
 use std::collections::HashMap;
 
@@ -22,7 +22,7 @@ pub async fn get_player(
     let player = database
         .get_player_by_id(id)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(web::Json(player))
 }
@@ -45,7 +45,7 @@ pub async fn get_player_history(
     let player = database
         .get_player_by_user_id(user_id)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     if let Some(p) = player {
         if let Some(id) = p.id {

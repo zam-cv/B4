@@ -1,5 +1,8 @@
-use crate::{database, config};
-use actix_web::{error, get, web, Responder, Result};
+use crate::{
+    config,
+    database::{Database, DbResponder},
+};
+use actix_web::{get, web, Responder, Result};
 
 const CONTEXT_PATH: &str = "/api/admin/players";
 
@@ -10,12 +13,8 @@ const CONTEXT_PATH: &str = "/api/admin/players";
   )
 )]
 #[get("/count")]
-pub async fn get_players_count(database: web::Data<database::Database>) -> Result<impl Responder> {
-    let count = database
-        .get_players_count()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+pub async fn get_players_count(database: web::Data<Database>) -> Result<impl Responder> {
+    let count = database.get_players_count().await.to_web()?;
     Ok(web::Json(count))
 }
 
@@ -26,12 +25,8 @@ pub async fn get_players_count(database: web::Data<database::Database>) -> Resul
   )
 )]
 #[get("/average-time")]
-pub async fn get_average_time_in_game(database: web::Data<database::Database>) -> Result<impl Responder> {
-    let average_time = database
-        .get_average_time_in_game()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+pub async fn get_average_time_in_game(database: web::Data<Database>) -> Result<impl Responder> {
+    let average_time = database.get_average_time_in_game().await.to_web()?;
     Ok(web::Json(average_time))
 }
 
@@ -42,11 +37,11 @@ pub async fn get_average_time_in_game(database: web::Data<database::Database>) -
   )
 )]
 #[get("/top-players")]
-pub async fn get_top_players(database: web::Data<database::Database>) -> Result<impl Responder> {
+pub async fn get_top_players(database: web::Data<Database>) -> Result<impl Responder> {
     let top_players = database
         .get_top_players(config::TOP_PLAYERS)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(web::Json(top_players))
 }
@@ -58,12 +53,8 @@ pub async fn get_top_players(database: web::Data<database::Database>) -> Result<
   )
 )]
 #[get("/average-money")]
-pub async fn get_average_money(database: web::Data<database::Database>) -> Result<impl Responder> {
-    let average_money = database
-        .get_average_money()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+pub async fn get_average_money(database: web::Data<Database>) -> Result<impl Responder> {
+    let average_money = database.get_average_money().await.to_web()?;
     Ok(web::Json(average_money))
 }
 
@@ -74,11 +65,7 @@ pub async fn get_average_money(database: web::Data<database::Database>) -> Resul
   )
 )]
 #[get("/average-score")]
-pub async fn get_average_score(database: web::Data<database::Database>) -> Result<impl Responder> {
-    let average_score = database
-        .get_average_score()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+pub async fn get_average_score(database: web::Data<Database>) -> Result<impl Responder> {
+    let average_score = database.get_average_score().await.to_web()?;
     Ok(web::Json(average_score))
 }

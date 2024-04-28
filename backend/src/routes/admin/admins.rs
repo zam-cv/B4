@@ -1,5 +1,5 @@
-use crate::database::Database;
-use actix_web::{error, get, delete, web, HttpResponse, Responder, Result};
+use crate::database::{DbResponder, Database};
+use actix_web::{delete, get, web, HttpResponse, Responder, Result};
 
 const CONTEXT_PATH: &str = "/api/admin/admins";
 
@@ -11,11 +11,7 @@ const CONTEXT_PATH: &str = "/api/admin/admins";
 )]
 #[get("")]
 pub async fn get_admins(database: web::Data<Database>) -> Result<impl Responder> {
-    let admins = database
-        .get_admins()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let admins = database.get_admins().await.to_web()?;
     Ok(HttpResponse::Ok().json(admins))
 }
 
@@ -39,10 +35,6 @@ pub async fn delete_admin(
         return Ok(HttpResponse::Unauthorized().body("Cannot delete default admin"));
     }
 
-    database
-        .delete_admin_by_id(admin_id)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    database.delete_admin_by_id(admin_id).await.to_web()?;
     Ok(HttpResponse::Ok().finish())
 }

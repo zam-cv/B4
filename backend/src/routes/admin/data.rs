@@ -1,4 +1,7 @@
-use crate::{database::Database, models};
+use crate::{
+    database::{Database, DbResponder},
+    models,
+};
 use actix_web::{delete, error, get, post, put, web, HttpResponse, Responder, Result};
 use validator::Validate;
 
@@ -23,7 +26,7 @@ pub async fn create_crop_type(
     database
         .unsert_crop_types(crop_type.into_inner())
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -40,10 +43,7 @@ pub async fn get_crop_type(
     path: web::Path<String>,
 ) -> Result<impl Responder> {
     let name = path.into_inner();
-    let crop_type = database
-        .get_crop_type_by_name(name)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+    let crop_type = database.get_crop_type_by_name(name).await.to_web()?;
 
     Ok(HttpResponse::Ok().json(crop_type))
 }
@@ -56,11 +56,7 @@ pub async fn get_crop_type(
 )]
 #[get("/crops")]
 pub async fn get_crop_types(database: web::Data<Database>) -> Result<impl Responder> {
-    let crop_types = database
-        .get_crop_types()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let crop_types = database.get_crop_types().await.to_web()?;
     Ok(HttpResponse::Ok().json(crop_types))
 }
 
@@ -75,14 +71,14 @@ pub async fn get_crop_types(database: web::Data<Database>) -> Result<impl Respon
 pub async fn update_crop_type_description(
     database: web::Data<Database>,
     path: web::Path<String>,
-    req_body: String
+    req_body: String,
 ) -> Result<impl Responder> {
     let name = path.into_inner();
 
     database
         .update_crop_type_description(name, req_body)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -98,15 +94,17 @@ pub async fn update_crop_type_description(
 pub async fn update_crop_type_duration(
     database: web::Data<Database>,
     path: web::Path<String>,
-    req_body: String
+    req_body: String,
 ) -> Result<impl Responder> {
     let name = path.into_inner();
-    let duration = req_body.parse::<i32>().map_err(|_| error::ErrorBadRequest("Failed"))?;
+    let duration = req_body
+        .parse::<i32>()
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     database
         .update_crop_type_duration(name, duration)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -122,15 +120,17 @@ pub async fn update_crop_type_duration(
 pub async fn update_crop_type_price(
     database: web::Data<Database>,
     path: web::Path<String>,
-    req_body: String
+    req_body: String,
 ) -> Result<impl Responder> {
     let name = path.into_inner();
-    let price = req_body.parse::<i32>().map_err(|_| error::ErrorBadRequest("Failed"))?;
+    let price = req_body
+        .parse::<i32>()
+        .map_err(|_| error::ErrorBadRequest("Failed"))?;
 
     database
         .update_crop_type_price(name, price)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -151,11 +151,7 @@ pub async fn create_tip(
         return Ok(HttpResponse::BadRequest().finish());
     }
 
-    let id = database
-        .create_tip(tip.into_inner())
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let id = database.create_tip(tip.into_inner()).await.to_web()?;
     Ok(HttpResponse::Ok().body(id.to_string()))
 }
 
@@ -167,11 +163,7 @@ pub async fn create_tip(
 )]
 #[get("/tips")]
 pub async fn get_tips(database: web::Data<Database>) -> Result<impl Responder> {
-    let tips = database
-        .get_tips()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let tips = database.get_tips().await.to_web()?;
     Ok(HttpResponse::Ok().json(tips))
 }
 
@@ -195,11 +187,7 @@ pub async fn update_tip(
     let id = path.into_inner();
     tip.id = Some(id);
 
-    database
-        .update_tip(tip.into_inner())
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    database.update_tip(tip.into_inner()).await.to_web()?;
     Ok(HttpResponse::Ok().finish())
 }
 
@@ -215,11 +203,7 @@ pub async fn delete_tip(
     path: web::Path<i32>,
 ) -> Result<impl Responder> {
     let id = path.into_inner();
-
-    database
-        .delete_tip_by_id(id)
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+    database.delete_tip_by_id(id).await.to_web()?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -231,12 +215,7 @@ pub async fn delete_tip(
   ),
 )]
 #[get("/events")]
-pub async fn get_events(
-  database: web::Data<Database>,
-) -> Result<impl Responder> {
-  let events = database.get_events()
-    .await
-    .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
-  Ok(HttpResponse::Ok().json(events))
+pub async fn get_events(database: web::Data<Database>) -> Result<impl Responder> {
+    let events = database.get_events().await.to_web()?;
+    Ok(HttpResponse::Ok().json(events))
 }

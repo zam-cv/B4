@@ -1,5 +1,8 @@
-use crate::{database::Database, models::{UserType, Gender}};
-use actix_web::{error, get, web, HttpResponse, Responder, Result};
+use crate::{
+    database::{Database, DbResponder},
+    models::{Gender, UserType},
+};
+use actix_web::{get, web, HttpResponse, Responder, Result};
 use lazy_static::lazy_static;
 use strum::IntoEnumIterator;
 
@@ -7,8 +10,8 @@ const CONTEXT_PATH: &str = "/api/admin/users";
 const AGE_RANGE_STEP: i32 = 10;
 
 lazy_static! {
-  static ref USER_TYPES: Vec<UserType> = UserType::iter().collect();
-  static ref GENDERS: Vec<Gender> = Gender::iter().collect();
+    static ref USER_TYPES: Vec<UserType> = UserType::iter().collect();
+    static ref GENDERS: Vec<Gender> = Gender::iter().collect();
 }
 
 #[utoipa::path(
@@ -19,11 +22,7 @@ lazy_static! {
 )]
 #[get("")]
 pub async fn get_users(database: web::Data<Database>) -> Result<impl Responder> {
-    let users = database
-        .get_users()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let users = database.get_users().await.to_web()?;
     Ok(HttpResponse::Ok().json(users))
 }
 
@@ -48,11 +47,7 @@ pub async fn get_user_types() -> Result<impl Responder> {
 )]
 #[get("/types/count")]
 pub async fn get_user_count_by_type(database: web::Data<Database>) -> Result<impl Responder> {
-    let user_types = database
-        .get_user_count_by_type()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let user_types = database.get_user_count_by_type().await.to_web()?;
     Ok(HttpResponse::Ok().json(user_types))
 }
 
@@ -77,11 +72,7 @@ pub async fn get_user_genders() -> Result<impl Responder> {
 )]
 #[get("/genders/count")]
 pub async fn get_user_count_by_gender(database: web::Data<Database>) -> Result<impl Responder> {
-    let user_types = database
-        .get_user_count_by_gender()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-    
+    let user_types = database.get_user_count_by_gender().await.to_web()?;
     Ok(HttpResponse::Ok().json(user_types))
 }
 
@@ -97,8 +88,8 @@ pub async fn get_user_count_by_age_range(database: web::Data<Database>) -> Resul
     let user_types = database
         .get_user_count_by_age_range(AGE_RANGE_STEP)
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-    
+        .to_web()?;
+
     Ok(HttpResponse::Ok().json(user_types))
 }
 
@@ -111,11 +102,7 @@ pub async fn get_user_count_by_age_range(database: web::Data<Database>) -> Resul
 )]
 #[get("/locations/types")]
 pub async fn get_user_locations_by_type(database: web::Data<Database>) -> Result<impl Responder> {
-    let user_types = database
-        .get_user_locations_by_type()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-    
+    let user_types = database.get_user_locations_by_type().await.to_web()?;
     Ok(HttpResponse::Ok().json(user_types))
 }
 
@@ -127,11 +114,7 @@ pub async fn get_user_locations_by_type(database: web::Data<Database>) -> Result
 )]
 #[get("/average-age")]
 pub async fn get_average_age(database: web::Data<Database>) -> Result<impl Responder> {
-    let average_age = database
-        .get_average_age()
-        .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
-
+    let average_age = database.get_average_age().await.to_web()?;
     Ok(HttpResponse::Ok().body(average_age.unwrap_or(0.0).to_string()))
 }
 
@@ -146,7 +129,7 @@ pub async fn get_average_sessions(database: web::Data<Database>) -> Result<impl 
     let average_sessions = database
         .get_average_sessions_by_day_of_week()
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().json(average_sessions))
 }
@@ -162,7 +145,7 @@ pub async fn get_average_time_in_game(database: web::Data<Database>) -> Result<i
     let average_time_in_game = database
         .get_average_time_in_game_by_user_type()
         .await
-        .map_err(|_| error::ErrorBadRequest("Failed"))?;
+        .to_web()?;
 
     Ok(HttpResponse::Ok().json(average_time_in_game))
 }
