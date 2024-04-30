@@ -28,6 +28,7 @@ public struct CycleResolved
     public List<string> events;
     public Player player;
     public string tip;
+    public List<Plot> plots;
 }
 
 public struct Plot
@@ -148,7 +149,21 @@ public class Connection : MonoBehaviour
                     player = cycleResolvedData.player;
                     Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
-                    //Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+
+                    foreach(GameObject elemento in CultivosPlantados.instance.queueCultivos)
+                    {
+                        GameObject contenedorMaices = CultivosPlantados.instance.queueCultivos.Dequeue();
+                        foreach (Transform hijo in contenedorMaices.transform)
+                        {
+                            prueba scriptMaiz = hijo.GetComponent<prueba>();
+                            if (scriptMaiz != null)
+                            {
+                                scriptMaiz.ResetCrecimiento();
+                            }
+                        }
+                    }
+
+                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
                     // Funcion que modifica el contenido del scoreObjectText con los eventos
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";

@@ -49,7 +49,7 @@ public class Utils : MonoBehaviour
         {
             if (plot.crop_type_id != null)
             {
-                if (GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted == false)
+                if (GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted == false || GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted == true)
                 {
                     prueba.instance.indiceEtapa = GetGrowth(plot);
 

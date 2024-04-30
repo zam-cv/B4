@@ -30,6 +30,7 @@ lazy_static! {
 pub struct ResolveCycleData {
     pub events: Vec<String>,
     pub tip: Option<String>,
+    pub plots: Vec<models::Plot>,
 }
 
 pub struct Bank {
@@ -253,6 +254,6 @@ impl Bank {
             context.player.current_score = change as f64 / max_change as f64;
         }
 
-        Ok((ResolveCycleData { events, tip }, functions))
+        Ok((ResolveCycleData { events, tip, plots: context.plots.clone() }, functions))
     }
 }
