@@ -7,16 +7,25 @@ public class Utils : MonoBehaviour
 {
     public Dictionary<string, CropType> crops = new Dictionary<string, CropType>();
     public static Utils Instance { get; private set; }
-    public string crop_type_id; //Plot struct
-    public int quantity;
-    public int growth;
     public GameObject contenedorMaices;
+    public GameObject[] maices = new GameObject[4];
+    public GameObject[] tomates = new GameObject[4];
+    public GameObject[] cebadas = new GameObject[4];
+    public GameObject[] cañas = new GameObject[4];
 
     void Start()
     {
         if (Instance == null)
         {
             Instance = this;
+        }
+         //un for que inicialice los arrays
+        for (int i = 0; i < 4; i++)
+        {
+            maices[i] = GameObject.Find("Maices" + i);
+            tomates[i] = GameObject.Find("tomates" + i);
+            cebadas[i] = GameObject.Find("cebadas" + i);
+            cañas[i] = GameObject.Find("Cañas" + i);
         }
     }
 
@@ -38,26 +47,53 @@ public class Utils : MonoBehaviour
         int cont = 0;
         foreach (Plot plot in plots)
         {
-            if (GameObject.Find("Click" + cont++).GetComponent<SelectParcela>().planted == false)
+            if (plot.crop_type_id != null)
             {
-                //switch crop_type_id
-                switch (plot.crop_type_id)
+                if (GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted == false)
                 {
-                    case "tomate":
-                        GameObject.Find("Click" + cont).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("maiz");
-                        break;
-                    case "cana":
-                        GameObject.Find("Click" + cont).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("trigo");
-                        break;
-                    case "maiz":
-                        contenedorMaices = BotonInicio.instance.maices[cont];
-                        break;
-                    case "cebada":
-                        GameObject.Find("Click" + cont).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("tomate");
-                        break;
+                    prueba.instance.indiceEtapa = GetGrowth(plot);
+
+                    //switch crop_type_id
+                    switch (plot.crop_type_id)
+                    {
+                        case "tomate":
+                            contenedorMaices = GameObject.Find("tomates0");  //tomates[cont];
+                            break;
+                        case "cana":
+                            contenedorMaices = cañas[cont];
+                            break;
+                        case "maiz":
+                            contenedorMaices = GameObject.Find("Maices1"); //maices[cont];
+                            break;
+                        case "cebada":
+                            contenedorMaices = cebadas[cont];
+                            break;
+                    }
+                    //Guarda el contenedorMaices en el Queue de CultivosPlantados
+                    GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted = true;
+                    CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
+
+                    // Recorre todos los hijos del contenedor
+                    foreach (Transform hijo in contenedorMaices.transform)
+                    {
+                        // Obtener el componente CrecimientoMaiz del hijo actual
+                        prueba crecimientoMaiz = hijo.GetComponent<prueba>();
+
+                        // Verificar si se encontró el componente CrecimientoMaiz
+                        if (crecimientoMaiz != null)
+                        {
+                            // Iniciar el crecimiento del maíz
+                            crecimientoMaiz.IniciarCrecimiento();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("No se encontró el componente CrecimientoMaiz en un hijo del contenedor.");
+                        }
+                    }
+
+                    //quantity = plot.quantity;
                 }
-                quantity = plot.quantity;
-                growth = plot.growth;
+            cont++;
             }
         }
     }

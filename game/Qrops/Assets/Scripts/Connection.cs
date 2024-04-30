@@ -148,6 +148,7 @@ public class Connection : MonoBehaviour
                     player = cycleResolvedData.player;
                     Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
+                    //Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
                     // Funcion que modifica el contenido del scoreObjectText con los eventos
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";
