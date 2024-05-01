@@ -35,10 +35,10 @@ Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar e
 
 ##### SQL Install
 
-´´´bash
+```bash
 sudo apt install mysql-server
 sudo apt-get install libmysqlclient-dev # Opcional si hay problemas con SQL al ejecutar el backend
-´´´
+```
 
 ### Running the game
 
