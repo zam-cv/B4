@@ -106,6 +106,7 @@ pub struct CropType {
 #[diesel(belongs_to(Player))]
 #[diesel(belongs_to(CropType))]
 #[diesel(table_name = schema::plots)]
+#[diesel(treat_none_as_null = true)]
 pub struct Plot {
     #[serde(skip_deserializing, skip_serializing)]
     #[diesel(deserialize_as = i32)]

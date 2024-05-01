@@ -6,14 +6,9 @@ using TMPro;
 public class EventsPanel : MonoBehaviour
 {
     public GameObject panel;
-    
-    void Start()
+
+    public void HidePanel()
     {
         panel.SetActive(false);
-    }
-
-    public void TogglePanel()
-    {
-        panel.SetActive(!panel.activeSelf);
     }
 }
