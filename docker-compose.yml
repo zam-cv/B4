@@ -9,7 +9,7 @@ services:
     command: --default-authentication-plugin=caching_sha2_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_DATABASE: game
-      MYSQL_USER: root
+      MYSQL_USER: verqor
       MYSQL_PASSWORD: root
     profiles:
       - prod
@@ -17,7 +17,7 @@ services:
   app-prod:
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     env_file:
       - ./backend/.env
     depends_on:
@@ -29,7 +29,7 @@ services:
     volumes:
       - cargo-cache:/usr/local/cargo
     environment:
-      DATABASE_URL: "mysql://user:password@db-prod/game"
+      DATABASE_URL: "mysql://verqor:root@db-prod/game"
     profiles:
       - prod
 

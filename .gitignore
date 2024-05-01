@@ -1,3 +1,9 @@
 *.sln
 ex1.mwb
 .DS_Store
+terraform.tfvars
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
+.terraform.tfstate.lock.info
