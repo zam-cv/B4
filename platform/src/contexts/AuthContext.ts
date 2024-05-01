@@ -1,4 +1,4 @@
-import { Admin } from '../hooks/useAuth';
+import { Admin } from '@/utils/api';
 import { createContext } from 'react';
 
 export type AuthContextType = {
