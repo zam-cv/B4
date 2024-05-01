@@ -29,7 +29,7 @@ services:
     volumes:
       - cargo-cache:/usr/local/cargo
     environment:
-      DATABASE_URL: "mysql://verqor:root@db-prod/game"
+      DATABASE_URL: "mysql://verqor:root@db-prod:3306/game"
     profiles:
       - prod
 
