@@ -160,6 +160,8 @@ impl State {
         cycle_data: &'a CycleData,
         database: &'a Database,
     ) -> anyhow::Result<()> {
+        let mut message = String::from("Cosecha realizada:");
+
         for plot in self.plots.iter_mut() {
             // search for crops that are ready to harvest
             if let Some(crop_type_id) = &plot.crop_type_id {
@@ -169,17 +171,24 @@ impl State {
 
                     // if the plant has grown enough it is harvested and sold
                     if plot.growth >= crop.duration {
-                        let sum = crop.price * plot.quantity;
-                        self.player.balance_cash +=
-                            sum + (sum as f64 * config::REVENUE_PERCENTAGE) as i32;
+                        let mut sum = crop.price as f64 * plot.quantity as f64;
+                        sum += sum as f64 * config::REVENUE_PERCENTAGE;
+                        self.player.current_score += sum;
 
                         plot.crop_type_id = None;
                         plot.quantity = 0;
                         plot.growth = 0;
+
+                        message.push_str(&format!("\n{}: {} de ganancia", crop.name, sum));
                     }
                 }
             }
         }
+
+        self.send(Response::Message(Message {
+            status: Status::Success,
+            message: message.into(),
+        }))?;
 
         Ok(())
     }
