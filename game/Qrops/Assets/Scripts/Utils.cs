@@ -45,6 +45,7 @@ public class Utils : MonoBehaviour
         {
             if(plot.crop_type_id == null)
             {
+                print("0");
                 if (CultivosPlantados.instance.cultivos[contCult] != null)
                 {
                     contenedorMaices = CultivosPlantados.instance.cultivos[contCult];
