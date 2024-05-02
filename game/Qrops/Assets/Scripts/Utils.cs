@@ -15,6 +15,7 @@ public class Utils : MonoBehaviour
     private Sprite[] etapasCrecimiento;
     public int indiceEtapa;
     private SpriteRenderer spriteRenderer;
+    public int contCult = 0;
 
     void Start()
     {
@@ -39,7 +40,7 @@ public class Utils : MonoBehaviour
 
     public void SetPlots(List<Plot> plots)
     {
-        int cont = 0;
+        contCult = 0;
         foreach (Plot plot in plots)
         {
             if (plot.crop_type_id != null)
@@ -50,60 +51,57 @@ public class Utils : MonoBehaviour
                 switch (plot.crop_type_id)
                 {
                     case "tomate":
-                        contenedorMaices = GameObject.Find("tomates"+cont);  //tomates[cont];
+                        contenedorMaices = GameObject.Find("tomates"+contCult);  //tomates[cont];
                         etapasCrecimiento = etapasCrecimientoTomate;
                         break;
                     case "cana":
-                        contenedorMaices = GameObject.Find("Cañas"+cont);
+                        contenedorMaices = GameObject.Find("Cañas"+contCult);
                         etapasCrecimiento = etapasCrecimientoCaña;
                         break;
                     case "maiz":
-                        contenedorMaices = GameObject.Find("Maices"+cont); //maices[cont];
+                        contenedorMaices = GameObject.Find("Maices"+contCult); //maices[cont];
                         etapasCrecimiento = etapasCrecimientoMaiz;
                         break;
                     case "cebada":
-                        contenedorMaices = GameObject.Find("cebadas"+cont);
+                        contenedorMaices = GameObject.Find("cebadas"+contCult);
                         etapasCrecimiento = etapasCrecimientoCebada;
                         break;
                 }
                 //Guarda el contenedorMaices en el Queue de CultivosPlantados
-                GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted = true;
+                GameObject.Find("Click" + contCult).GetComponent<SelectParcela>().planted = true;
                 //CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
-                CultivosPlantados.instance.cultivos[cont] = contenedorMaices;
+                CultivosPlantados.instance.cultivos[contCult] = contenedorMaices;
 
-                //switch del nombre de contenedorMaices
-                switch (contenedorMaices.name)
-                {
-                    case "tomates":
-                        
-                        break;
-                    case "Cañas":
-                        
-                        break;
-                    case "Maices":
-                        
-                        break;
-                    case "cebadas":
-                        
-                        break;
-                }
-
+                bool reset = false;
                 // Recorre todos los hijos del contenedor
                 foreach (Transform hijo in contenedorMaices.transform)
                 {
                     //obten el spriteRenderer del hijo actual
                     spriteRenderer = hijo.GetComponent<SpriteRenderer>();
                     spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
+                    if (indiceEtapa >= 3)
+                    {
+                        reset = true;
+                        spriteRenderer.sprite = null;
+                    }
                 }
+                if (reset)
+                {
+                    contCult--;
+                    reset = false;
+                }
+
+
+                // // Recorre todos los hijos del contenedor
+                // foreach (Transform hijo in contenedorMaices.transform)
+                // {
+                //     //obten el spriteRenderer del hijo actual
+                //     spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                //     spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
+                // }
 
                     //quantity = plot.quantity;
-                cont++;
-                //si cont es mayor a 4, se reinicia a 0
-                if (cont > 4)
-                {
-                    cont = 0;
-                }
-
+                contCult++;
             }
         }
     }
