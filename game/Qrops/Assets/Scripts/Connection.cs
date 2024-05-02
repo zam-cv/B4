@@ -235,6 +235,7 @@ public class Connection : MonoBehaviour
                             contCult++;
                         }
                     }
+                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     break;
                 case "CropBought":
