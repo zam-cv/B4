@@ -1265,26 +1265,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   contenedorMaices: {fileID: 0}
-  maices:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  tomates:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  cebadas:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  "ca\xF1as":
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  etapasCrecimientoMaiz:
+  - {fileID: 21300000, guid: 4912b07a0eed4fd47bcc9ec6bad0ae37, type: 3}
+  - {fileID: 21300000, guid: 22ebef58988ded1499ddf6dbe430ac1a, type: 3}
+  - {fileID: 21300000, guid: c9522a13755e8484d812ff56b34fc37b, type: 3}
+  - {fileID: 21300000, guid: e508d80c80a79974b9b43fbbcf42816c, type: 3}
+  etapasCrecimientoTomate:
+  - {fileID: 21300000, guid: dbb44f83a5eea9945b13c731deb04619, type: 3}
+  - {fileID: 21300000, guid: 6d4220403397d0a41acb108df60fd54e, type: 3}
+  - {fileID: 21300000, guid: 5c28da9d0efc5fa4aa336ad973561ba4, type: 3}
+  - {fileID: 21300000, guid: 65a4d4fcf0b9aaa4e86fa71bdecde669, type: 3}
+  etapasCrecimientoCebada:
+  - {fileID: 21300000, guid: 33e9014ec218b544e8f3e3b58ec8998a, type: 3}
+  - {fileID: 21300000, guid: 2544e2c5ed5579f4f992897ed4a33dec, type: 3}
+  - {fileID: 21300000, guid: 0add825468d24aa4e8c5e98e5df4c0b6, type: 3}
+  - {fileID: 21300000, guid: 6be9c9012029fa64688acb0072388dce, type: 3}
+  "etapasCrecimientoCa\xF1a":
+  - {fileID: 21300000, guid: 56b4c1d9693971d4cbfd3af10ebd6a99, type: 3}
+  - {fileID: 21300000, guid: 63e9b471cb181404f82e337e62ba1595, type: 3}
+  - {fileID: 21300000, guid: bb48752a7acac9b439dafdb1f0576326, type: 3}
+  - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
+  indiceEtapa: 0
+  contCult: 0
 --- !u!4 &840739291
 Transform:
   m_ObjectHideFlags: 0
