@@ -12,6 +12,8 @@ public class Utils : MonoBehaviour
     public Sprite[] etapasCrecimientoTomate;
     public Sprite[] etapasCrecimientoCebada;
     public Sprite[] etapasCrecimientoCaña;
+    public int indiceEtapa;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
@@ -41,7 +43,7 @@ public class Utils : MonoBehaviour
         {
             if (plot.crop_type_id != null)
             {
-                prueba.instance.indiceEtapa = GetGrowth(plot);
+                indiceEtapa = GetGrowth(plot);
 
                 //switch crop_type_id
                 switch (plot.crop_type_id)
@@ -67,32 +69,9 @@ public class Utils : MonoBehaviour
                 // Recorre todos los hijos del contenedor
                 foreach (Transform hijo in contenedorMaices.transform)
                 {
-                    // Obtener el componente CrecimientoMaiz del hijo actual
-                    prueba crecimientoMaiz = hijo.GetComponent<prueba>();
-
-                    // Verificar si se encontró el componente CrecimientoMaiz
-                    if (crecimientoMaiz != null)
-                    {
-                        // Iniciar el crecimiento del maíz
-                        crecimientoMaiz.IniciarCrecimiento();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("No se encontró el componente CrecimientoMaiz en un hijo del contenedor.");
-                    }
-                }
-
-                void IniciarCrecimiento()
-                {
-                    if (!crecimientoIniciado)
-                    {
-                        //tiempoInicio = Time.time;
-                        //etapaActual = 0;
-                        spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
-                        print("indiceEtapa: " + indiceEtapa);
-                        crecimientoIniciado = true;
-                        panelMensaje.SetActive(false);
-                    }
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = etapasCrecimientoMaiz[indiceEtapa];
                 }
 
                     //quantity = plot.quantity;
@@ -123,6 +102,8 @@ public class Utils : MonoBehaviour
         
         double score = Mathf.RoundToInt(player.current_score * 100.0f);
         if (score < -100) score = -100;
+        if (score > 100) score = 100;
+
         scoreText.text =  score + "%";
         verqorText.text = player.balance_verqor.ToString();
         coyoteText.text = player.balance_coyote.ToString();
