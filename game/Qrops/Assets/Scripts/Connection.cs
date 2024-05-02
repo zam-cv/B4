@@ -152,6 +152,7 @@ public class Connection : MonoBehaviour
                     Utils.Instance.SetTopPlayers(initData.payload.top_players);
                     Utils.Instance.SetCropsTypes(initData.payload.crops_types);
                     Utils.Instance.SetPlots(initData.payload.plots);
+                    Utils.Instance.flagFirtsTime = false;
 
                     if (initData.payload.crops_types.Count > 0)
                     {
@@ -231,7 +232,7 @@ public class Connection : MonoBehaviour
                                 spriteRenderer = hijo.GetComponent<SpriteRenderer>();
                                 spriteRenderer.sprite = null;
                             }
-                            
+                            CultivosPlantados.instance.cultivos[contCult] = null;
                             contCult++;
                         }
                     }
