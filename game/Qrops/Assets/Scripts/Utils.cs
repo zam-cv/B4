@@ -41,6 +41,12 @@ public class Utils : MonoBehaviour
 
     public void SetPlots(List<Plot> plots)
     {
+        if (plots == null)
+        {
+            Debug.LogError("SetPlots was called with a null list");
+            return;
+        }
+
         contCult = 0;
         foreach (Plot plot in plots)
         {

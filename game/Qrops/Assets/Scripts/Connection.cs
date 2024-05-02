@@ -52,6 +52,11 @@ public struct CropType
     public string description;
 }
 
+public struct Harvested
+{
+    public List<Plot> plots;
+}
+
 public struct InitialData
 {
     public List<Plot> plots;
@@ -286,8 +291,10 @@ public class Connection : MonoBehaviour
                     interestCoyote.text = interest.interest_coyote.ToString();
                     break;
                 case "Harvested":
-                    List<Plot> plots = JsonConvert.DeserializeObject<List<Plot>>(message);
-                    Utils.Instance.SetPlots(plots);
+                    Debug.Log("Harvested" + message);
+                    Harvested harvested = JsonConvert.DeserializeObject<Harvested>(message);
+                    // Utils.Instance.SetPlots(harvested.plots);
+                    List<Plot> plots = harvested.plots;
 
                     foreach (Plot plot in plots)
                     {
