@@ -1,5 +1,5 @@
 /target
 /.env
 /Cargo.lock
-# cert/cert.pem
-# cert/key.pem
+cert/cert.pem
+cert/key.pem

@@ -45759,6 +45759,7 @@ MonoBehaviour:
   eventsPanel: {fileID: 0}
   panelCiclos: {fileID: 0}
   toast: {fileID: 1779653109559497798, guid: c85aa153dae9f4fc89e67a4314ca1b21, type: 3}
+  interestPanel: {fileID: 2800940526242606588, guid: 064cfa51120da4e56a302d5e167d9315, type: 3}
   loading_logo: {fileID: 1486228611}
   loading_background: {fileID: 1852380613}
   events_window: {fileID: 1169390715}

@@ -7,6 +7,12 @@ using UnityEngine.SceneManagement;
 using NativeWebSocket;
 using TMPro;
 
+public struct Interest
+{
+    public int interest_verqor;
+    public int interest_coyote;
+}
+
 public struct Message
 {
     public string status;
@@ -68,6 +74,7 @@ public class Connection : MonoBehaviour
     public GameObject panelCiclos;
 
     public GameObject toast;
+    public GameObject interestPanel;
 
     public GameObject loading_logo, loading_background;
 
@@ -221,6 +228,15 @@ public class Connection : MonoBehaviour
                     player = playerResetedData.player;
                     Utils.Instance.SetState(player);
                     Utils.Instance.SetPlots(playerResetedData.payload);
+                    break;
+                case "Interest":
+                    Debug.Log(message);
+                    Interest interest = JsonConvert.DeserializeObject<Interest>(message);
+                    GameObject interestClone = Instantiate(interestPanel);
+                    TMP_Text interestVerqor = interestClone.transform.Find("InterestVerqor").GetComponent<TMP_Text>();
+                    TMP_Text interestCoyote = interestClone.transform.Find("InterestCoyote").GetComponent<TMP_Text>();
+                    interestVerqor.text = interest.interest_verqor.ToString();
+                    interestCoyote.text = interest.interest_coyote.ToString();
                     break;
                     // Add more cases here
             }

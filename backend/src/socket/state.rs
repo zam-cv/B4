@@ -224,6 +224,7 @@ impl State {
 
         // verqor and coyote collect what they lent at the end of each year
         if (previous_time / 12) < (self.player.time / 12) {
+            log::info!("Collecting interest");
             let half = self.player.balance_cash / 2;
 
             if self.player.balance_verqor < 0 {
@@ -253,7 +254,13 @@ impl State {
             let interest_coyote =
                 (self.player.balance_coyote as f64 * config::INTEREST_PERCENTAGE_COYOTE) as i32;
 
-            if interest_verqor > 0 || interest_coyote > 0 {
+            log::info!(
+                "Interest verqor: {}, Interest coyote: {}",
+                interest_verqor,
+                interest_coyote
+            );
+
+            if interest_verqor < 0 || interest_coyote < 0 {
                 self.send(Response::Interest(Interest {
                     interest_verqor,
                     interest_coyote,
