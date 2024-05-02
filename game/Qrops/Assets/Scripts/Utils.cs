@@ -12,6 +12,7 @@ public class Utils : MonoBehaviour
     public Sprite[] etapasCrecimientoTomate;
     public Sprite[] etapasCrecimientoCebada;
     public Sprite[] etapasCrecimientoCaña;
+    private Sprite[] etapasCrecimiento;
     public int indiceEtapa;
     private SpriteRenderer spriteRenderer;
 
@@ -50,15 +51,19 @@ public class Utils : MonoBehaviour
                 {
                     case "tomate":
                         contenedorMaices = GameObject.Find("tomates"+cont);  //tomates[cont];
+                        etapasCrecimiento = etapasCrecimientoTomate;
                         break;
                     case "cana":
                         contenedorMaices = GameObject.Find("Cañas"+cont);
+                        etapasCrecimiento = etapasCrecimientoCaña;
                         break;
                     case "maiz":
                         contenedorMaices = GameObject.Find("Maices"+cont); //maices[cont];
+                        etapasCrecimiento = etapasCrecimientoMaiz;
                         break;
                     case "cebada":
                         contenedorMaices = GameObject.Find("cebadas"+cont);
+                        etapasCrecimiento = etapasCrecimientoCebada;
                         break;
                 }
                 //Guarda el contenedorMaices en el Queue de CultivosPlantados
@@ -66,12 +71,29 @@ public class Utils : MonoBehaviour
                 //CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
                 CultivosPlantados.instance.cultivos[cont] = contenedorMaices;
 
+                //switch del nombre de contenedorMaices
+                switch (contenedorMaices.name)
+                {
+                    case "tomates":
+                        
+                        break;
+                    case "Cañas":
+                        
+                        break;
+                    case "Maices":
+                        
+                        break;
+                    case "cebadas":
+                        
+                        break;
+                }
+
                 // Recorre todos los hijos del contenedor
                 foreach (Transform hijo in contenedorMaices.transform)
                 {
                     //obten el spriteRenderer del hijo actual
                     spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                    spriteRenderer.sprite = etapasCrecimientoMaiz[indiceEtapa];
+                    spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
                 }
 
                     //quantity = plot.quantity;
