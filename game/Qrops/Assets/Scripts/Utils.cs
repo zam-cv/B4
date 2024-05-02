@@ -103,6 +103,11 @@ public class Utils : MonoBehaviour
                     //quantity = plot.quantity;
                 contCult++;
             }
+            else
+            {
+                CultivosPlantados.instance.cultivos[contCult] = null;
+                contCult++;
+            }
         }
     }
 

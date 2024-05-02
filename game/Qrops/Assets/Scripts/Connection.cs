@@ -84,6 +84,7 @@ public class Connection : MonoBehaviour
 
     // state
     public Player player = new Player();
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
@@ -172,6 +173,8 @@ public class Connection : MonoBehaviour
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";
 
+                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+
                     foreach (string evento in cycleResolvedData.payload.events)
                     {
                         scoreObjectText.text += evento + "\n";
@@ -184,22 +187,14 @@ public class Connection : MonoBehaviour
                             GameObject contenedorMaices = elemento;
                             foreach (Transform hijo in contenedorMaices.transform)
                             {
-                                prueba scriptMaiz = hijo.GetComponent<prueba>();
-                                if (scriptMaiz != null)
-                                {
-                                    scriptMaiz.ResetCrecimiento();
-                                }
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
                             }
                         }
-                        // GameObject contenedorMaices = elemento;
-                        // foreach (Transform hijo in contenedorMaices.transform)
-                        // {
-                        //     prueba scriptMaiz = hijo.GetComponent<prueba>();
-                        //     if (scriptMaiz != null)
-                        //     {
-                        //         scriptMaiz.ResetCrecimiento();
-                        //     }
-                        // }
+                        else
+                        {
+                            print("No hay cultivos plantados");
+                        }
                     }
                     
                     Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
