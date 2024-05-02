@@ -246,6 +246,10 @@ public class Connection : MonoBehaviour
                     interestVerqor.text = interest.interest_verqor.ToString();
                     interestCoyote.text = interest.interest_coyote.ToString();
                     break;
+                case "Harvested":
+                    List<Plot> plots = JsonConvert.DeserializeObject<List<Plot>>(message);
+                    Utils.Instance.SetPlots(plots);
+                    break;
                     // Add more cases here
             }
         };

@@ -95,6 +95,7 @@ pub enum Response<'a> {
     PlayerReseted(ModifiedPlayer<Vec<models::Plot>>),
     Interest(Interest),
     Message(Message<'a>),
+    Harvested(Vec<models::Plot>),
     // TODO: Add more
 }
 
@@ -160,6 +161,7 @@ impl State {
         cycle_data: &'a CycleData,
         database: &'a Database,
     ) -> anyhow::Result<()> {
+        let mut flag = false;
         let mut message = String::from("Cosecha realizada:");
 
         for plot in self.plots.iter_mut() {
@@ -179,16 +181,21 @@ impl State {
                         plot.quantity = 0;
                         plot.growth = 0;
 
+                        flag = true;
                         message.push_str(&format!("\n{}: {} de ganancia", crop.name, sum));
                     }
                 }
             }
         }
 
-        self.send(Response::Message(Message {
-            status: Status::Success,
-            message: message.into(),
-        }))?;
+        if flag {
+            self.send(Response::Message(Message {
+                status: Status::Success,
+                message: message.into(),
+            }))?;
+
+            self.send(Response::Harvested(self.plots.clone()))?;
+        }
 
         Ok(())
     }
