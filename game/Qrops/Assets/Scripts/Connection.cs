@@ -168,7 +168,6 @@ public class Connection : MonoBehaviour
                     Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
 
-                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
                     // Funcion que modifica el contenido del scoreObjectText con los eventos
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";
@@ -178,18 +177,32 @@ public class Connection : MonoBehaviour
                         scoreObjectText.text += evento + "\n";
                     }
 
-                    foreach(GameObject elemento in CultivosPlantados.instance.queueCultivos)
+                    foreach(GameObject elemento in CultivosPlantados.instance.cultivos)
                     {
-                        GameObject contenedorMaices = CultivosPlantados.instance.queueCultivos.Dequeue();
-                        foreach (Transform hijo in contenedorMaices.transform)
+                        if (elemento != null)
                         {
-                            prueba scriptMaiz = hijo.GetComponent<prueba>();
-                            if (scriptMaiz != null)
+                            GameObject contenedorMaices = elemento;
+                            foreach (Transform hijo in contenedorMaices.transform)
                             {
-                                scriptMaiz.ResetCrecimiento();
+                                prueba scriptMaiz = hijo.GetComponent<prueba>();
+                                if (scriptMaiz != null)
+                                {
+                                    scriptMaiz.ResetCrecimiento();
+                                }
                             }
                         }
+                        // GameObject contenedorMaices = elemento;
+                        // foreach (Transform hijo in contenedorMaices.transform)
+                        // {
+                        //     prueba scriptMaiz = hijo.GetComponent<prueba>();
+                        //     if (scriptMaiz != null)
+                        //     {
+                        //         scriptMaiz.ResetCrecimiento();
+                        //     }
+                        // }
                     }
+                    
+                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     break;
                 case "CropBought":

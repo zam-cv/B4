@@ -2236,6 +2236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2613af074a837465c9c2c0cc0395c951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cultivos:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   tienda: 0
 --- !u!1001 &82101835
 PrefabInstance:

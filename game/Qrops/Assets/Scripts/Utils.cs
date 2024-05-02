@@ -8,24 +8,16 @@ public class Utils : MonoBehaviour
     public Dictionary<string, CropType> crops = new Dictionary<string, CropType>();
     public static Utils Instance { get; private set; }
     public GameObject contenedorMaices;
-    public GameObject[] maices = new GameObject[4];
-    public GameObject[] tomates = new GameObject[4];
-    public GameObject[] cebadas = new GameObject[4];
-    public GameObject[] cañas = new GameObject[4];
+    public Sprite[] etapasCrecimientoMaiz;
+    public Sprite[] etapasCrecimientoTomate;
+    public Sprite[] etapasCrecimientoCebada;
+    public Sprite[] etapasCrecimientoCaña;
 
     void Start()
     {
         if (Instance == null)
         {
             Instance = this;
-        }
-         //un for que inicialice los arrays
-        for (int i = 0; i < 4; i++)
-        {
-            maices[i] = GameObject.Find("Maices" + i);
-            tomates[i] = GameObject.Find("tomates" + i);
-            cebadas[i] = GameObject.Find("cebadas" + i);
-            cañas[i] = GameObject.Find("Cañas" + i);
         }
     }
 
@@ -49,51 +41,68 @@ public class Utils : MonoBehaviour
         {
             if (plot.crop_type_id != null)
             {
-                if (GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted == false || GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted == true)
+                prueba.instance.indiceEtapa = GetGrowth(plot);
+
+                //switch crop_type_id
+                switch (plot.crop_type_id)
                 {
-                    prueba.instance.indiceEtapa = GetGrowth(plot);
+                    case "tomate":
+                        contenedorMaices = GameObject.Find("tomates"+cont);  //tomates[cont];
+                        break;
+                    case "cana":
+                        contenedorMaices = GameObject.Find("Cañas"+cont);
+                        break;
+                    case "maiz":
+                        contenedorMaices = GameObject.Find("Maices"+cont); //maices[cont];
+                        break;
+                    case "cebada":
+                        contenedorMaices = GameObject.Find("cebadas"+cont);
+                        break;
+                }
+                //Guarda el contenedorMaices en el Queue de CultivosPlantados
+                GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted = true;
+                //CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
+                CultivosPlantados.instance.cultivos[cont] = contenedorMaices;
 
-                    //switch crop_type_id
-                    switch (plot.crop_type_id)
+                // Recorre todos los hijos del contenedor
+                foreach (Transform hijo in contenedorMaices.transform)
+                {
+                    // Obtener el componente CrecimientoMaiz del hijo actual
+                    prueba crecimientoMaiz = hijo.GetComponent<prueba>();
+
+                    // Verificar si se encontró el componente CrecimientoMaiz
+                    if (crecimientoMaiz != null)
                     {
-                        case "tomate":
-                            contenedorMaices = GameObject.Find("tomates0");  //tomates[cont];
-                            break;
-                        case "cana":
-                            contenedorMaices = cañas[cont];
-                            break;
-                        case "maiz":
-                            contenedorMaices = GameObject.Find("Maices1"); //maices[cont];
-                            break;
-                        case "cebada":
-                            contenedorMaices = cebadas[cont];
-                            break;
+                        // Iniciar el crecimiento del maíz
+                        crecimientoMaiz.IniciarCrecimiento();
                     }
-                    //Guarda el contenedorMaices en el Queue de CultivosPlantados
-                    GameObject.Find("Click" + cont).GetComponent<SelectParcela>().planted = true;
-                    CultivosPlantados.instance.queueCultivos.Enqueue(contenedorMaices);
-
-                    // Recorre todos los hijos del contenedor
-                    foreach (Transform hijo in contenedorMaices.transform)
+                    else
                     {
-                        // Obtener el componente CrecimientoMaiz del hijo actual
-                        prueba crecimientoMaiz = hijo.GetComponent<prueba>();
-
-                        // Verificar si se encontró el componente CrecimientoMaiz
-                        if (crecimientoMaiz != null)
-                        {
-                            // Iniciar el crecimiento del maíz
-                            crecimientoMaiz.IniciarCrecimiento();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("No se encontró el componente CrecimientoMaiz en un hijo del contenedor.");
-                        }
+                        Debug.LogWarning("No se encontró el componente CrecimientoMaiz en un hijo del contenedor.");
                     }
+                }
+
+                void IniciarCrecimiento()
+                {
+                    if (!crecimientoIniciado)
+                    {
+                        //tiempoInicio = Time.time;
+                        //etapaActual = 0;
+                        spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
+                        print("indiceEtapa: " + indiceEtapa);
+                        crecimientoIniciado = true;
+                        panelMensaje.SetActive(false);
+                    }
+                }
 
                     //quantity = plot.quantity;
+                cont++;
+                //si cont es mayor a 4, se reinicia a 0
+                if (cont > 4)
+                {
+                    cont = 0;
                 }
-            cont++;
+
             }
         }
     }
