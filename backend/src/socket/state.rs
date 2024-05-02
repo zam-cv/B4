@@ -77,6 +77,11 @@ pub struct Message<'a> {
     pub message: Cow<'a, str>,
 }
 
+#[derive(Serialize)]
+pub struct Harvested {
+    pub plots: Vec<models::Plot>,
+}
+
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
@@ -95,7 +100,7 @@ pub enum Response<'a> {
     PlayerReseted(ModifiedPlayer<Vec<models::Plot>>),
     Interest(Interest),
     Message(Message<'a>),
-    Harvested(Vec<models::Plot>),
+    Harvested(Harvested),
     // TODO: Add more
 }
 
@@ -194,7 +199,9 @@ impl State {
                 message: message.into(),
             }))?;
 
-            self.send(Response::Harvested(self.plots.clone()))?;
+            self.send(Response::Harvested(Harvested {
+                plots: self.plots.clone(),
+            }))?;
         }
 
         Ok(())

@@ -52,6 +52,11 @@ public struct CropType
     public string description;
 }
 
+public struct Harvested
+{
+    public List<Plot> plots;
+}
+
 public struct InitialData
 {
     public List<Plot> plots;
@@ -174,68 +179,68 @@ public class Connection : MonoBehaviour
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";
 
-                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+                    //Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     foreach (string evento in cycleResolvedData.payload.events)
                     {
                         scoreObjectText.text += evento + "\n";
                     }
 
-                    foreach(GameObject elemento in CultivosPlantados.instance.cultivos)
-                    {
-                        if (elemento != null)
-                        {
-                            GameObject contenedorMaices = elemento;
-                            foreach (Transform hijo in contenedorMaices.transform)
-                            {
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                        }
-                        else
-                        {
-                            print("No hay cultivos plantados");
-                        }
-                    }
-                    int contCult = 0;
-                    foreach (Plot plot in cycleResolvedData.payload.plots)
-                    {
-                        if(plot.crop_type_id == null)
-                        {
-                            print("0");
-                            GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
-                            GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
-                            GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
-                            GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
+                    // foreach(GameObject elemento in CultivosPlantados.instance.cultivos)
+                    // {
+                    //     if (elemento != null)
+                    //     {
+                    //         GameObject contenedorMaices = elemento;
+                    //         foreach (Transform hijo in contenedorMaices.transform)
+                    //         {
+                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    //             spriteRenderer.sprite = null;
+                    //         }
+                    //     }
+                    //     else
+                    //     {
+                    //         print("No hay cultivos plantados");
+                    //     }
+                    // }
+                    // int contCult = 0;
+                    // foreach (Plot plot in cycleResolvedData.payload.plots)
+                    // {
+                    //     if(plot.crop_type_id == null)
+                    //     {
+                    //         print("0");
+                    //         GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
+                    //         GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
+                    //         GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
+                    //         GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
 
-                            foreach (Transform hijo in contenedorMaices1.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            foreach (Transform hijo in contenedorMaices2.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            foreach (Transform hijo in contenedorMaices3.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            foreach (Transform hijo in contenedorMaices4.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            CultivosPlantados.instance.cultivos[contCult] = null;
-                            contCult++;
-                        }
-                    }
+                    //         foreach (Transform hijo in contenedorMaices1.transform)
+                    //         {
+                    //             //obten el spriteRenderer del hijo actual
+                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    //             spriteRenderer.sprite = null;
+                    //         }
+                    //         foreach (Transform hijo in contenedorMaices2.transform)
+                    //         {
+                    //             //obten el spriteRenderer del hijo actual
+                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    //             spriteRenderer.sprite = null;
+                    //         }
+                    //         foreach (Transform hijo in contenedorMaices3.transform)
+                    //         {
+                    //             //obten el spriteRenderer del hijo actual
+                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    //             spriteRenderer.sprite = null;
+                    //         }
+                    //         foreach (Transform hijo in contenedorMaices4.transform)
+                    //         {
+                    //             //obten el spriteRenderer del hijo actual
+                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    //             spriteRenderer.sprite = null;
+                    //         }
+                    //         CultivosPlantados.instance.cultivos[contCult] = null;
+                    //         contCult++;
+                    //     }
+                    // }
                     Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     break;
@@ -286,8 +291,54 @@ public class Connection : MonoBehaviour
                     interestCoyote.text = interest.interest_coyote.ToString();
                     break;
                 case "Harvested":
-                    List<Plot> plots = JsonConvert.DeserializeObject<List<Plot>>(message);
+                    Debug.Log("Harvested" + message);
+                    Harvested harvested = JsonConvert.DeserializeObject<Harvested>(message);
+                    // Utils.Instance.SetPlots(harvested.plots);
+                    List<Plot> plots = harvested.plots;
+
+                    foreach (Plot plot in plots)
+                    {
+                        int contCultt = 0;
+                        if(plot.crop_type_id == null)
+                        {
+                            print("0");
+                            GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCultt);
+                            GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCultt);
+                            GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCultt);
+                            GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCultt);
+
+                            foreach (Transform hijo in contenedorMaices1.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            foreach (Transform hijo in contenedorMaices2.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            foreach (Transform hijo in contenedorMaices3.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            foreach (Transform hijo in contenedorMaices4.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            CultivosPlantados.instance.cultivos[contCultt] = null;
+                        }
+                        contCultt++;
+                        
+                    }
+                    plots = JsonConvert.DeserializeObject<List<Plot>>(message);
                     Utils.Instance.SetPlots(plots);
+
                     break;
                     // Add more cases here
             }

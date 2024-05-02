@@ -41,49 +41,55 @@ public class Utils : MonoBehaviour
 
     public void SetPlots(List<Plot> plots)
     {
+        if (plots == null)
+        {
+            Debug.LogError("SetPlots was called with a null list");
+            return;
+        }
+
         contCult = 0;
         foreach (Plot plot in plots)
         {
-            if (!flagFirtsTime)
-            {
-                if(plot.crop_type_id == null)
-                {
-                    if (CultivosPlantados.instance.cultivos[contCult] != null)
-                    {
-                        print("0");
-                        GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
-                        GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
-                        GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
-                        GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
+            // if (!flagFirtsTime)
+            // {
+            //     if(plot.crop_type_id == null)
+            //     {
+            //         if (CultivosPlantados.instance.cultivos[contCult] != null)
+            //         {
+            //             print("0");
+            //             GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
+            //             GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
+            //             GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
+            //             GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
 
-                        foreach (Transform hijo in contenedorMaices1.transform)
-                        {
-                            //obten el spriteRenderer del hijo actual
-                            spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                            spriteRenderer.sprite = null;
-                        }
-                        foreach (Transform hijo in contenedorMaices2.transform)
-                        {
-                            //obten el spriteRenderer del hijo actual
-                            spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                            spriteRenderer.sprite = null;
-                        }
-                        foreach (Transform hijo in contenedorMaices3.transform)
-                        {
-                            //obten el spriteRenderer del hijo actual
-                            spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                            spriteRenderer.sprite = null;
-                        }
-                        foreach (Transform hijo in contenedorMaices4.transform)
-                        {
-                            //obten el spriteRenderer del hijo actual
-                            spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                            spriteRenderer.sprite = null;
-                        }
-                        CultivosPlantados.instance.cultivos[contCult] = null;
-                    }
-                }
-            }
+            //             foreach (Transform hijo in contenedorMaices1.transform)
+            //             {
+            //                 //obten el spriteRenderer del hijo actual
+            //                 spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+            //                 spriteRenderer.sprite = null;
+            //             }
+            //             foreach (Transform hijo in contenedorMaices2.transform)
+            //             {
+            //                 //obten el spriteRenderer del hijo actual
+            //                 spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+            //                 spriteRenderer.sprite = null;
+            //             }
+            //             foreach (Transform hijo in contenedorMaices3.transform)
+            //             {
+            //                 //obten el spriteRenderer del hijo actual
+            //                 spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+            //                 spriteRenderer.sprite = null;
+            //             }
+            //             foreach (Transform hijo in contenedorMaices4.transform)
+            //             {
+            //                 //obten el spriteRenderer del hijo actual
+            //                 spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+            //                 spriteRenderer.sprite = null;
+            //             }
+            //             CultivosPlantados.instance.cultivos[contCult] = null;
+            //         }
+            //     }
+            // }
             
 
             if (plot.crop_type_id != null)
