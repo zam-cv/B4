@@ -43,8 +43,24 @@ public class Utils : MonoBehaviour
         contCult = 0;
         foreach (Plot plot in plots)
         {
+            if(plot.crop_type_id == null)
+            {
+                if (CultivosPlantados.instance.cultivos[contCult] != null)
+                {
+                    contenedorMaices = CultivosPlantados.instance.cultivos[contCult];
+                    foreach (Transform hijo in contenedorMaices.transform)
+                    {
+                        //obten el spriteRenderer del hijo actual
+                        spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                        spriteRenderer.sprite = null;
+                    }
+                }
+                contCult++;
+            }
+
             if (plot.crop_type_id != null)
             {
+                print("1");
                 indiceEtapa = GetGrowth(plot);
 
                 //switch crop_type_id
@@ -101,11 +117,6 @@ public class Utils : MonoBehaviour
                 // }
 
                     //quantity = plot.quantity;
-                contCult++;
-            }
-            else
-            {
-                CultivosPlantados.instance.cultivos[contCult] = null;
                 contCult++;
             }
         }
