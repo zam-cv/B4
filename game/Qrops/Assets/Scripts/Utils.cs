@@ -104,7 +104,7 @@ public class Utils : MonoBehaviour
                         contenedorMaices = GameObject.Find("tomates"+contCult);  //tomates[cont];
                         etapasCrecimiento = etapasCrecimientoTomate;
                         break;
-                    case "cana":
+                    case "caña":
                         contenedorMaices = GameObject.Find("Cañas"+contCult);
                         etapasCrecimiento = etapasCrecimientoCaña;
                         break;
