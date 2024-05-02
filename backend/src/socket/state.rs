@@ -235,11 +235,6 @@ impl State {
 
         let data = bank.handle_cycle(&cycle_data, context).await?;
         self.player.current_cycle += 1;
-        self.send(Response::CycleResolved(ModifiedPlayer {
-            player: self.player.clone(),
-            payload: data.0,
-        }))?;
-
         self.harvest(&cycle_data, database).await?;
 
         let previous_time = self.player.time;
@@ -321,6 +316,11 @@ impl State {
                 }
             }
         }
+
+        self.send(Response::CycleResolved(ModifiedPlayer {
+            player: self.player.clone(),
+            payload: data.0,
+        }))?;
 
         Ok(())
     }
