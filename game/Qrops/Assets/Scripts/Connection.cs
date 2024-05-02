@@ -196,8 +196,45 @@ public class Connection : MonoBehaviour
                             print("No hay cultivos plantados");
                         }
                     }
-                    
-                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+                    int contCult = 0;
+                    foreach (Plot plot in cycleResolvedData.payload.plots)
+                    {
+                        if(plot.crop_type_id == null)
+                        {
+                            print("0");
+                            GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
+                            GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
+                            GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
+                            GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
+
+                            foreach (Transform hijo in contenedorMaices1.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            foreach (Transform hijo in contenedorMaices2.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            foreach (Transform hijo in contenedorMaices3.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            foreach (Transform hijo in contenedorMaices4.transform)
+                            {
+                                //obten el spriteRenderer del hijo actual
+                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                                spriteRenderer.sprite = null;
+                            }
+                            
+                            contCult++;
+                        }
+                    }
 
                     break;
                 case "CropBought":

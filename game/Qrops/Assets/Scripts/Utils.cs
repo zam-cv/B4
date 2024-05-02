@@ -46,16 +46,36 @@ public class Utils : MonoBehaviour
             if(plot.crop_type_id == null)
             {
                 print("0");
-                if (CultivosPlantados.instance.cultivos[contCult] != null)
+                GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
+                GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
+                GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
+                GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
+
+                foreach (Transform hijo in contenedorMaices1.transform)
                 {
-                    contenedorMaices = CultivosPlantados.instance.cultivos[contCult];
-                    foreach (Transform hijo in contenedorMaices.transform)
-                    {
-                        //obten el spriteRenderer del hijo actual
-                        spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                        spriteRenderer.sprite = null;
-                    }
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
                 }
+                foreach (Transform hijo in contenedorMaices2.transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+                foreach (Transform hijo in contenedorMaices3.transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+                foreach (Transform hijo in contenedorMaices4.transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+                
                 contCult++;
             }
 
