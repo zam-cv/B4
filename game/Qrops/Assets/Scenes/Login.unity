@@ -1264,6 +1264,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bccb7995ab44487ea2a86d2f12e3f1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  contenedorMaices: {fileID: 0}
+  maices:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  tomates:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  cebadas:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  "ca\xF1as":
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &840739291
 Transform:
   m_ObjectHideFlags: 0
