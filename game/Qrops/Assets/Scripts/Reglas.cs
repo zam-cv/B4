@@ -24,4 +24,11 @@ public class Reglas : MonoBehaviour
             CultivosPlantados.instance.tienda = false;
         }
     }
+
+    public void ToggleCanvasAndPlay()
+    {
+        ToggleCanvas(); // Llama a la función ToggleCanvas para cambiar de canvas
+        // Establece Time.timeScale a 1 para reanudar el juego
+        Time.timeScale = 1;
+    }
 }
