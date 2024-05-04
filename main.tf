@@ -273,3 +273,19 @@ resource "oci_container_instances_container_instance" "platform" {
     display_name = "platform-server"
   }
 }
+
+data "oci_core_vnic" "app_vnic" {
+  vnic_id = oci_container_instances_container_instance.app.vnics[0].vnic_id
+}
+
+data "oci_core_vnic" "platform_vnic" {
+  vnic_id = oci_container_instances_container_instance.platform.vnics[0].vnic_id
+}
+
+output "app_public_ip" {
+  value = data.oci_core_vnic.app_vnic.public_ip_address
+}
+
+output "platform_public_ip" {
+  value = data.oci_core_vnic.platform_vnic.public_ip_address
+}
