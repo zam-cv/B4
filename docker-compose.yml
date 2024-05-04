@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  db-prod:
+  db-server:
     image: mysql:8.0
     env_file:
       - ./backend/.env
@@ -11,6 +11,7 @@ services:
       MYSQL_DATABASE: game
       MYSQL_USER: verqor
       MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: awderbdjj
     profiles:
       - prod
 
@@ -21,7 +22,7 @@ services:
     env_file:
       - ./backend/.env
     depends_on:
-      - db-prod
+      - db-server
     ports:
       - "443:443"
       - "80:80"
@@ -29,7 +30,8 @@ services:
     volumes:
       - cargo-cache:/usr/local/cargo
     environment:
-      DATABASE_URL: "mysql://verqor:root@db-prod:3306/game"
+      DATABASE_HOST: db-server
+      DATABASE_URL: "mysql://verqor:root@db-server:3306/game"
     profiles:
       - prod
 

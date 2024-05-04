@@ -2,7 +2,7 @@ terraform {
   required_providers {
     oci = {
       source  = "hashicorp/oci"
-      version = "= 5.39.0"
+      version = "= 5.40.0"
     }
   }
 }
@@ -20,7 +20,6 @@ resource "oci_core_vcn" "qrops_vcn" {
   compartment_id = var.compartment_id
   cidr_block     = "10.0.0.0/16"
   display_name   = "qrops_vcn"
-  dns_label      = "vcndns"
 
   freeform_tags = {
     "project-name" = "crops"
@@ -35,8 +34,20 @@ resource "oci_core_security_list" "public_sn_sl" {
   ingress_security_rules {
     protocol    = 6
     source_type = "CIDR_BLOCK"
-    source      = "0.0.0.0/0"
+    source      = "10.0.0.0/24"
     description = "access to container instance port 3306 from home"
+
+    tcp_options {
+      min = 3306
+      max = 3306
+    }
+  }
+
+  egress_security_rules {
+    protocol         = 6
+    destination_type = "CIDR_BLOCK"
+    destination      = "10.0.0.0/24"
+    description      = "access to container instance port 3306"
 
     tcp_options {
       min = 3306
@@ -72,11 +83,35 @@ resource "oci_core_security_list" "public_sn_sl" {
     protocol    = 6
     source_type = "CIDR_BLOCK"
     source      = "0.0.0.0/0"
+    description = "access to container instance port 1420 from anywhere"
+
+    tcp_options {
+      min = 1420
+      max = 1420
+    }
+  }
+
+  ingress_security_rules {
+    protocol    = 6
+    source_type = "CIDR_BLOCK"
+    source      = "0.0.0.0/0"
     description = "access to container instance port 22 from anywhere"
 
     tcp_options {
       min = 22
       max = 22
+    }
+  }
+
+  egress_security_rules {
+    protocol         = 6
+    destination_type = "CIDR_BLOCK"
+    destination      = "0.0.0.0/0"
+    description      = "access to container registries via HTTP"
+
+    tcp_options {
+      min = 80
+      max = 80
     }
   }
 
@@ -103,7 +138,6 @@ resource "oci_core_subnet" "qrops_subnet" {
   cidr_block     = "10.0.0.0/24"
   display_name   = "qrops_subnet"
   route_table_id = oci_core_route_table.igw_rt.id
-  dns_label      = "subnetdns"
 
   security_list_ids = [
     oci_core_security_list.public_sn_sl.id
@@ -150,25 +184,22 @@ resource "oci_container_instances_container_instance" "database" {
 
   shape_config {
     ocpus         = 2
-    memory_in_gbs = 16
+    memory_in_gbs = 8
   }
 
   vnics {
     subnet_id      = oci_core_subnet.qrops_subnet.id
-    hostname_label = "db-server"
   }
 
   containers {
     image_url    = "mysql:8.0"
     display_name = "mysql-server"
-    command = [
-      "--default-authentication-plugin=caching_sha2_password",
-      "--character-set-server=utf8mb4",
-      "--collation-server=utf8mb4_unicode_ci"
-    ]
     environment_variables = {
-      MYSQL_USER     = var.mysql_user
-      MYSQL_PASSWORD = var.mysql_password
+      MYSQL_ROOT_PASSWORD = var.mysql_root_password
+      MYSQL_DATABASE      = var.mysql_db_name
+      MYSQL_USER          = var.mysql_user
+      MYSQL_PASSWORD      = var.mysql_password
+      MYSQL_BIND_ADDRESS  = "0.0.0.0"
     }
   }
 }
@@ -177,18 +208,17 @@ resource "oci_container_instances_container_instance" "app" {
   availability_domain      = data.oci_identity_availability_domains.local_ads.availability_domains.0.name
   compartment_id           = var.compartment_id
   display_name             = "app"
-  shape                    = "CI.Standard.E4.Flex"
   freeform_tags            = { "project-name" = "crops" }
   container_restart_policy = "ALWAYS"
+  shape                    = "CI.Standard.E4.Flex"
 
   shape_config {
-    ocpus         = 2
-    memory_in_gbs = 16
+    ocpus         = 4
+    memory_in_gbs = 8
   }
 
   vnics {
-    subnet_id             = oci_core_subnet.qrops_subnet.id
-    is_public_ip_assigned = true
+    subnet_id = oci_core_subnet.qrops_subnet.id
   }
 
   depends_on = [
@@ -206,7 +236,8 @@ resource "oci_container_instances_container_instance" "app" {
       USER_SECRET_KEY        = var.user_secret_key
       ADMIN_SECRET_KEY       = var.admin_secret_key
       IPINFO_TOKEN           = var.ipinfo_token
-      DATABASE_URL           = "mysql://${var.mysql_user}:${var.mysql_password}@db-server:3306/game"
+      DATABASE_HOST          = oci_container_instances_container_instance.database.vnics.0.private_ip
+      DATABASE_URL           = "mysql://${var.mysql_user}:${var.mysql_password}@${oci_container_instances_container_instance.database.vnics.0.private_ip}:3306/${var.mysql_db_name}"
       ADMIN_DEFAULT_EMAIL    = var.admin_default_email
       ADMIN_DEFAULT_PASSWORD = var.admin_default_password
       SMTP_HOST              = var.smtp_host
@@ -216,14 +247,29 @@ resource "oci_container_instances_container_instance" "app" {
   }
 }
 
-resource "oci_core_public_ip" "app_public_ip" {
-  provider       = oci
-  compartment_id = var.compartment_id
-  lifetime       = "RESERVED"
-  depends_on     = [oci_container_instances_container_instance.app]
-  display_name   = "app_public_ip"
-}
+resource "oci_container_instances_container_instance" "platform" {
+  availability_domain      = data.oci_identity_availability_domains.local_ads.availability_domains.0.name
+  compartment_id           = var.compartment_id
+  display_name             = "platform"
+  freeform_tags            = { "project-name" = "crops" }
+  container_restart_policy = "ALWAYS"
+  shape                    = "CI.Standard.E4.Flex"
 
-output "app_public_ip" {
-  value = oci_core_public_ip.app_public_ip.ip_address
+  shape_config {
+    ocpus         = 4
+    memory_in_gbs = 16
+  }
+
+  vnics {
+    subnet_id = oci_core_subnet.qrops_subnet.id
+  }
+
+  depends_on = [
+    oci_container_instances_container_instance.app
+  ]
+
+  containers {
+    image_url    = "zamcv/platform"
+    display_name = "platform-server"
+  }
 }

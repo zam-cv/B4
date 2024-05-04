@@ -33,6 +33,16 @@ variable "compartment_id" {
   type        = string
 }
 
+variable "mysql_root_password" {
+  description = "Root Password for the MySQL Database"
+  type        = string
+}
+
+variable "mysql_db_name" {
+  description = "Database Name for the MySQL Database"
+  type        = string
+}
+
 variable "mysql_user" {
   description = "User for the MySQL Database"
   type        = string
@@ -40,11 +50,6 @@ variable "mysql_user" {
 
 variable "mysql_password" {
   description = "Password for the MySQL Database"
-  type        = string
-}
-
-variable "source_id" {
-  description = "Image OCID for the Oracle Cloud Infrastructure"
   type        = string
 }
 

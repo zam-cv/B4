@@ -5,7 +5,7 @@ set -e  # Hacer que el script falle en caso de cualquier error
 service ssh start
 
 # Esperar a que la base de datos esté disponible
-dockerize -wait tcp://db-prod:3306 -timeout 180s
+dockerize -wait tcp://${DATABASE_HOST}:3306 -timeout 180s
 
 # Configurar y ejecutar las migraciones con Diesel
 diesel setup
