@@ -22,22 +22,22 @@ cd B4
 _Terminal de PowerShell_
 ```powershell
 wsl --install
-wsl --list --online  # Permite habilitar las distribuciones de linux disponibles
-wsl --install -d Ubuntu-20.04 # Forma de instalar una distribucion disponible
+wsl --list --online  # Allows enabling available Linux distributions
+wsl --install -d Ubuntu-20.04 # How to install an available distribution
 ubuntu
 sudo apt update
 sudo apt upgrade
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # Para instalar rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # rust install
 sudo apt install libssl-dev pkg-config
 nix-env -iA nixpkgs.diesel-cli
 ```
-Nota: Para acceder al repositorio dentro del ecosistema windows podemos clonar el repositorio en la carpeta de tu elección dentro de la ruta /mnt/c/Users/TuNombreDeUsuario/
+Note: To access the repository within the Windows ecosystem, we can clone the repository to the folder of your choice within the path /mnt/c/Users/TuNombreDeUsuario/
 
 ##### SQL Install
 
 ```bash
 sudo apt install mysql-server
-sudo apt-get install libmysqlclient-dev # Opcional si hay problemas con SQL al ejecutar el backend
+sudo apt-get install libmysqlclient-dev # Optional if there are SQL issues when running the backend
 ```
 
 ### Running the game
