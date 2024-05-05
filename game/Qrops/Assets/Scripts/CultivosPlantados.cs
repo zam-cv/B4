@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de manejar los cultivos plantados en la granja.
+ * Aquí puedes añadir métodos para plantar, regar, cosechar y vender los cultivos.
+ */
+
 public class CultivosPlantados : MonoBehaviour
 {
     public Queue<GameObject> queueCultivos = new Queue<GameObject>();
@@ -20,6 +25,8 @@ public class CultivosPlantados : MonoBehaviour
             instance = this;
         }
     }
+
+    // Esta función se llama cuando se hace clic en un cultivo plantado
     void update()
     {
         if (tienda)
