@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
+/* 
+ * Esta clase se encarga de validar la contraseña ingresada por el usuario.
+ */
 public class ValidatePassword : MonoBehaviour
 {
     private TMP_InputField password;
@@ -11,6 +13,7 @@ public class ValidatePassword : MonoBehaviour
 
     private bool ValidPassword;
     
+    // Inicia la validación de la contraseña
     public void Start()
     {
         // Get reference to TMP_InputField component named Password_input
@@ -20,6 +23,7 @@ public class ValidatePassword : MonoBehaviour
         confirm_password = GameObject.Find("Password_check_input").GetComponent<TMP_InputField>();
         confirm_password.inputType = TMP_InputField.InputType.Password;
     }
+    // Valida la contraseña ingresada por el usuario
     public void Validate()
     {
         // Check if password is valid
