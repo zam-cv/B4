@@ -8,6 +8,10 @@ using UnityEngine.Networking;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using TMPro;
+/* 
+ * Esta clase se encarga de manejar la selección de cultivos
+ * que el jugador puede plantar.
+ */
 public class Select_crop : MonoBehaviour
 {
     public TMP_Text balance;
@@ -35,17 +39,20 @@ public class Select_crop : MonoBehaviour
         crop_duration = GameObject.Find("Duracion").GetComponent<TMP_Text>();
         crop_duration.text = "";
     }
-
+    
+    // Esta función se llama cuando se hace clic en un cultivo e inicializa la petición
     void AttemptCropRequest()
     {
         StartCoroutine(RequestCropType());
     }
-
+    
+    // Hace la petición al servidor para obtener la información del cultivo
     public void View_crop(GameObject crop)
     {
         AttemptCropRequest();
     }
-
+    
+    // Muestra la información del cultivo seleccionado
     public void View_tomate()
     {
         cropType = "tomate";
@@ -63,6 +70,7 @@ public class Select_crop : MonoBehaviour
         cropType = "cebada";
     }
 
+    // Hace una petición al servidor para obtener el tipo de cultivo
     IEnumerator RequestCropType()
     {
         string token = Context.Instance.AuthToken;
@@ -82,7 +90,8 @@ public class Select_crop : MonoBehaviour
             crop_duration.text = cropData.duration;
         }
     }
-
+    
+    // Hace una petición al servidor para obtener el balance del usuario
     IEnumerator RequestBalance()
     {
         string token = Context.Instance.AuthToken;
@@ -98,7 +107,8 @@ public class Select_crop : MonoBehaviour
             balance.text = request.downloadHandler.text;
         }
     }
-
+    
+    // Regresa al juego
     public void BackToGame(){
         //load the game scene
         SceneManager.LoadScene("Game");
