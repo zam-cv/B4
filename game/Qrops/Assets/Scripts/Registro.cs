@@ -7,6 +7,10 @@ using TMPro;
 using System;
 using UnityEngine.UIElements;
 
+/* 
+ * Esta clase se encarga de registrar un usuario en el sistema.
+ */
+
 public class Registro : MonoBehaviour
 {    
     [SerializeField] private TMP_InputField username;
@@ -39,7 +43,8 @@ public class Registro : MonoBehaviour
     public GameObject disclaimer;
     public bool showDisclaimer = false;
 
-public void Start(){
+    // Asigna las variables correspondientes a los campos de texto
+    public void Start(){
     username = GameObject.Find("Username_input").GetComponent<TMP_InputField>();
     password = GameObject.Find("Password_input").GetComponent<TMP_InputField>();
     user_name = GameObject.Find("Name_input").GetComponent<TMP_InputField>();
@@ -50,11 +55,13 @@ public void Start(){
 
 
 }
+    // Inicia el proceso de registro
     public void Registration()
     {
         StartCoroutine(Register_request());
     }
-
+ 
+    // Realiza la petición de registro al servidor
     IEnumerator Register_request()
     {
         UserData user = new UserData();
@@ -86,11 +93,13 @@ public void Start(){
         }
     }
 
+    // Regresa a la pantalla de login
     public void BackToLogin()
     {
         SceneManager.LoadScene("Login");
     }
-
+    
+    // Muestra el aviso de privacidad
     public void ShowDisclaimer()
     {
         showDisclaimer = !showDisclaimer;
