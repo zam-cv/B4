@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+/* 
+ * Esta clase se encarga de mostrar los créditos del juego
+ * cuando se hace clic en un botón. También se encarga de
+ * hacer un fade in de la pantalla y de mover los créditos
+ * hacia arriba.
+ */
+
 public class CreditosFX : MonoBehaviour
 {
     // reference to image object
@@ -29,7 +37,8 @@ public class CreditosFX : MonoBehaviour
         StartCoroutine(FadeIn());
         StartCoroutine(MoveCredits());
     }
-
+    
+    // Esta función hace el fade in de la pantalla
     IEnumerator FadeIn()
     {
         float t = 0.0f;
@@ -42,7 +51,8 @@ public class CreditosFX : MonoBehaviour
             yield return null;
         }
     }
-
+    
+    // Esta función mueve los créditos hacia arriba
     IEnumerator MoveCredits()
     {
         float t = 0.0f;
