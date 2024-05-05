@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de manejar el crecimiento de la planta.
+ */
+
 public class prueba : MonoBehaviour
 {
     public Sprite[] etapasCrecimiento;
@@ -12,6 +16,8 @@ public class prueba : MonoBehaviour
     //crea la instancia de la clase
     public static prueba instance;
 
+
+    // Esta función hace que se inicie el juego con la primera etapa de crecimiento
     void Start()
     {
         //Si la instancia es nula, se le asigna el valor de esta clase
@@ -23,7 +29,8 @@ public class prueba : MonoBehaviour
         spriteRenderer.sprite = null;
         panelMensaje.SetActive(false);
     }
-
+    
+    // Hace que la planta crezca a través de las etapas de crecimiento
     void Update()
     {
         if (crecimientoIniciado)
@@ -41,7 +48,7 @@ public class prueba : MonoBehaviour
         }
     }
 
-
+    // Inicia el crecimiento de la planta
     public void IniciarCrecimiento()
     {
         if (!crecimientoIniciado)
