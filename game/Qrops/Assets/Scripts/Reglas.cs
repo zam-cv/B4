@@ -1,10 +1,15 @@
 using UnityEngine;
+/* 
+ * Esta clase se encarga de mostrar y ocultar un panel de reglas
+ * cuando se hace clic en un botón.
+ */
 
 public class Reglas : MonoBehaviour
 {
     public GameObject firstCanvas;
     public GameObject secondCanvas;
-
+    
+    // Función para activar o desactivar el panel
     public void ToggleCanvas()
     {
         // Verifica si el primer Canvas está activo
@@ -24,7 +29,8 @@ public class Reglas : MonoBehaviour
             CultivosPlantados.instance.tienda = false;
         }
     }
-
+    
+    // Función para activar el panel y pausar el juego
     public void ToggleCanvasAndPlay()
     {
         ToggleCanvas(); // Llama a la función ToggleCanvas para cambiar de canvas
