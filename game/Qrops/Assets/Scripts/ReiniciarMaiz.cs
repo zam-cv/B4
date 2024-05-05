@@ -1,10 +1,14 @@
 using UnityEngine;
-
+/* 
+ * Esta clase se encarga de reiniciar el crecimiento de los maíces
+ * cuando se hace clic en un botón.
+ */
 public class ReiniciarMaiz : MonoBehaviour
 {
     private GameObject contenedorMaices;
     public GameObject panelMensaje;  // Asegúrate de asignar esto desde el editor de Unity
-
+    
+    // Función para reiniciar el crecimiento
     public void OnClick()
     {
         //switch dependiendo del nombre del panelMensaje
