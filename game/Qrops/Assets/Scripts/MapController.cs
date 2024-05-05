@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de mover un objeto arrastrándolo con el mouse.
+ * Puedes ajustar la velocidad de movimiento y los límites de la posición.
+ */
+
 public class DragToMove : MonoBehaviour
 {
     public float speed = 0.1f;  // Velocidad de movimiento ajustable
@@ -11,7 +16,8 @@ public class DragToMove : MonoBehaviour
     public float maxZ = 10f;    // Límite máximo en Z
 
     private Vector3 lastMousePosition;
-
+   
+    // Mueve la camara con el mouse
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
