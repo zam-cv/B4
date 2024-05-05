@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+/* 
+ * Esta clase se encarga de manejar la tienda del juego
+ * donde el jugador puede comprar cultivos.
+ */
 public struct CropData
 {
     public string type;
@@ -24,6 +27,7 @@ public class Shop : MonoBehaviour
 
     public CropData cropData;
 
+    // Inicializa la instancia de la tienda
     void Start()
     {
         if (Instance == null)
@@ -31,7 +35,8 @@ public class Shop : MonoBehaviour
             Instance = this;
         }
     }
-
+    
+    // Esta función se llama cuando se hace clic en un cultivo e inicializa la petición
     private void Awake()
     {
         if (Instance == null)
@@ -58,7 +63,8 @@ public class Shop : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    
+    // Inicializa los datos del cultivo seleccionado
     public void SetCropType(CropType cropType)
     {
         cropName.text = cropType.name;
@@ -67,7 +73,8 @@ public class Shop : MonoBehaviour
 
         cropData.name = cropType.name;
     }
-
+    
+    // Muestra el nombre del cultivo seleccionado y los respectivos datos
     public void SelectCropType(string cropType)
     {
         cropName.text = cropType;
@@ -78,22 +85,20 @@ public class Shop : MonoBehaviour
             SetCropType(crop);
         }
     }
-
+    
+    // Selecciona el tipo de cultivo
     public void SelectMaiz()
     {
         SelectCropType("maiz");
     }
-
     public void SelectTomate()
     {
         SelectCropType("tomate");
     }
-
     public void SelectCebada()
     {
         SelectCropType("cebada");
     }
-
     public void SelectCana()
     {
         SelectCropType("cana"); // caña
