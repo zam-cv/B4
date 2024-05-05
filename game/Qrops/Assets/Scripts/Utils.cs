@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+/* 
+ * Esta clase se encarga de manejar la selección de cultivos
+ * que el jugador puede plantar.
+ */
 public class Utils : MonoBehaviour
 {
     public Dictionary<string, CropType> crops = new Dictionary<string, CropType>();
@@ -25,7 +28,7 @@ public class Utils : MonoBehaviour
             Instance = this;
         }
     }
-
+    
     private void Awake()
     {
         if (Instance == null)
@@ -39,6 +42,7 @@ public class Utils : MonoBehaviour
         }
     }
 
+    // Maneja la selección de cultivos
     public void SetPlots(List<Plot> plots)
     {
         if (plots == null)
@@ -157,6 +161,7 @@ public class Utils : MonoBehaviour
         }
     }
 
+    // Maneja el estado del jugador
     public void SetState(Player player)
     {
         GameObject scoreObject = GameObject.Find("score");
@@ -180,7 +185,8 @@ public class Utils : MonoBehaviour
         coyoteText.text = player.balance_coyote.ToString();
         cashText.text = player.balance_cash.ToString();
     }
-
+    
+    // Maneja los jugadores con mayor puntaje
     public void SetTopPlayers(List<string> topPlayers)
     {
         GameObject topPlayersObject = GameObject.Find("topPlayers");
@@ -196,6 +202,7 @@ public class Utils : MonoBehaviour
         topPlayersText.text = topPlayersString;
     }
 
+    // Maneja los tipos de cultivos
     public void SetCropsTypes(List<CropType> cropsTypes)
     {
         foreach (CropType cropType in cropsTypes)
@@ -204,6 +211,7 @@ public class Utils : MonoBehaviour
         }
     }
 
+    // Maneja el crecimiento de los cultivos
     public int GetGrowth(Plot plot)
     {
         CropType cropType = crops[plot.crop_type_id];
