@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de iniciar las parcelas con los cultivos
+ * que se encuentran en ellas.
+ */
+
 public class IniciarParcelas : MonoBehaviour
 {
     public struct Plot
@@ -18,7 +23,8 @@ public class IniciarParcelas : MonoBehaviour
     public Plot plot2 = new Plot { crop_type_id = "2", quantity = 1, growth = 2 };
     public Plot plot3 = new Plot { crop_type_id = "3", quantity = 1, growth = 0 };
     public Plot plot4 = new Plot { crop_type_id = "4", quantity = 1, growth = 1 };
-
+    
+    // Esta función añade los plots a la lista
     void Start(){
         //Agrega los plots a la lista
         plots.Add(plot1);
