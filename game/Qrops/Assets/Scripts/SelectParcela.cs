@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de seleccionar la parcela en la que se encuentra
+ * el jugador.
+ */
+
 public class SelectParcela : MonoBehaviour
 {
     public bool planted = false;
     //crea la instancia de la clase
     public static SelectParcela instance;
+    // La función se llama al inicio del juego y asigna la instancia de esta clase
     void Start()
     {
         //Si la instancia es nula, se le asigna el valor de esta clase
@@ -18,7 +24,8 @@ public class SelectParcela : MonoBehaviour
         GameObject.Find("select3").GetComponent<SpriteRenderer>().enabled = false;
         GameObject.Find("select4").GetComponent<SpriteRenderer>().enabled = false;
     }
-
+    
+    // Se llama cuando se hace clic en la parcela
     void OnMouseDown(){
     Debug.Log("GameObject ha sido clickeado");
     //Si el gameobject se llama "Click" se accede a la variable NumeroParcela de ParcelaActual y se le da el valor de 1
