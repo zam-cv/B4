@@ -1,5 +1,11 @@
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de mostrar y ocultar un panel de configuración
+ * cuando se hace clic en un botón. También pausa y reanuda el juego
+ * cuando se abre y se cierra el panel, respectivamente.
+ */
+
 public class Ajustes : MonoBehaviour
 {
     public GameObject panelConfiguracion; // Arrastra aquí tu panel de configuración en el Inspector

@@ -1,5 +1,11 @@
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de iniciar el crecimiento de un cultivo
+ * cuando se hace clic en un botón. También guarda el contenedor
+ * de los cultivos plantados en un Queue.
+ */
+
 public class BotonInicio : MonoBehaviour
 {
     public GameObject contenedorMaices; // Referencia al contenedor que contiene todos los maíces

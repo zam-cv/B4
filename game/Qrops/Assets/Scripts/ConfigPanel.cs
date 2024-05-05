@@ -1,6 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/* Esta clase se encarga de manejar las acciones que se pueden realizar en el panel de configuración.
+ * Aquí puedes añadir métodos para iniciar el juego, silenciar el sonido, mostrar las reglas del juego,
+ * cerrar sesión o salir del juego.
+ */
+
 public class ConfigPanel : MonoBehaviour
 {
     // Método para iniciar el juego o volver al inicio.

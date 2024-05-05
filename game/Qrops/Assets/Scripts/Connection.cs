@@ -7,6 +7,12 @@ using UnityEngine.SceneManagement;
 using NativeWebSocket;
 using TMPro;
 
+/* 
+ * Esta clase se encarga de manejar la conexión con el servidor y de enviar y recibir mensajes
+ * a través de un WebSocket. También se encarga de manejar los mensajes recibidos y de actualizar
+ * el estado del juego en función de los mensajes recibidos.
+ */
+
 public struct Interest
 {
     public int interest_verqor;
@@ -91,6 +97,7 @@ public class Connection : MonoBehaviour
     public Player player = new Player();
     private SpriteRenderer spriteRenderer;
 
+    // Inicia la conexión bajo la condición definida 
     void Start()
     {
         if (websocket == null)
@@ -99,6 +106,8 @@ public class Connection : MonoBehaviour
         }
     }
 
+    // Esta funcion se encarga ver si ya existe una instancia de la clase
+    // y de no destruir el objeto al cambiar de escena
     private void Awake()
     {
         if (Instance == null)
@@ -117,7 +126,9 @@ public class Connection : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    
+    // Esta funcion se encarga de iniciar la conexión con el servidor
+    // y de escuchar los mensajes que envía el servidor
     async void StartAsync()
     {
         string token = Context.Instance.AuthToken;
@@ -347,7 +358,8 @@ public class Connection : MonoBehaviour
         // waiting for messages
         await websocket.Connect();
     }
-
+    
+    // Esta funcion se encarga de enviar un mensaje al servidor
     void Update()
     {
 #if !UNITY_WEBGL || UNITY_EDITOR
@@ -399,7 +411,8 @@ public class Connection : MonoBehaviour
             Debug.Log("WebSocket no está conectado.");
         }
     }
-
+    
+    // Crear una funcion asincrona para comprar un cultivo
     public async void BuyCrop(string name, int quantity, string moneyType)
     {
         // Verifica que la conexión esté abierta antes de enviar el mensaje
@@ -424,7 +437,8 @@ public class Connection : MonoBehaviour
             Debug.Log("WebSocket no está conectado.");
         }
     }
-
+    
+    // Crear una funcion asincrona para comprar un cultivo con dinero en efectivo
     public void BuyCropCash()
     {
         if (int.TryParse(Shop.Instance.cropQuantity.text, out int quantity) && quantity > 0)
@@ -437,6 +451,7 @@ public class Connection : MonoBehaviour
         }
     }
 
+    // Crear una funcion asincrona para comprar un cultivo con Verqor
     public void BuyCropVerqor()
     {
         if (int.TryParse(Shop.Instance.cropQuantity.text, out int quantity) && quantity > 0)
@@ -448,7 +463,8 @@ public class Connection : MonoBehaviour
             Debug.Log("La cantidad debe ser un número mayor a 0");
         }
     }
-
+    
+    // Crear una funcion asincrona para comprar un cultivo con Coyote
     public void BuyCropCoyote()
     {
         if (int.TryParse(Shop.Instance.cropQuantity.text, out int quantity) && quantity > 0)
@@ -461,6 +477,7 @@ public class Connection : MonoBehaviour
         }
     }
 
+    // Reinicia los valores del jugador
     public async void ResetPlayer()
     {
         // Verifica que la conexión esté abierta antes de enviar el mensaje
