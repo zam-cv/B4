@@ -48,6 +48,10 @@ public class Utils : MonoBehaviour
         if (plots == null)
         {
             Debug.LogError("SetPlots was called with a null list");
+            //foreach cultivo in CultivosPlantados.instance.cultivos
+            // foreach (GameObject cultivo in CultivosPlantados.instance.cultivos){
+            //     //
+            // }
             return;
         }
 
@@ -108,7 +112,7 @@ public class Utils : MonoBehaviour
                         contenedorMaices = GameObject.Find("tomates"+contCult);  //tomates[cont];
                         etapasCrecimiento = etapasCrecimientoTomate;
                         break;
-                    case "caña":
+                    case "cana":
                         contenedorMaices = GameObject.Find("Cañas"+contCult);
                         etapasCrecimiento = etapasCrecimientoCaña;
                         break;

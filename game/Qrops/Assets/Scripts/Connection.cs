@@ -190,7 +190,7 @@ public class Connection : MonoBehaviour
                     //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";
 
-                    //Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     foreach (string evento in cycleResolvedData.payload.events)
                     {
@@ -252,7 +252,7 @@ public class Connection : MonoBehaviour
                     //         contCult++;
                     //     }
                     // }
-                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+                    //Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     break;
                 case "CropBought":
