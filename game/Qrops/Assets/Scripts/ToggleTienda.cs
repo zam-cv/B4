@@ -1,5 +1,7 @@
 using UnityEngine;
-
+/* 
+ * Esta clase se encarga de mostrar y ocultar la tienda.
+ */
 public class ToggleTienda : MonoBehaviour
 {
     public GameObject canvas; // Referencia al canvas que quieres mostrar/ocultar
