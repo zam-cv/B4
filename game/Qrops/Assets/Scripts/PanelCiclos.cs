@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/* 
+ * Esta clase se encarga de mostrar y ocultar un panel de ciclos
+ * cuando se hace clic en un botón.
+ */
+
 public class PanelCiclos : MonoBehaviour
 {
     public GameObject panel; // Referencia al panel que quieres mostrar/ocultar
