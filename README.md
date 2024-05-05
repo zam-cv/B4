@@ -19,7 +19,7 @@ cd B4
 ```
 
 #### Windows Installation (WSL)
-_Terminal de PowerShell_
+_PowerShell_
 ```powershell
 wsl --install
 wsl --list --online  # Allows enabling available Linux distributions
