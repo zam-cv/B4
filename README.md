@@ -122,6 +122,16 @@ VITE_APP_SERVER_PORT = 8080
 VITE_APP_API_ROUTE = "api/admin"
 ```
 
+### Deployment
+
+This is an example of how to deploy the application in a production environment, in this case using Terraform to deploy the infrastructure on Oracle Cloud.
+
+```bash
+terraform init
+terraform plan
+terraform apply
+```
+
 ## Usage
 
 Once the appropriate environment is set up and running, access the game through the provided web interface. The specific address will depend on your setup but is typically http://localhost:8080 for local development environments or a predefined domain for production setups.
