@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 
+/* 
+ * Esta clase se encarga de guardar la información de la conexión
+ * con el servidor y de mantenerla en toda la aplicación.
+ */
+
 public class Context : MonoBehaviour
 {
     const string HOSTNAME = "localhost";
@@ -21,6 +26,8 @@ public class Context : MonoBehaviour
     [DllImport("__Internal")]
     private static extern string GetHostname();
 
+    // Esta función hace las configuraciones iniciales para el contexto del jugador
+    // que será modificado y guardado en la base de datos al cerrar la conexión.
     void Start()
     {
         if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -39,7 +46,8 @@ public class Context : MonoBehaviour
 
         Debug.Log("WebSocketUrl: " + Instance.WebSocketUrl);
     }
-
+    
+    // Verifica si ya existe una instancia de la clase Context y si no, la crea.
     private void Awake()
     {
         if (Instance == null)
