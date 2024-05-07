@@ -1,5 +1,5 @@
 use crate::{
-    bank::{core::ResolveCycleData, Bank},
+    bank::Bank,
     config,
     database::Database,
     models,
@@ -83,6 +83,13 @@ pub struct Harvested {
     pub plots: Vec<models::Plot>,
 }
 
+#[derive(Serialize)]
+pub struct CycleResolved {
+    pub events: Vec<String>,
+    pub tip: Option<String>,
+    pub plots: Vec<models::Plot>
+}
+
 #[derive(Deserialize)]
 #[serde(tag = "type")]
 pub enum Request {
@@ -96,7 +103,7 @@ pub enum Request {
 #[serde(tag = "type")]
 pub enum Response<'a> {
     Init(ModifiedPlayer<InitialData>),
-    CycleResolved(ModifiedPlayer<ResolveCycleData>),
+    CycleResolved(ModifiedPlayer<CycleResolved>),
     CropBought(ModifiedPlayer<Vec<models::Plot>>),
     PlayerReseted(ModifiedPlayer<Vec<models::Plot>>),
     Interest(Interest),
@@ -321,7 +328,11 @@ impl State {
 
         self.send(Response::CycleResolved(ModifiedPlayer {
             player: self.player.clone(),
-            payload: data.0,
+            payload: CycleResolved {
+                events: data.0.events,
+                tip: data.0.tip,
+                plots: self.plots.clone()
+            },
         }))?;
 
         Ok(())

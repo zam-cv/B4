@@ -38,9 +38,9 @@ public struct CycleResolved
 {
     public string type;
     public List<string> events;
-    // public Player player;
+    public Player player;
     public string tip;
-    // public List<Plot> plots;
+    public List<Plot> plots;
 }
 
 public struct Plot
@@ -183,12 +183,12 @@ public class Connection : MonoBehaviour
 
                     Debug.Log(message);
                     ModifiedPlayer<CycleResolved> cycleResolvedData = JsonConvert.DeserializeObject<ModifiedPlayer<CycleResolved>>(message);
-                    // player = cycleResolvedData.player;
-                    // Utils.Instance.SetState(player);
+                    player = cycleResolvedData.player;
+                    Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
 
                     // Utils.Instance.DeletePlots();
-                    // Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
+                    Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     scoreObjectText.text = "";
 
