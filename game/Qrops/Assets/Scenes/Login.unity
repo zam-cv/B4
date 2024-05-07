@@ -1264,6 +1264,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bccb7995ab44487ea2a86d2f12e3f1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Cultivos: {fileID: 5543762180456938654, guid: 8ad5bbc9ad6124c4ea3b62abe673b1e5, type: 3}
   contenedorMaices: {fileID: 0}
   etapasCrecimientoMaiz:
   - {fileID: 21300000, guid: 4912b07a0eed4fd47bcc9ec6bad0ae37, type: 3}
@@ -1287,6 +1288,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3ff745517c6130547bb9504e9209d639, type: 3}
   indiceEtapa: 0
   contCult: 0
+  flagFirtsTime: 1
 --- !u!4 &840739291
 Transform:
   m_ObjectHideFlags: 0

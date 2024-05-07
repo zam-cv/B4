@@ -186,74 +186,15 @@ public class Connection : MonoBehaviour
                     Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
 
-                    // Funcion que modifica el contenido del scoreObjectText con los eventos
-                    //scoreObjectText.text = cycleResolvedData.payload.events[0];
                     scoreObjectText.text = "";
 
+                    // Utils.Instance.DeletePlots();
                     Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     foreach (string evento in cycleResolvedData.payload.events)
                     {
                         scoreObjectText.text += evento + "\n";
                     }
-
-                    // foreach(GameObject elemento in CultivosPlantados.instance.cultivos)
-                    // {
-                    //     if (elemento != null)
-                    //     {
-                    //         GameObject contenedorMaices = elemento;
-                    //         foreach (Transform hijo in contenedorMaices.transform)
-                    //         {
-                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                    //             spriteRenderer.sprite = null;
-                    //         }
-                    //     }
-                    //     else
-                    //     {
-                    //         print("No hay cultivos plantados");
-                    //     }
-                    // }
-                    // int contCult = 0;
-                    // foreach (Plot plot in cycleResolvedData.payload.plots)
-                    // {
-                    //     if(plot.crop_type_id == null)
-                    //     {
-                    //         print("0");
-                    //         GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCult);
-                    //         GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCult);
-                    //         GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCult);
-                    //         GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCult);
-
-                    //         foreach (Transform hijo in contenedorMaices1.transform)
-                    //         {
-                    //             //obten el spriteRenderer del hijo actual
-                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                    //             spriteRenderer.sprite = null;
-                    //         }
-                    //         foreach (Transform hijo in contenedorMaices2.transform)
-                    //         {
-                    //             //obten el spriteRenderer del hijo actual
-                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                    //             spriteRenderer.sprite = null;
-                    //         }
-                    //         foreach (Transform hijo in contenedorMaices3.transform)
-                    //         {
-                    //             //obten el spriteRenderer del hijo actual
-                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                    //             spriteRenderer.sprite = null;
-                    //         }
-                    //         foreach (Transform hijo in contenedorMaices4.transform)
-                    //         {
-                    //             //obten el spriteRenderer del hijo actual
-                    //             spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                    //             spriteRenderer.sprite = null;
-                    //         }
-                    //         CultivosPlantados.instance.cultivos[contCult] = null;
-                    //         contCult++;
-                    //     }
-                    // }
-                    //Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
-
                     break;
                 case "CropBought":
                     ModifiedPlayer<List<Plot>> cropBoughtData = JsonConvert.DeserializeObject<ModifiedPlayer<List<Plot>>>(message);
@@ -304,52 +245,9 @@ public class Connection : MonoBehaviour
                 case "Harvested":
                     Debug.Log("Harvested" + message);
                     Harvested harvested = JsonConvert.DeserializeObject<Harvested>(message);
-                    // Utils.Instance.SetPlots(harvested.plots);
                     List<Plot> plots = harvested.plots;
-
-                    foreach (Plot plot in plots)
-                    {
-                        int contCultt = 0;
-                        if(plot.crop_type_id == null)
-                        {
-                            print("0");
-                            GameObject contenedorMaices1 =  GameObject.Find("Maices"+contCultt);
-                            GameObject contenedorMaices2 =  GameObject.Find("tomates"+contCultt);
-                            GameObject contenedorMaices3 =  GameObject.Find("Cañas"+contCultt);
-                            GameObject contenedorMaices4 =  GameObject.Find("cebadas"+contCultt);
-
-                            foreach (Transform hijo in contenedorMaices1.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            foreach (Transform hijo in contenedorMaices2.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            foreach (Transform hijo in contenedorMaices3.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            foreach (Transform hijo in contenedorMaices4.transform)
-                            {
-                                //obten el spriteRenderer del hijo actual
-                                spriteRenderer = hijo.GetComponent<SpriteRenderer>();
-                                spriteRenderer.sprite = null;
-                            }
-                            CultivosPlantados.instance.cultivos[contCultt] = null;
-                        }
-                        contCultt++;
-                        
-                    }
-                    plots = JsonConvert.DeserializeObject<List<Plot>>(message);
+                    Utils.Instance.DeletePlots();
                     Utils.Instance.SetPlots(plots);
-
                     break;
                     // Add more cases here
             }
@@ -483,6 +381,8 @@ public class Connection : MonoBehaviour
         // Verifica que la conexión esté abierta antes de enviar el mensaje
         if (websocket.State == WebSocketState.Open)
         {
+            Utils.Instance.DeletePlots();
+
             // Crear el mensaje JSON para enviar
             var messageData = new Dictionary<string, object>
             {
