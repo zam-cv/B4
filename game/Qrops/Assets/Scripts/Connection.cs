@@ -187,7 +187,7 @@ public class Connection : MonoBehaviour
                     Utils.Instance.SetState(player);
                     Debug.Log(cycleResolvedData.payload.events[0]);
 
-                    // Utils.Instance.DeletePlots();
+                    //Utils.Instance.DeletePlots();
                     Utils.Instance.SetPlots(cycleResolvedData.payload.plots);
 
                     scoreObjectText.text = "";
@@ -254,6 +254,8 @@ public class Connection : MonoBehaviour
                     break;
                     // Add more cases here
             }
+
+
         };
 
         // waiting for messages
