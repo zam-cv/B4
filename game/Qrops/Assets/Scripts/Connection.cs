@@ -60,6 +60,7 @@ public struct CropType
 
 public struct Harvested
 {
+    public Player player;
     public List<Plot> plots;
 }
 
@@ -246,6 +247,8 @@ public class Connection : MonoBehaviour
                     Debug.Log("Harvested" + message);
                     Harvested harvested = JsonConvert.DeserializeObject<Harvested>(message);
                     List<Plot> plots = harvested.plots;
+                    player = harvested.player;
+                    Utils.Instance.SetState(player);
                     Utils.Instance.DeletePlots();
                     Utils.Instance.SetPlots(plots);
                     break;
