@@ -59,7 +59,7 @@ public class Select_crop : MonoBehaviour
     }
     public void View_cana()
     {
-        cropType = "cana";
+        cropType = "caña";
     }
     public void View_maiz()
     {

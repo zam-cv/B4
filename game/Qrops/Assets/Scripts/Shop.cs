@@ -101,6 +101,6 @@ public class Shop : MonoBehaviour
     }
     public void SelectCana()
     {
-        SelectCropType("cana"); // caña
+        SelectCropType("caña"); // caña
     }
 }
