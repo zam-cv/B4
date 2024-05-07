@@ -249,7 +249,7 @@ public class Connection : MonoBehaviour
                     List<Plot> plots = harvested.plots;
                     player = harvested.player;
                     Utils.Instance.SetState(player);
-                    Utils.Instance.DeletePlots();
+                    //Utils.Instance.DeletePlots();
                     Utils.Instance.SetPlots(plots);
                     break;
                     // Add more cases here

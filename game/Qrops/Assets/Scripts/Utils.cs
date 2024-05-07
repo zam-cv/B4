@@ -46,6 +46,35 @@ public class Utils : MonoBehaviour
     // Maneja la selección de cultivos
     public void SetPlots(List<Plot> plots)
     {
+        //desactiva todos los posibles casos de cultivos
+        for (int i = 0; i < 4; i++)
+        {
+            foreach (Transform hijo in GameObject.Find("tomates" + i).transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+            foreach (Transform hijo in GameObject.Find("Cañas" + i).transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+            foreach (Transform hijo in GameObject.Find("Maices" + i).transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+            foreach (Transform hijo in GameObject.Find("cebadas" + i).transform)
+                {
+                    //obten el spriteRenderer del hijo actual
+                    spriteRenderer = hijo.GetComponent<SpriteRenderer>();
+                    spriteRenderer.sprite = null;
+                }
+
+        }
         if (plots == null)
         {
             Debug.LogError("SetPlots was called with a null list");
@@ -92,7 +121,7 @@ public class Utils : MonoBehaviour
                     //obten el spriteRenderer del hijo actual
                     spriteRenderer = hijo.GetComponent<SpriteRenderer>();
                     spriteRenderer.sprite = etapasCrecimiento[indiceEtapa];
-                    if (indiceEtapa >= 3)
+                    if (indiceEtapa > 3)
                     {
                         reset = true;
                         spriteRenderer.sprite = null;
