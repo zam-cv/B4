@@ -79,6 +79,7 @@ pub struct Message<'a> {
 
 #[derive(Serialize)]
 pub struct Harvested {
+    pub player: models::Player,
     pub plots: Vec<models::Plot>,
 }
 
@@ -201,6 +202,7 @@ impl State {
 
             self.send(Response::Harvested(Harvested {
                 plots: self.plots.clone(),
+                player: self.player.clone(),
             }))?;
         }
 
